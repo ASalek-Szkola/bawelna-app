@@ -1,0 +1,35 @@
+{
+    "basic-picker": {
+      "image": "src/assets/zdjecia_bawelnadefense/zbieracz1.png",
+      "levels": [
+        { "cost": 75, "range": 120, "damage": 1, "fireRate": 1000 },
+        { "cost": 100, "range": 130, "damage": 1.5, "fireRate": 900 },
+        { "cost": 150, "range": 140, "damage": 2, "fireRate": 800 }
+      ]
+    },
+    "sniper-picker": {
+      "image": "src/assets/zdjecia_bawelnadefense/zbieracz2.png",
+      "levels": [
+        { "cost": 150, "range": 250, "damage": 3, "fireRate": 2000 },
+        { "cost": 200, "range": 270, "damage": 4, "fireRate": 1800 },
+        { "cost": 300, "range": 300, "damage": 5, "fireRate": 1600 }
+      ]
+    },
+    "rapid-picker": {
+      "image": "src/assets/zdjecia_bawelnadefense/zbieracz3.png",
+      "levels": [
+        { "cost": 125, "range": 100, "damage": 0.5, "fireRate": 400 },
+        { "cost": 175, "range": 110, "damage": 0.7, "fireRate": 300 },
+        { "cost": 250, "range": 120, "damage": 1, "fireRate": 200 }
+      ]
+    },
+    "heavy-picker": {
+      "image": "src/assets/zdjecia_bawelnadefense/zbieracz4.png",
+      "levels": [
+        { "cost": 200, "range": 150, "damage": 4, "fireRate": 3000 },
+        { "cost": 300, "range": 160, "damage": 6, "fireRate": 2800 },
+        { "cost": 400, "range": 170, "damage": 8, "fireRate": 2600 }
+      ]
+    }
+  }
+  

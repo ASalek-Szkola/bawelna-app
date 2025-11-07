@@ -1,0 +1,33 @@
+{
+    "basic": {
+      "image": "src/assets/zdjecia_bawelnadefense/bawelna1.png",
+      "health": 3,
+      "speed": 3,
+      "damageOnEscape": -10
+    },
+    "fast": {
+      "image": "src/assets/fast-enemy.png",
+      "health": 2,
+      "speed": 6,
+      "damageOnEscape": -15
+    },
+    "tank": {
+      "image": "src/assets/zdjecia_bawelnadefense/bawelna2.png",
+      "health": 15,
+      "speed": 1.5,
+      "damageOnEscape": -25
+    },
+    "boss": {
+      "image": "src/assets/zdjecia_bawelnadefense/bawelna3.png",
+      "health": 50,
+      "speed": 1,
+      "damageOnEscape": -50
+    },
+    "swarm": {
+      "image": "src/assets/fast-enemy.png",
+      "health": 1,
+      "speed": 4,
+      "damageOnEscape": -5
+    }
+  }
+  
