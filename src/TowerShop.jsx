@@ -3,45 +3,39 @@ import towerConfig from './config/towerConfig.json';
 
 const TowerShop = ({ money, selectedType, onSelectType }) => {
   return (
-    <div className="tower-shop" style={{ padding: 16, width: 240 }}>
+    <div className="tower-shop panel">
       <h3>Sklep wieżyczek</h3>
-      <div style={{ display: 'grid', gap: 12 }}>
+      <div className="tower-shop-grid">
         {Object.entries(towerConfig).map(([type, data]) => {
-          const level1 = data.levels[0];
-          const affordable = money >= level1.cost;
+          const level1 = data.levels[0] || {};
+          const affordable = money >= (level1.cost || 0);
+          const isSelected = selectedType === type;
           return (
             <div
               key={type}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 10,
-                padding: 8,
-                border: selectedType === type ? '2px solid #646cff' : '1px solid #ccc',
-                opacity: affordable ? 1 : 0.5,
-                cursor: affordable ? 'pointer' : 'not-allowed',
-                borderRadius: 6,
-                background: selectedType === type ? '#eef' : '#fff'
-              }}
-              onClick={() => {
-                if (!affordable) return;
-                onSelectType(type);
-              }}
+              role="button"
+              tabIndex={0}
+              className={`tower-card ${isSelected ? 'selected' : ''} ${!affordable ? 'disabled' : ''}`}
+              onClick={() => { if (affordable) onSelectType(type); }}
+              onKeyDown={(e) => { if ((e.key === 'Enter' || e.key === ' ') && affordable) onSelectType(type); }}
             >
-              <img src={data.image} alt={type} style={{ width: 48, height: 48 }} />
-              <div style={{ flex: 1 }}>
-                <div style={{ fontWeight: 600 }}>{type.replace('-', ' ').toUpperCase()}</div>
-                <div>Poziom 1: {level1.damage} dmg · zasięg {level1.range}</div>
-              </div>
-              <div style={{ textAlign: 'right' }}>
-                <div style={{ fontWeight: 700 }}>{level1.cost} ₿</div>
-                <div style={{ fontSize: 12 }}>Kup</div>
+              <div className="cost-badge">{level1.cost ?? '-'} ₿</div>
+              <img src={data.image} alt={type} className="tower-card-image" />
+              <div className="tower-name">{type.replace('-', ' ').toUpperCase()}</div>
+              <div className="tower-stats">{`Dmg ${level1.damage ?? '-'} · Zas ${level1.range ?? '-'}`}</div>
+
+              <div className="tooltip">
+                <div className="tooltip-title">{type.replace('-', ' ').toUpperCase()}</div>
+                <div>Damage: {level1.damage ?? '-'}</div>
+                <div>Speed: {level1.fireRate ?? '-'}</div>
+                <div>Range: {level1.range ?? '-'}</div>
+                <div className="tooltip-footer">Kliknij, aby wybrać</div>
               </div>
             </div>
           );
         })}
       </div>
-      <p style={{ marginTop: 10, fontSize: 13 }}>
+      <p className="shop-instructions">
         Wybierz wieżyczkę, a następnie kliknij planszę, aby ją postawić (nie można na ścieżce).
       </p>
     </div>

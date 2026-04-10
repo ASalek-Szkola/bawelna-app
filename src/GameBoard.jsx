@@ -14,7 +14,9 @@ const GameBoard = ({
   onBoardMouseMove,
   enemies = [],               // <- nowy prop
   onEnemyEscape,              // <- handler przekazany z App
-  selectedTower               // <- optional: tower object currently selected in App
+  selectedTower,              // <- optional: tower object currently selected in App
+  onBoardRightClick,          // right-click on empty board (cancel placement / deselect)
+  onTowerRightClick           // right-click on a placed tower (sell)
 }) => {
   const { width, height } = mapConfig.board;
   const { path, pathWidth } = mapConfig;
@@ -42,16 +44,19 @@ const GameBoard = ({
     <div
       className="game-board"
       onClick={handleBoardClick}
+      onContextMenu={(e) => {
+        // Right-click on board: if placing a tower cancel placement, otherwise deselect
+        if (shopSelectedType) e.preventDefault();
+        if (onBoardRightClick) onBoardRightClick();
+      }}
       onMouseMove={handleMouseMove}
       style={{
-        width: `${width}px`,
-        height: `${height}px`,
+        width: '100%',
+        height: '100%',
         position: 'relative',
-        backgroundColor: '#8B4513',
-        border: '4px solid #5C4033',
-        borderRadius: '8px',
+        backgroundColor: 'var(--bg-panel)',
+        borderRadius: '12px',
         overflow: 'hidden',
-        margin: '10px',
       }}
     >
       {/* SVG jako tło ścieżki (ładniejsze rysowanie, obsługuje ukośne segmenty) */}
@@ -62,7 +67,7 @@ const GameBoard = ({
       >
         <path
           d={pathD}
-          stroke="#FFD700"
+          stroke="var(--path-color)"
           strokeWidth={pathWidth}
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -71,39 +76,6 @@ const GameBoard = ({
         />
       </svg>
 
-      {/* Selected tower range (shown when a tower is clicked in the sidebar) */}
-      {selectedTower && selectedTower.x != null && selectedTower.y != null && (() => {
-        const SIZE = 40; // must match Tower size
-        const towerData = towerConfig[selectedTower.type];
-        if (!towerData) return null;
-        const lvl = Math.min(selectedTower.level, towerData.levels.length - 1);
-        const range = towerData.levels[lvl].range ?? 100;
-        const diameter = range; // use range directly (not range*2)
-        const centerX = selectedTower.x + SIZE / 2;
-        const centerY = selectedTower.y + SIZE / 2;
-
-        return (
-          <div key={`sel-${selectedTower.id}`} style={{ position: 'absolute', left: `${centerX}px`, top: `${centerY}px`, pointerEvents: 'none', transform: 'translate(-50%, -50%)', zIndex: 2 }}>
-            <div
-              style={{
-                position: 'absolute',
-                left: '50%',
-                top: '50%',
-                transform: 'translate(-50%, -50%)',
-                width: `${diameter}px`,
-                height: `${diameter}px`,
-                borderRadius: '50%',
-                background: 'rgba(60,200,80,0.18)',
-                border: `2px solid rgba(60,200,80,0.9)`,
-                boxSizing: 'border-box',
-                zIndex: 0,
-                pointerEvents: 'none'
-              }}
-            />
-          </div>
-        );
-      })()}
-
       {/* Renderowanie wież */}
       {towers.map((tower) => (
         <Tower
@@ -111,7 +83,9 @@ const GameBoard = ({
           x={tower.x}
           y={tower.y}
           type={tower.type}
+          isShooting={tower.isShooting}
           onClick={() => onTowerClick && onTowerClick(tower.id)}
+          onRightClick={() => onTowerRightClick && onTowerRightClick(tower.id)}
         />
       ))}
 
@@ -134,10 +108,10 @@ const GameBoard = ({
         (() => {
           const SIZE = 40;
           const towerData = towerConfig[shopSelectedType];
-          const range = towerData?.levels?.[0]?.range ?? 100; // Używamy pełnego promienia (średnicy)
-          const diameter = range; // Diameter = range
-          const ringColor = previewValid ? 'rgba(60,200,80,0.35)' : 'rgba(255,80,80,0.35)';
-          const ringBorder = previewValid ? 'rgba(60,200,80,0.9)' : 'rgba(255,80,80,0.9)';
+          const range = towerData?.levels?.[0]?.range ?? 100; // range is radius
+          const diameter = range * 2; // Diameter = range * 2
+          const ringColor = previewValid ? 'var(--preview-valid-fill)' : 'var(--preview-invalid-fill)';
+          const ringBorder = previewValid ? 'var(--preview-valid-border)' : 'var(--preview-invalid-border)';
 
           return (
             <div style={{ position: 'absolute', left: `${previewPos.x}px`, top: `${previewPos.y}px`, pointerEvents: 'none', transform: 'translate(-50%, -50%)', zIndex: 18 }}>
@@ -178,13 +152,52 @@ const GameBoard = ({
                     height: SIZE,
                     display: 'block',
                     opacity: previewValid ? 0.98 : 0.85,
-                    filter: previewValid ? 'drop-shadow(0 0 6px rgba(60,200,80,0.6))' : 'drop-shadow(0 0 6px rgba(255,80,80,0.6))'
+                    filter: previewValid ? 'drop-shadow(0 0 6px var(--preview-valid-border))' : 'drop-shadow(0 0 6px var(--preview-invalid-border))'
                   }}
                 />
               </div>
             </div>
           );
         })()
+      )}
+
+      {/* Dim overlay when a tower is selected — highlight only the tower's range */}
+      {selectedTower && selectedTower.x != null && selectedTower.y != null && (
+        <>
+          <div style={{ position: 'absolute', left: 0, top: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.45)', zIndex: 30, pointerEvents: 'none', transition: 'opacity 0.3s ease' }} />
+
+          {(() => {
+            const SIZE = 40; // must match Tower size
+            const towerData = towerConfig[selectedTower.type];
+            if (!towerData) return null;
+            const lvl = Math.min(selectedTower.level, towerData.levels.length - 1);
+            const range = towerData.levels[lvl].range ?? 100;
+            const diameter = range * 2; // range is radius -> diameter = range*2
+            const centerX = selectedTower.x + SIZE / 2;
+            const centerY = selectedTower.y + SIZE / 2;
+
+            return (
+              <div key={`sel-${selectedTower.id}`} style={{ position: 'absolute', left: `${centerX}px`, top: `${centerY}px`, pointerEvents: 'none', transform: 'translate(-50%, -50%)', zIndex: 40 }}>
+                <div
+                  style={{
+                    position: 'absolute',
+                    left: '50%',
+                    top: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    width: `${diameter}px`,
+                    height: `${diameter}px`,
+                    borderRadius: '50%',
+                    background: 'var(--range-fill)',
+                    border: `2px solid var(--range-border)`,
+                    boxSizing: 'border-box',
+                    zIndex: 40,
+                    pointerEvents: 'none'
+                  }}
+                />
+              </div>
+            );
+          })()}
+        </>
       )}
     </div>
   );

@@ -34,23 +34,28 @@ const Enemy = ({ type, position, health, path, onEscape, spawned }) => {
         pointerEvents: 'none'
       }}
     >
-      <div style={{ 
-        position: 'absolute',
-        bottom: '-8px',
-        left: '0',
-        width: '100%',
-        height: '4px',
-        backgroundColor: '#333',
-        borderRadius: '2px'
-      }}>
-        <div style={{
-          width: `${healthPercent}%`,
-          height: '100%',
-          backgroundColor: healthPercent > 50 ? '#2ecc71' : healthPercent > 20 ? '#e67e22' : '#e74c3c',
+      {/* Thin health indicator: only show when not full health */}
+      {healthPercent < 100 && (
+        <div style={{ 
+          position: 'absolute',
+          top: '-6px',
+          left: '0',
+          width: '100%',
+          height: '3px',
+          backgroundColor: 'var(--enemy-bar-bg)',
           borderRadius: '2px',
-          transition: 'width 0.2s ease-out, background-color 0.2s'
-        }} />
-      </div>
+          overflow: 'hidden'
+        }}>
+          <div style={{
+            width: `${healthPercent}%`,
+            height: '100%',
+            backgroundColor: healthPercent > 50 ? 'var(--enemy-health-high)' : healthPercent > 20 ? 'var(--enemy-health-mid)' : 'var(--enemy-health-low)',
+            borderRadius: '2px',
+            transition: 'width 0.2s ease-out, background-color 0.2s'
+          }} />
+        </div>
+      )}
+
       <img src={image} alt={`${type} enemy`} style={{ 
         width: '100%', 
         height: '100%', 

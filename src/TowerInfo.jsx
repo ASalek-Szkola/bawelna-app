@@ -18,10 +18,9 @@ const TowerInfo = ({ type, level, onUpgrade, onSell, cooldown, onTargetingChange
   if (!towerData) return <p>Nieznany typ wieży</p>;
 
   const currentLevel = Math.min(level, towerData.levels.length - 1);
-  const { range, damage, fireRate, cost } = towerData.levels[currentLevel];
-  const nextLevel = towerData.levels[currentLevel + 1];
+  const current = towerData.levels[currentLevel] || {};
+  const next = towerData.levels[currentLevel + 1] || null;
 
-  // oblicz wartosc sprzedazy: polowa sumy kosztow od poziomu 1 do currentLevel+1
   const paidSum = towerData.levels
     .slice(0, currentLevel + 1)
     .reduce((s, lvl) => s + (lvl.cost || 0), 0);
@@ -32,37 +31,47 @@ const TowerInfo = ({ type, level, onUpgrade, onSell, cooldown, onTargetingChange
     onTargetingChange(newMode);
   };
 
-  return (
-    <div className="tower-info">
-      <h3>{type.replace('-', ' ').toUpperCase()}</h3>
-      <img src={towerData.image} alt={`${type} tower`} style={{ width: '100px' }} />
-      <ul>
-        <li>Poziom: {currentLevel + 1}</li>
-        <li>Zasięg: {range / 2}</li>
-        <li>Obrażenia: {damage}</li>
-        <li>Szybkostrzelność: {fireRate} ms</li>
-        <li>Koszt ulepszenia: {nextLevel ? nextLevel.cost : 'Maksymalny poziom'}</li>
-        <li>Cooldown: {cooldownTime > 0 ? `${(cooldownTime / 1000).toFixed(1)}s` : 'Gotowa do strzału'}</li>
-      </ul>
-      <div style={{ display: 'flex', gap: 8 }}>
-        {nextLevel && <button onClick={onUpgrade}>Ulepsz</button>}
-        <button onClick={onSell}>Sprzedaj (${sellValue})</button>
+  const statRow = (label, curVal, nextVal, suffix = '') => {
+    const improved = nextVal != null && nextVal > curVal;
+    return (
+      <div className="stat-row" key={label}>
+        <div className="stat-label">{label}</div>
+        <div className="stat-value">
+          <span className="stat-current">{`${curVal ?? '-'}${suffix}`}</span>
+          {nextVal != null ? (
+            <span className={"stat-next" + (improved ? ' improved' : '')}>
+              &nbsp;→&nbsp;{`${nextVal}${suffix}`}
+            </span>
+          ) : null}
+        </div>
       </div>
-      <div style={{ marginTop: 10 }}>
+    );
+  };
+
+  return (
+    <div className="tower-info panel">
+      <h3 className="tower-title">{type.replace('-', ' ').toUpperCase()}</h3>
+      <div className="tower-top">
+        <img src={towerData.image} alt={`${type} tower`} className="tower-image" />
+        <div className="tower-stats">
+          {statRow('Damage', current.damage, next?.damage)}
+          {statRow('Range', current.range, next?.range)}
+          {statRow('Fire rate (ms)', current.fireRate, next?.fireRate, ' ms')}
+          {statRow('Upgrade cost', current.cost, next?.cost, ' ₿')}
+
+          <div className="cooldown">Cooldown: {cooldownTime > 0 ? `${(cooldownTime / 1000).toFixed(1)}s` : 'Gotowa do strzału'}</div>
+        </div>
+      </div>
+
+      <div className="tower-actions">
+        {next && <button className="tower-btn" onClick={onUpgrade}>Ulepsz ({next.cost} ₿)</button>}
+        <button className="tower-btn" onClick={onSell}>Sprzedaj ({sellValue} ₿)</button>
         <button
+          className={"tower-btn target-btn" + (targetingMode === 'first' ? ' selected' : '')}
           onClick={handleToggleTargeting}
-          style={{
-            padding: '8px 12px',
-            backgroundColor: targetingMode === 'first' ? '#4CAF50' : '#FF5722',
-            color: '#fff',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer',
-            fontWeight: 'bold',
-            transition: 'background-color 0.3s',
-          }}
+          aria-pressed={targetingMode === 'first'}
         >
-          {targetingMode === 'first' ? 'Pierwszy w zasięgu' : 'Najsilniejszy w zasięgu'}
+          {targetingMode === 'first' ? 'Pierwszy' : 'Najsilniejszy'}
         </button>
       </div>
     </div>

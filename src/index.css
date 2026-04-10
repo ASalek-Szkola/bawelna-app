@@ -3,31 +3,190 @@
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  /* Modern semantic variables (provide safe fallbacks for legacy names) */
+  --bg-app: #f4f1ea;       /* parchment (light) */
+  --bg-panel: #ffffff;    /* light panel */
+  --accent: #8b4513;      /* saddle brown (light) */
+  --text: #2c2c2c;        /* primary text (light) */
 
+  /* legacy compatibility variables */
+  --bg-main: var(--bg-app);
+  --bg-sidebar: var(--bg-panel);
+  --bg-card: var(--bg-panel);
+  --text-main: var(--text);
+  --border-ui: rgba(44,44,44,0.08);
+  --border-color: rgba(0,0,0,0.06);
+
+  --path-color: #ffd700;
+
+  /* Interaction & UI */
+  --button-bg: rgba(255,255,255,0.85);
+  --button-text: var(--text);
+  --button-border: transparent;
+  --button-selected-bg: var(--accent);
+  --button-selected-text: #fff;
+  /* button shorthand vars used by components */
+  --btn-bg: var(--button-bg);
+  --btn-text: var(--button-text);
+  /* alias for accent to use in components expecting --accent-color */
+  --accent-color: var(--accent);
+
+  /* Range / preview */
+  --range-fill: rgba(60,200,80,0.18);
+  --range-border: rgba(60,200,80,0.9);
+  --preview-valid-fill: rgba(60,200,80,0.35);
+  --preview-valid-border: rgba(60,200,80,0.9);
+  --preview-invalid-fill: rgba(255,80,80,0.35);
+  --preview-invalid-border: rgba(255,80,80,0.9);
+
+  /* Enemy health */
+  --enemy-bar-bg: rgba(0,0,0,0.25);
+  --enemy-health-high: #2ecc71;
+  --enemy-health-mid: #e67e22;
+  --enemy-health-low: #e74c3c;
+
+  /* Panel styling */
+  --panel-radius: 12px;
+  --panel-shadow: 0 4px 20px rgba(0,0,0,0.15);
+
+  /* Modal backdrop */
+  --modal-overlay: rgba(0,0,0,0.45);
+  --modal-bg: rgba(255,255,255,0.9);
+  --modal-text: var(--text);
+
+  --box-shadow: var(--panel-shadow);
+  --text-muted: #666666;
+
+  /* success color used for inline upgrade values */
+  --success-green: #2ecc71;
+
+  /* board border color (overridden per theme) */
+  --board-border: rgba(139,69,19,0.06);
+
+  /* Shop item colors (theme-aware) */
+  --shop-item-bg: #ffffff; /* Light default */
+  --shop-item-text: #1a1a1a; /* Light default text */
+
+  color-scheme: light dark;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+/* Light theme explicit class (applies to .app) */
+.light-theme {
+  --bg-app: #f4f1ea;
+  --bg-panel: #ffffff;
+  --accent: #8b4513;
+  --text: #2c2c2c;
+  --bg-main: var(--bg-app);
+  --bg-sidebar: var(--bg-panel);
+  --bg-card: var(--bg-panel);
+  --text-main: var(--text);
+  --panel-bg: rgba(255,255,255,0.9);
+  --board-border: rgba(139,69,19,0.08);
+}
+
+/* Dark theme overrides — apply by adding `dark-theme` to the top-level container */
+.dark-theme {
+  --bg-app: #121212;
+  --bg-panel: #1e1e1e;
+  --accent: #ffd700;
+  --text: #e0e0e0;
+  --bg-main: var(--bg-app);
+  --bg-sidebar: var(--bg-panel);
+  --bg-card: #2a2a2a;
+  --text-main: var(--text);
+  --panel-bg: rgba(30,30,30,0.9);
+  --modal-bg: rgba(30,30,30,0.9);
+  --text-muted: #aaaaaa;
+  /* dark theme shop overrides */
+  --shop-item-bg: #2d2d2d;
+  --shop-item-text: #f0f0f0;
+  /* Dark theme button color overrides for better contrast */
+  --btn-bg: #444444;
+  --btn-text: #ffffff;
+  --accent-color: var(--accent);
+  --board-border: #2b2b2b;
+}
+
+/* Helpful utility classes & modern panel styling */
+.app {
+  transition: all 0.3s ease;
+  background: var(--bg-app);
+  color: var(--text);
+}
+
+.panel {
+  background: var(--bg-panel);
+  border-radius: var(--panel-radius);
+  box-shadow: var(--box-shadow);
+  padding: 16px;
+  border: 1px solid var(--border-ui);
+  transition: all 0.3s ease;
+}
+
+.bottom-ticker {
+  position: relative;
+  margin-top: auto;
+  margin-bottom: 20px;
+  width: 100%;
+  max-width: 1000px;
+  padding: 12px 18px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.06);
+  color: var(--text);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.18);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+}
+
+.quiz-modal {
+  backdrop-filter: blur(10px);
+}
+
+/* Quiz typography */
+.quiz-question {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 1.15rem;
+  margin-bottom: 12px;
+  color: var(--text);
+}
+.quiz-answer {
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+@keyframes quiz-success {
+  0% { transform: scale(1); box-shadow: 0 0 0 rgba(0,0,0,0); }
+  40% { transform: scale(1.03); box-shadow: 0 8px 32px rgba(40,180,80,0.12); }
+  100% { transform: scale(1); box-shadow: 0 0 0 rgba(0,0,0,0); }
+}
+
+@keyframes quiz-fail {
+  0% { transform: translateY(0); }
+  30% { transform: translateY(-6px); }
+  100% { transform: translateY(0); }
+}
 
 a {
   font-weight: 500;
-  color: #646cff;
+  color: var(--text-primary);
   text-decoration: inherit;
 }
 a:hover {
-  color: #535bf2;
+  color: var(--text-secondary);
 }
+
+*, *::before, *::after { box-sizing: border-box; }
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  background-color: var(--bg-app);
 }
 
 h1 {
@@ -37,32 +196,22 @@ h1 {
 
 button {
   border-radius: 8px;
-  border: 1px solid transparent;
+  border: 1px solid var(--button-border);
   padding: 0.6em 1.2em;
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: var(--button-bg);
+  color: var(--button-text);
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: border-color 0.25s, background-color 0.15s;
 }
 button:hover {
-  border-color: #646cff;
+  border-color: var(--border-color);
 }
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
-}
+/* Prefer the system theme for initial choice could be handled in JS; CSS keeps variables for light as default */

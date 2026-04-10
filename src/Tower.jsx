@@ -1,7 +1,7 @@
 import React from 'react';
 import towerConfig from './config/towerConfig.json';
 
-const Tower = ({ x, y, type, onClick, isShooting }) => {
+const Tower = ({ x, y, type, onClick, isShooting, onRightClick }) => {
   const towerData = towerConfig[type];
   if (!towerData) return null;
 
@@ -20,6 +20,12 @@ const Tower = ({ x, y, type, onClick, isShooting }) => {
       onClick={(e) => {
         e.stopPropagation();
         onClick && onClick();
+      }}
+      onContextMenu={(e) => {
+        // Prevent browser context menu and stop bubbling to board
+        e.preventDefault();
+        e.stopPropagation();
+        onRightClick && onRightClick();
       }}
     >
       <img

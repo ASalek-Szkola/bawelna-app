@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import GameInfo from './GameInfo';
 import GameBoard from './GameBoard';
 import TowerInfo from './TowerInfo';
@@ -24,8 +24,29 @@ const App = () => {
   const [selectedTowerId, setSelectedTowerId] = useState(null);
   const [enemies, setEnemies] = useState([]);
   
-  // last shot time for each tower
-  const [lastShotTime, setLastShotTime] = useState({});
+  // refs to access latest state inside the game loop
+  const enemiesRef = useRef(enemies);
+  const towersRef = useRef(towers);
+
+  // theme state: light | dark — default from system preference (synchronous when possible)
+  const [theme, setTheme] = useState(() => {
+    if (typeof window !== 'undefined' && window.matchMedia) {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    return 'light';
+  });
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.matchMedia) return;
+    const mq = window.matchMedia('(prefers-color-scheme: dark)');
+    const handler = (e) => setTheme(e.matches ? 'dark' : 'light');
+    if (mq.addEventListener) mq.addEventListener('change', handler);
+    else mq.addListener(handler);
+    return () => {
+      if (mq.removeEventListener) mq.removeEventListener('change', handler);
+      else mq.removeListener(handler);
+    };
+  }, []);
 
   // sklep
   const [shopSelectedType, setShopSelectedType] = useState(null);
@@ -96,123 +117,164 @@ const App = () => {
     setHealth((prev) => Math.max(0, prev + healthDamage)); // damage jest ujemne, więc dodajemy
   };
 
+  // Keep refs in sync with latest state so the loop reads current values
+  useEffect(() => { enemiesRef.current = enemies; }, [enemies]);
+  useEffect(() => { towersRef.current = towers; }, [towers]);
+
+  // Consolidated game loop: handles spawning, movement, escapes and shooting
   useEffect(() => {
+    if (!waveActive) return undefined;
+    const tickMs = 33; // ~30 FPS game tick (≈30fps)
+
     const interval = setInterval(() => {
-      setEnemies((prevEnemies) => {
-        if (!prevEnemies || prevEnemies.length === 0) return prevEnemies;
+      const prevEnemies = enemiesRef.current || [];
+      const prevTowers = towersRef.current || [];
 
-        const path = mapConfig.path;
-        const spawnPoint = path[0];
+      const path = mapConfig.path;
+      const spawnPoint = path[0];
 
-        // spacing zależny od wielkości fali
-        const totalInWave = prevEnemies[0].totalInWave || prevEnemies.length;
-        let spacing = 35;
-        if (totalInWave > 50) spacing = 8;
-        else if (totalInWave > 20) spacing = 16;
-        else if (totalInWave > 10) spacing = 24;
+      const totalInWave = prevEnemies[0]?.totalInWave || prevEnemies.length;
+      let spacing = 35;
+      if (totalInWave > 50) spacing = 8;
+      else if (totalInWave > 20) spacing = 16;
+      else if (totalInWave > 10) spacing = 24;
 
-        // znajdź najmniejszą odległość od spawnPoint spośród już spawnniętych
-        const spawnedPositions = prevEnemies
-          .filter((e) => e.spawned && e.position)
-          .map((e) => Math.hypot(e.position.x - spawnPoint.x, e.position.y - spawnPoint.y));
+      const spawnedPositions = prevEnemies
+        .filter((e) => e.spawned && e.position)
+        .map((e) => Math.hypot(e.position.x - spawnPoint.x, e.position.y - spawnPoint.y));
+      const minDist = spawnedPositions.length ? Math.min(...spawnedPositions) : Infinity;
+      const firstNotSpawnedIndex = prevEnemies.findIndex((e) => !e.spawned);
 
-        const minDist = spawnedPositions.length ? Math.min(...spawnedPositions) : Infinity;
+      let spawnedThisTick = false;
+      let escapeDamageTotal = 0;
 
-        // wskaźnik na pierwszego nie-spawnniętego
-        const firstNotSpawnedIndex = prevEnemies.findIndex((e) => !e.spawned);
+      // Speeds in config were previously treated as pixels per 100ms.
+      const speedScale = tickMs / 100;
 
-        let spawnedThisTick = false;
-
-        const nextEnemies = prevEnemies.map((enemy, idx) => {
-          // SPAWN logic: spawnnij tylko jednego przeciwnika w ticku, gdy warunek odległości spełniony
-          if (!enemy.spawned) {
-            if (!spawnedThisTick && idx === firstNotSpawnedIndex && (spawnedPositions.length === 0 || minDist >= spacing)) {
-              spawnedThisTick = true;
-              return {
-                ...enemy,
-                spawned: true,
-                position: { ...spawnPoint },
-                pathIndex: 0,
-              };
-            }
-            return enemy;
+      // Movement & spawn pass
+      let movedEnemies = prevEnemies.map((enemy, idx) => {
+        if (!enemy.spawned) {
+          if (!spawnedThisTick && idx === firstNotSpawnedIndex && (spawnedPositions.length === 0 || minDist >= spacing)) {
+            spawnedThisTick = true;
+            return { ...enemy, spawned: true, position: { ...spawnPoint }, pathIndex: 0 };
           }
+          return enemy;
+        }
 
-          // jeśli spawnnięty, ale martwy lub uciekł -> nic nie robimy
-          if (enemy.health <= 0 || enemy.escaped) return enemy;
+        if (enemy.health <= 0 || enemy.escaped) return enemy;
 
-          // ruch wzdłuż ścieżki
-          const currentIndex = enemy.pathIndex ?? 0;
-          const nextIndex = Math.min(currentIndex + 1, path.length - 1);
-          const current = enemy.position ?? path[currentIndex];
-          const next = path[nextIndex];
+        const currentIndex = enemy.pathIndex ?? 0;
+        const nextIndex = Math.min(currentIndex + 1, path.length - 1);
+        const current = enemy.position ?? path[currentIndex];
+        const next = path[nextIndex];
 
-          const dx = next.x - current.x;
-          const dy = next.y - current.y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
+        const dx = next.x - current.x;
+        const dy = next.y - current.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
 
-          // speed - interpreted as pixels per tick (100ms)
-          const step = enemy.speed;
+        const step = (enemy.speed || 0) * speedScale;
 
-          // If distance is zero, we're already at the next point.
-          if (distance === 0) {
-            const newPathIndex = nextIndex;
-            const newPosition = { ...next };
-            // jeśli dotarł do końca ścieżki
-            if (newPathIndex >= path.length - 1 && !enemy.escaped) {
-              handleEnemyEscape(enemy.id, enemyConfig[enemy.type]?.damageOnEscape);
-              return enemy; // enemy will be removed by handleEnemyEscape
-            }
-            return { ...enemy, position: newPosition, pathIndex: newPathIndex };
+        if (distance === 0) {
+          const newPathIndex = nextIndex;
+          const newPosition = { ...next };
+          if (newPathIndex >= path.length - 1) {
+            escapeDamageTotal += enemyConfig[enemy.type]?.damageOnEscape || 0;
+            return null;
           }
-
-          // Prevent overshoot: clamp ratio to 1 so we snap to next when step >= distance
-          const ratio = Math.min(1, step / distance);
-          const newX = current.x + dx * ratio;
-          const newY = current.y + dy * ratio;
-          const reachedNext = ratio >= 1 || (Math.abs(newX - next.x) < 1 && Math.abs(newY - next.y) < 1);
-
-          const newPathIndex = reachedNext ? nextIndex : currentIndex;
-          const newPosition = reachedNext ? { ...next } : { x: newX, y: newY };
-
-          // jeśli dotarł do końca ścieżki
-          if (newPathIndex >= path.length - 1 && !enemy.escaped) {
-            handleEnemyEscape(enemy.id, enemyConfig[enemy.type]?.damageOnEscape);
-            return enemy; // ten enemy zostanie usunięty przez handleEnemyEscape
-          }
-
-          // Usuń przeciwników którzy zginęli (health <= 0)
-          if (enemy.health <= 0) {
-            return null; // null entries will be filtered out below
-          }
-
           return { ...enemy, position: newPosition, pathIndex: newPathIndex };
-        }).filter(Boolean); // Remove dead enemies (null entries)
+        }
 
-        return nextEnemies;
+        const ratio = Math.min(1, step / distance);
+        const newX = current.x + dx * ratio;
+        const newY = current.y + dy * ratio;
+        const reachedNext = ratio >= 1 || (Math.abs(newX - next.x) < 1 && Math.abs(newY - next.y) < 1);
+
+        const newPathIndex = reachedNext ? nextIndex : currentIndex;
+        const newPosition = reachedNext ? { ...next } : { x: newX, y: newY };
+
+        if (newPathIndex >= path.length - 1) {
+          escapeDamageTotal += enemyConfig[enemy.type]?.damageOnEscape || 0;
+          return null;
+        }
+
+        if (enemy.health <= 0) return null;
+
+        return { ...enemy, position: newPosition, pathIndex: newPathIndex };
+      }).filter(Boolean);
+
+      // Shooting pass: update towers and apply damage to movedEnemies
+      let updatedEnemies = movedEnemies.slice();
+      const updatedTowers = prevTowers.map((tower) => {
+        const towerData = towerConfig[tower.type];
+        if (!towerData) return tower;
+
+        const level = Math.min(tower.level, towerData.levels.length - 1);
+        const { damage, fireRate } = towerData.levels[level];
+
+        let newCooldown = (tower.cooldown ?? 0) - tickMs;
+        let newShootingTimer = (tower.shootingTimer ?? 0) - tickMs;
+        let isShooting = newShootingTimer > 0;
+
+        if (newCooldown <= 0) {
+          const towerCenterX = tower.x + 20;
+          const towerCenterY = tower.y + 20;
+
+          const inRange = (enemy) => {
+            if (!enemy.position) return false;
+            const dx = enemy.position.x - towerCenterX;
+            const dy = enemy.position.y - towerCenterY;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            const rangeVal = towerData.levels[level].range;
+            return distance <= rangeVal;
+          };
+
+          const target = tower.targetingMode === 'strongest'
+            ? updatedEnemies.filter(e => e.health > 0 && inRange(e)).sort((a, b) => b.health - a.health)[0]
+            : updatedEnemies.find(e => e.health > 0 && inRange(e));
+
+          if (target) {
+            updatedEnemies = updatedEnemies.map((e) => e.id === target.id ? { ...e, health: Math.max(0, e.health - damage) } : e);
+            newCooldown = fireRate;
+            newShootingTimer = 150;
+            isShooting = true;
+          }
+        }
+
+        return { ...tower, cooldown: Math.max(0, newCooldown), shootingTimer: Math.max(0, newShootingTimer), isShooting };
       });
-    }, 100);
+
+      // Remove dead enemies after shooting
+      updatedEnemies = updatedEnemies.filter(e => e.health > 0);
+
+      // Commit state updates (do health update outside of enemy updater to avoid nested setState)
+      if (escapeDamageTotal !== 0) {
+        setHealth((prev) => Math.max(0, prev + escapeDamageTotal));
+      }
+
+      setEnemies(updatedEnemies);
+      setTowers(updatedTowers);
+    }, tickMs);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [waveActive]);
 
   // Helper function to check if an enemy is in tower's range
   const isInRange = (tower, enemy) => {
     if (!enemy.position) return false;
     const towerData = towerConfig[tower.type];
     if (!towerData) return false;
-    
+
     const level = Math.min(tower.level, towerData.levels.length - 1);
-    const range = towerData.levels[level].range/2; // Używamy pełnego promienia (średnicy)
-    
+    const range = towerData.levels[level].range; // range is stored as radius in config
+
     // Calculate distance from tower center to enemy
     const towerCenterX = tower.x + 20; // half of tower size (40/2)
     const towerCenterY = tower.y + 20;
     const dx = enemy.position.x - towerCenterX;
     const dy = enemy.position.y - towerCenterY;
     const distance = Math.sqrt(dx * dx + dy * dy);
-    
-    return distance <= range; // Porównujemy z pełnym promieniem
+
+    return distance <= range;
   };
 
   const handleTargetingChange = (towerId, mode) => {
@@ -223,55 +285,7 @@ const App = () => {
     );
   };
 
-  // Effect for tower shooting
-  useEffect(() => {
-    if (!waveActive || enemies.length === 0) return;
-
-    const shootingInterval = setInterval(() => {
-      setTowers((prevTowers) =>
-        prevTowers.map((tower) => {
-          const towerData = towerConfig[tower.type];
-          if (!towerData) return tower;
-
-          const level = Math.min(tower.level, towerData.levels.length - 1);
-          const { damage, fireRate } = towerData.levels[level];
-
-          // Zmniejsz cooldown wieżyczki
-          const newCooldown = Math.max(0, (tower.cooldown || 0) - 1);
-
-          if (newCooldown === 0) {
-            // Znajdź cel w zależności od trybu celowania
-            const targetEnemy =
-              tower.targetingMode === 'strongest'
-                ? enemies
-                    .filter((enemy) => !enemy.escaped && enemy.health > 0 && isInRange(tower, enemy))
-                    .sort((a, b) => b.health - a.health)[0]
-                : enemies.find(
-                    (enemy) => !enemy.escaped && enemy.health > 0 && isInRange(tower, enemy)
-                  );
-
-            if (targetEnemy) {
-              // Zadaj obrażenia przeciwnikowi
-              setEnemies((prev) =>
-                prev.map((enemy) =>
-                  enemy.id === targetEnemy.id
-                    ? { ...enemy, health: Math.max(0, enemy.health - damage) }
-                    : enemy
-                ).filter((enemy) => enemy.health > 0) // Usuń martwych przeciwników
-              );
-
-              // Zresetuj cooldown wieżyczki
-              return { ...tower, cooldown: fireRate };
-            }
-          }
-
-          return { ...tower, cooldown: newCooldown };
-        })
-      );
-    }, 1); // Tick co 1 ms
-
-    return () => clearInterval(shootingInterval);
-  }, [towers, enemies, waveActive]);
+  // shooting is handled inside the consolidated game loop
 
   useEffect(() => {
     if (
@@ -373,6 +387,19 @@ const App = () => {
     setPreviewPos({ x, y });
   };
 
+  // Handle right-click (contextmenu) on the board: deselect picker or selected tower
+  const handleBoardRightClick = () => {
+    if (shopSelectedType) {
+      setShopSelectedType(null);
+      setPreviewPos(null);
+      return;
+    }
+
+    if (selectedTowerId) {
+      setSelectedTowerId(null);
+    }
+  };
+
   // obsługa kliknięć poza planszą
   useEffect(() => {
     const handleOutsideClick = (e) => {
@@ -450,56 +477,78 @@ const App = () => {
     const sellValue = Math.floor(paidSum / 2);
     setTowers((prev) => prev.filter((t) => t.id !== towerId));
     setMoney((prev) => prev + sellValue);
-    setSelectedTowerId(null);
+    // Close upgrade/selection UI if the sold tower was selected
+    setSelectedTowerId((prev) => (prev === towerId ? null : prev));
   };
 
   const selectedTower = towers.find((tower) => tower.id === selectedTowerId);
 
   return (
-    <div className="app">
-      <div className="sidebar">
-        <GameInfo health={health} wave={wave} money={money} />
-        <WaveManager wave={wave} onStartWave={handleStartWave} waveActive={waveActive} />
-        {selectedTower && (
+    <div className={`app ${theme === 'dark' ? 'dark-theme' : 'light-theme'}`}>
+      <aside className="left-panel panel">
+
+        <div className="panel-section">
+          <GameInfo health={health} wave={wave} money={money} />
+        </div>
+
+        <div className="panel-section">
+          <WaveManager wave={wave} onStartWave={handleStartWave} waveActive={waveActive} enemies={enemies} />
+        </div>
+
+        <div className="sidebar-footer">
+          <button className="theme-toggle" onClick={() => setTheme((t) => (t === 'dark' ? 'light' : 'dark'))}>
+            {theme === 'dark' ? 'Jasny' : 'Ciemny'}
+          </button>
+        </div>
+      </aside>
+
+      <main className="center-panel">
+        <div className="center-inner">
+          <div className="game-board panel" style={{ width: mapConfig.board.width, height: mapConfig.board.height }}>
+            <GameBoard
+              towers={towers}
+              onTowerClick={setSelectedTowerId}
+              onBoardClick={handlePlaceTower}
+              onBoardRightClick={handleBoardRightClick}
+              onTowerRightClick={handleSellTower}
+              shopSelectedType={shopSelectedType}
+              previewPos={previewPos}
+              previewValid={previewPos ? !isPointOnPath(previewPos.x, previewPos.y) : false}
+              onBoardMouseMove={handleBoardMouseMove}
+              enemies={enemies}
+              onEnemyEscape={(id, penalty) => handleEnemyEscape(id, penalty)}
+              selectedTower={selectedTower}
+            />
+          </div>
+
+          <div className="bottom-ticker">
+            <QuizFacts onHistoryUpdate={(h) => setFactsHistory(h)} />
+          </div>
+        </div>
+      </main>
+
+      <aside className="right-panel panel">
+        {/* Contextual info: show TowerInfo when a tower is selected, otherwise show TowerShop */}
+        {selectedTower ? (
           <TowerInfo
             type={selectedTower.type}
             level={selectedTower.level}
             cooldown={selectedTower.cooldown || 0}
-            targetingMode={selectedTower.targetingMode || 'first'} // Default to 'first'
+            targetingMode={selectedTower.targetingMode || 'first'}
             onTargetingChange={(mode) => handleTargetingChange(selectedTower.id, mode)}
             onUpgrade={() => handleUpgrade(selectedTower.id)}
             onSell={() => handleSellTower(selectedTower.id)}
           />
+        ) : (
+          <TowerShop
+            money={money}
+            selectedType={shopSelectedType}
+            onSelectType={handleSelectShopTower}
+          />
         )}
-      </div>
+      </aside>
 
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <GameBoard
-          towers={towers}
-          onTowerClick={setSelectedTowerId}
-          onBoardClick={handlePlaceTower}
-          shopSelectedType={shopSelectedType}
-          previewPos={previewPos}
-          previewValid={previewPos ? !isPointOnPath(previewPos.x, previewPos.y) : false}
-          onBoardMouseMove={handleBoardMouseMove}
-          enemies={enemies}
-          onEnemyEscape={(id, penalty) => handleEnemyEscape(id, penalty)}
-          selectedTower={selectedTower}
-        />
-
-        {/* Quiz facts pod planszą */}
-        <div style={{ width: mapConfig.board.width, display: 'flex', justifyContent: 'center', marginBottom: 8 }}>
-          <QuizFacts onHistoryUpdate={(h) => setFactsHistory(h)} />
-        </div>
-      </div>
-
-      <div style={{ width: 280, padding: 16 }}>
-        <TowerShop
-          money={money}
-          selectedType={shopSelectedType}
-          onSelectType={handleSelectShopTower}
-        />
-      </div>
+      {/* Bottom HUD ticker moved into center column */}
 
       <Quiz open={quizOpen} questionData={quizQuestion} onClose={handleQuizClose} />
     </div>

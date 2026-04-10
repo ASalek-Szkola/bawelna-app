@@ -36,19 +36,13 @@ const QuizFacts = ({ onHistoryUpdate, intervalMs = 8000, maxHistory = 50 }) => {
   }, []);
 
   return (
-    <div style={{
-      marginTop: 8,
-      padding: 10,
-      background: 'rgba(0,0,0,0.6)',
-      color: '#fff',
-      borderRadius: 8,
-      maxWidth: 900,
-      fontSize: 14
-    }}>
-      <div style={{ fontWeight: 700, marginBottom: 6 }}>Ciekawostka</div>
-      <div style={{ minHeight: 36 }}>{lastFact ? lastFact.fact : 'Brak ciekawostek'}</div>
-      <div style={{ marginTop: 8, fontSize: 12, opacity: 0.8 }}>
-        Pokazano: {history.length} · Ostatnio: {lastFact ? new Date(lastFact.shownAt).toLocaleTimeString() : '-'}
+    <div style={{ display: 'flex', alignItems: 'center', gap: 12, width: '100%', justifyContent: 'space-between' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12, minWidth: 0 }}>
+        <div style={{ fontWeight: 700 }}>Ciekawostka</div>
+        <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', color: 'var(--text)' }}>{lastFact ? lastFact.fact : 'Brak ciekawostek'}</div>
+      </div>
+      <div style={{ fontSize: 12, color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>
+        Pokazano: {history.length} · {lastFact ? new Date(lastFact.shownAt).toLocaleTimeString() : '-'}
       </div>
     </div>
   );
