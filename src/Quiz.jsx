@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 
 const shuffle = (arr) => arr.slice().sort(() => Math.random() - 0.5);
 
@@ -8,14 +8,33 @@ const Quiz = ({ open, questionData, onClose }) => {
   const [animating, setAnimating] = useState(false);
   const [result, setResult] = useState(null);
 
-  if (!open) return null;
 
   const question = questionData?.question ?? null;
   const correct_answer = questionData?.correct_answer ?? null;
   const options = questionData?.options ?? [];
 
-  const hasChoices = options.length > 0;
-  const choices = hasChoices ? shuffle([...options, correct_answer]) : null;
+  // Memoize shuffled, unique choices so they don't re-shuffle on every render
+  const choices = useMemo(() => {
+    if (!questionData) return [];
+    const opts = Array.isArray(options) ? options : [];
+    const allChoices = [...opts, questionData.correct_answer];
+    // remove duplicates while preserving insertion order
+    const uniqueChoices = Array.from(new Set(allChoices));
+    return shuffle(uniqueChoices);
+  }, [questionData]);
+
+  const hasChoices = choices.length > 0;
+
+  // Reset transient UI state whenever the question or open state changes
+  useEffect(() => {
+    setSelected(null);
+    setInput('');
+    setAnimating(false);
+    setResult(null);
+  }, [questionData, open]);
+
+  // Ensure Hooks are always called in the same order — only decide to render after
+  if (!open) return null;
 
   const finalize = (isCorrect) => {
     setAnimating(false);

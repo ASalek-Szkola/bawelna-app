@@ -1,3 +1,4 @@
+/* App.css */
 .app {
   width: 100vw;
   height: 100vh;
@@ -6,6 +7,7 @@
   box-sizing: border-box;
   background-color: var(--bg-app);
   color: var(--text);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .left-panel, .right-panel {
@@ -15,6 +17,9 @@
 
 .left-panel {
   flex: 0 0 280px;
+  display: flex; 
+  flex-direction: column; 
+  padding: 16px;
 }
 
 .center-panel {
@@ -45,7 +50,6 @@
   background-color: var(--bg-panel);
 }
 
-/* Ensure internal panels and shop content fill the sidebar width and don't cause horizontal scroll */
 .right-panel > .panel {
   width: 100%;
   box-sizing: border-box;
@@ -65,26 +69,35 @@
   margin-top: 0;
 }
 
-.game-board {
+/* Updated Game Board wrapper to handle scaling */
+.game-board-wrapper {
   position: relative;
   background: var(--bg-panel);
   border-radius: 12px;
   box-shadow: 0 8px 30px rgba(0,0,0,0.12);
   border: 4px solid var(--board-border);
   overflow: hidden;
-  transition: all 0.3s ease;
+  margin: 0 auto;
+}
+
+.game-board-inner {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
 }
 
 /* Tower shop grid and cards */
 .tower-shop-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
   gap: 12px;
   width: 100%;
 }
 
 .tower-card {
   position: relative;
+  z-index: 1;
   width: 100%;
   padding: 12px;
   background: var(--shop-item-bg);
@@ -100,8 +113,7 @@
   box-sizing: border-box;
 }
 
-.tower-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.12); }
-
+.tower-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.12); z-index: 50; }
 .tower-card.selected { box-shadow: 0 0 18px var(--accent); border-color: var(--accent); }
 
 .tower-card .cost-badge {
@@ -123,52 +135,30 @@
   max-width: 100%;
 }
 
-.tower-name {
-  font-weight: 700;
-  text-align: center;
-}
-
-.tower-stats {
-  font-size: 13px;
-  color: var(--text-muted);
-}
-
-.tooltip-title {
-  font-weight: 800;
-  margin-bottom: 6px;
-}
-
-.tooltip-footer {
-  margin-top: 6px;
-  font-size: 12px;
-  opacity: 0.8;
-}
-
-.shop-instructions {
-  margin-top: 10px;
-  font-size: 13px;
-}
-
-.shop-instructions { width: 100%; box-sizing: border-box; }
+.tower-name { font-weight: 700; text-align: center; }
+.tower-stats { font-size: 13px; color: var(--text-muted); }
+.tooltip-title { font-weight: 800; margin-bottom: 6px; }
+.tooltip-footer { margin-top: 6px; font-size: 12px; opacity: 0.8; }
+.shop-instructions { margin-top: 10px; font-size: 13px; width: 100%; box-sizing: border-box; }
 
 .tower-card .tooltip {
   display: none;
   position: absolute;
-  left: 100%;
-  top: 8px;
-  transform: translateX(12px);
+  /* Center it below the card for consistency and no clipping */
+  left: 50%;
+  top: 105%;
+  transform: translateX(-50%);
   min-width: 160px;
-  padding: 8px;
+  padding: 10px;
   background: var(--shop-item-bg);
   color: var(--shop-item-text);
   border: 1px solid var(--border-ui);
   border-radius: 8px;
-  box-shadow: var(--box-shadow);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
   z-index: 120;
 }
 
 .tower-card:hover .tooltip { display: block; }
-
 .tower-card.disabled { opacity: 0.6; pointer-events: none; }
 
 /* subtle shooting flash */
@@ -177,10 +167,9 @@
   50% { filter: brightness(1.5); }
   100% { filter: brightness(1); }
 }
-
 .tower-shooting { animation: flash 0.15s ease-out; }
 
-/* TowerInfo component styles: grid-based stats, buttons and typography refinements */
+/* TowerInfo component styles */
 .tower-info .tower-title {
   text-transform: uppercase;
   margin: 0 0 10px 0;
@@ -189,71 +178,23 @@
   font-size: 1.05em;
   letter-spacing: 0.6px;
 }
-
-.tower-top {
-  display: flex;
-  gap: 12px;
-  align-items: flex-start;
-}
-
-.tower-image {
-  width: 96px;
-  height: auto;
-  object-fit: contain;
-}
-
-.tower-stats {
-  flex: 1;
-}
-
-.stat-row {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: center;
-  padding: 6px 0;
-  line-height: 1.6;
-  border-bottom: 1px dashed var(--border-ui);
-}
-
-.stat-label {
-  color: var(--text-muted);
-  text-align: left;
-  font-weight: 600;
-}
-
-.stat-value {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 8px;
-  font-weight: 700;
-  color: var(--text);
-  min-width: 86px;
-}
-
-.stat-next {
-  font-size: 0.95em;
-  font-weight: 700;
-  color: var(--text-muted);
-}
-
+.tower-top { display: flex; gap: 12px; align-items: flex-start; }
+.tower-image { width: 96px; height: auto; object-fit: contain; }
+.tower-stats { flex: 1; }
+.stat-row { display: grid; grid-template-columns: 1fr auto; align-items: center; padding: 6px 0; line-height: 1.6; border-bottom: 1px dashed var(--border-ui); }
+.stat-label { color: var(--text-muted); text-align: left; font-weight: 600; }
+.stat-value { display: flex; justify-content: flex-end; align-items: center; gap: 8px; font-weight: 700; color: var(--text); min-width: 86px; }
+.stat-next { font-size: 0.95em; font-weight: 700; color: var(--text-muted); }
 .stat-next.improved { color: var(--success-green); }
-
-.cooldown {
-  padding-top: 8px;
-  color: var(--text-muted);
-  font-size: 0.92em;
-  font-style: italic;
-}
+.cooldown { padding-top: 8px; color: var(--text-muted); font-size: 0.92em; font-style: italic; }
 
 .tower-actions {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   gap: 10px;
   margin-top: 12px;
   align-items: center;
 }
-
 .tower-actions .tower-btn {
   background-color: var(--btn-bg);
   color: var(--btn-text);
@@ -265,24 +206,11 @@
   cursor: pointer;
   transition: filter 0.12s ease, background-color 0.12s ease;
 }
-
 .tower-actions .tower-btn:hover { filter: brightness(1.08); }
 .tower-actions .tower-btn:disabled { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
-
-.target-btn.selected {
-  background-color: var(--accent-color);
-  color: var(--button-selected-text, #fff);
-  border-color: var(--accent-color);
-}
+.target-btn.selected { background-color: var(--accent-color); color: var(--button-selected-text, #fff); border-color: var(--accent-color); }
 .target-btn { grid-column: 1 / -1; padding: 10px; }
-
-/* Dark theme explicit adjustment (keeps contrast consistent) */
 .dark-theme .tower-actions .tower-btn { background-color: var(--btn-bg); color: var(--btn-text); }
-
-@media (max-width: 640px) {
-  .tower-image { width: 72px; }
-  .tower-actions .tower-btn { min-width: 90px; padding: 0.5em 0.8em; }
-}
 
 /* GameInfo / Player Stats */
 .game-info-title { margin: 0 0 8px 0; font-size: 1.05em; }
@@ -312,9 +240,83 @@
 .primary-btn { width: 100%; padding: 10px 12px; border-radius: 10px; background: var(--btn-bg); color: var(--btn-text); border: 2px solid var(--accent-color); font-weight: 700; }
 .primary-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
-/* Sidebar footer / theme toggle */
-.left-panel { display: flex; flex-direction: column; padding: 16px; }
 .sidebar-footer { margin-top: auto; display: flex; justify-content: center; padding-top: 12px; }
 .theme-toggle { padding: 6px 10px; border-radius: 8px; border: 1px solid var(--border-ui); background: transparent; color: var(--text); font-size: 13px; }
 
+/* -------------------------------------------
+   RESPONSIVE DESIGN (Mobile & Tablets)
+--------------------------------------------- */
+@media (max-width: 1024px) {
+  .app {
+    flex-direction: column;
+    overflow-y: auto;
+    height: auto;
+    min-height: 100vh;
+  }
+  
+  .left-panel {
+    flex: none;
+    width: 100%;
+    height: auto;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 16px;
+  }
+  
+  .left-panel > .panel-section {
+    flex: 1;
+    min-width: 250px;
+    margin-bottom: 0;
+  }
+  
+  .sidebar-footer {
+    width: 100%;
+    margin-top: 0;
+  }
+  
+  .center-panel {
+    flex: none;
+    width: 100%;
+    height: auto;
+    padding: 16px;
+    overflow: visible;
+  }
+  
+  .right-panel {
+    flex: none;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+    padding: 16px;
+  }
+  
+  .bottom-ticker {
+    margin: 16px auto 0 auto;
+    width: 100%;
+  }
 
+  /* Tooltips use the bottom-centered position by default; no override needed here */
+}
+
+@media (max-width: 600px) {
+  .left-panel {
+    flex-direction: column;
+  }
+  
+  .tower-top {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .tower-actions {
+    grid-template-columns: 1fr;
+  }
+  
+  .bottom-ticker {
+    flex-direction: column;
+    text-align: center;
+    gap: 8px;
+  }
+}
