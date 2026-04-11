@@ -480,7 +480,12 @@ const App = () => {
         )}
       </aside>
 
-      <Quiz open={quizOpen} questionData={quizQuestion} onClose={handleQuizClose} />
+      <Quiz 
+        open={quizOpen} 
+        questionData={quizQuestion} 
+        baseReward={pendingWaveResult?.reward} 
+        onClose={handleQuizClose} 
+      />
     </div>
   );
 };

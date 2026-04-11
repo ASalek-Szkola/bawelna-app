@@ -2,42 +2,40 @@ import React, { useState, useMemo, useEffect } from 'react';
 
 const shuffle = (arr) => arr.slice().sort(() => Math.random() - 0.5);
 
-const Quiz = ({ open, questionData, onClose }) => {
-  const [selected, setSelected] = useState(null);
+const Quiz = ({ open, questionData, baseReward, onClose }) => {
+  const[selected, setSelected] = useState(null);
   const [input, setInput] = useState('');
-  const [animating, setAnimating] = useState(false);
-  const [result, setResult] = useState(null);
-
+  const[result, setResult] = useState(null); // 'success', 'fail' lub null
 
   const question = questionData?.question ?? null;
   const correct_answer = questionData?.correct_answer ?? null;
-  const options = questionData?.options ?? [];
+  const options = questionData?.options ??[];
+  const fact = questionData?.fact ?? null;
 
-  // Memoize shuffled, unique choices so they don't re-shuffle on every render
+  // Tasowanie opcji i usuwanie duplikatów przy załadowaniu pytania
   const choices = useMemo(() => {
     if (!questionData) return [];
-    const opts = Array.isArray(options) ? options : [];
+    const opts = Array.isArray(options) ? options :[];
     const allChoices = [...opts, questionData.correct_answer];
-    // remove duplicates while preserving insertion order
     const uniqueChoices = Array.from(new Set(allChoices));
     return shuffle(uniqueChoices);
   }, [questionData]);
 
   const hasChoices = choices.length > 0;
+  
+  // Obliczanie bonusu
+  const bonus = baseReward ? Math.floor(baseReward * 0.25) : 0;
 
-  // Reset transient UI state whenever the question or open state changes
+  // Resetowanie stanu modalu przy otwieraniu nowego pytania
   useEffect(() => {
     setSelected(null);
     setInput('');
-    setAnimating(false);
     setResult(null);
   }, [questionData, open]);
 
-  // Ensure Hooks are always called in the same order — only decide to render after
   if (!open) return null;
 
   const finalize = (isCorrect) => {
-    setAnimating(false);
     setResult(null);
     setSelected(null);
     setInput('');
@@ -45,21 +43,21 @@ const Quiz = ({ open, questionData, onClose }) => {
   };
 
   const checkAnswer = () => {
-    if (animating) return;
     const isCorrect = hasChoices
       ? selected === correct_answer
       : String(input || '').trim().toLowerCase() === String(correct_answer || '').trim().toLowerCase();
 
+    // Ustawia stan na sprawdzony
     setResult(isCorrect ? 'success' : 'fail');
-    setAnimating(true);
-    // show animation then finalize
-    setTimeout(() => finalize(isCorrect), 600);
   };
+
+  const isChecked = result !== null;
+  const canCheck = hasChoices ? selected !== null : input.trim().length > 0;
 
   return (
     <div className="quiz-modal" style={{ position: 'fixed', left: 0, top: 0, right: 0, bottom: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--modal-overlay)', zIndex: 9999 }}>
       <div style={{ background: 'var(--modal-bg)', color: 'var(--modal-text)', padding: 20, borderRadius: 12, width: 560, maxWidth: '92%', boxShadow: 'var(--box-shadow)', border: '1px solid var(--border-ui)', transformOrigin: 'center', animation: result === 'success' ? 'quiz-success 420ms ease' : result === 'fail' ? 'quiz-fail 420ms ease' : 'none' }}>
-        <h3 style={{ marginTop: 0 }}>Quiz</h3>
+        <h3 style={{ marginTop: 0 }}>Koniec fali! Bonusowy Quiz</h3>
 
         {!questionData ? (
           <div style={{ marginBottom: 12, fontSize: 15 }}>Ładowanie pytania...</div>
@@ -69,16 +67,36 @@ const Quiz = ({ open, questionData, onClose }) => {
 
             {hasChoices ? (
               <div style={{ display: 'grid', gap: 8 }}>
-                {choices.map((c, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setSelected(c)}
-                    style={{ padding: '10px 12px', textAlign: 'left', background: selected === c ? 'var(--button-selected-bg)' : 'var(--button-bg)', color: selected === c ? 'var(--button-selected-text)' : 'var(--button-text)', border: '1px solid var(--border-ui)', borderRadius: 8, cursor: 'pointer' }}
-                    className="quiz-answer"
-                  >
-                    {c}
-                  </button>
-                ))}
+                {choices.map((c, i) => {
+                  let bg = selected === c ? 'var(--button-selected-bg)' : 'var(--button-bg)';
+                  let color = selected === c ? 'var(--button-selected-text)' : 'var(--button-text)';
+                  let border = '1px solid var(--border-ui)';
+
+                  // Logika podświetlania poprawnych i błędnych odpowiedzi po kliknięciu "Sprawdź"
+                  if (isChecked) {
+                    if (c === correct_answer) {
+                      bg = 'var(--success-green)';
+                      color = '#fff';
+                      border = '1px solid var(--success-green)';
+                    } else if (c === selected) {
+                      bg = 'var(--enemy-health-low)';
+                      color = '#fff';
+                      border = '1px solid var(--enemy-health-low)';
+                    }
+                  }
+
+                  return (
+                    <button
+                      key={i}
+                      onClick={() => !isChecked && setSelected(c)}
+                      style={{ padding: '10px 12px', textAlign: 'left', background: bg, color: color, border: border, borderRadius: 8, cursor: isChecked ? 'default' : 'pointer', transition: 'all 0.2s' }}
+                      className="quiz-answer"
+                      disabled={isChecked}
+                    >
+                      {c}
+                    </button>
+                  );
+                })}
               </div>
             ) : (
               <div>
@@ -86,14 +104,43 @@ const Quiz = ({ open, questionData, onClose }) => {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder="Wpisz odpowiedź..."
+                  disabled={isChecked}
                   style={{ width: '100%', padding: 10, fontSize: 15, boxSizing: 'border-box' }}
                 />
               </div>
             )}
 
+            {/* Okno z podsumowaniem, pojawia się po wciśnięciu "Sprawdź" */}
+            {isChecked && (
+              <div style={{ marginTop: 16, padding: 12, borderRadius: 8, background: 'var(--bg-panel)', border: result === 'success' ? '2px solid var(--success-green)' : '2px solid var(--enemy-health-low)' }}>
+                <div style={{ color: result === 'success' ? 'var(--success-green)' : 'var(--enemy-health-low)', fontSize: '1.1rem', marginBottom: 8 }}>
+                  <strong>
+                    {result === 'success' 
+                      ? `Poprawna odpowiedź! Zyskujesz premię +${bonus} monet.` 
+                      : `Zła odpowiedź! Poprawna to: ${correct_answer}`}
+                  </strong>
+                </div>
+                {fact && <div style={{ fontSize: 14, color: 'var(--text)' }}><strong>Ciekawostka:</strong> {fact}</div>}
+              </div>
+            )}
+
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, marginTop: 14 }}>
-              <button onClick={() => { if (!animating) onClose && onClose(false); }} style={{ background: 'var(--button-bg)', padding: '8px 12px' }}>Pomiń</button>
-              <button onClick={checkAnswer} disabled={animating || (hasChoices ? selected === null : input.trim().length === 0)} style={{ background: 'var(--button-selected-bg)', color: 'var(--button-selected-text)', padding: '8px 12px' }}>{animating ? '...' : 'Sprawdź'}</button>
+              {!isChecked ? (
+                <button 
+                  onClick={checkAnswer} 
+                  disabled={hasChoices ? selected === null : input.trim().length === 0} 
+                  style={{ background: 'var(--button-selected-bg)', color: 'var(--button-selected-text)', padding: '8px 24px', fontWeight: 'bold', opacity: canCheck ? 1 : 0.5, cursor: canCheck ? 'pointer' : 'not-allowed' }}
+                >
+                  Sprawdź
+                </button>
+              ) : (
+                <button 
+                  onClick={() => finalize(result === 'success')} 
+                  style={{ background: 'var(--button-selected-bg)', color: 'var(--button-selected-text)', padding: '8px 24px', fontWeight: 'bold' }}
+                >
+                  Dalej
+                </button>
+              )}
             </div>
           </>
         )}
