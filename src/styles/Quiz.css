@@ -1,0 +1,5 @@
+.quiz-modal { backdrop-filter: blur(10px); }
+.quiz-question { font-family: Georgia, 'Times New Roman', serif; font-size: 1.15rem; margin-bottom: 12px; color: var(--text); }
+.quiz-answer { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; }
+
+.quiz-panel { max-width: 100%; }

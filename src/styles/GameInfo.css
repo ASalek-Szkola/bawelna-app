@@ -1,0 +1,7 @@
+.game-info-title { margin: 0 0 8px 0; font-size: 1.05em; }
+.panel-sm { background: rgba(255,255,255,0.04); padding: 10px; border-radius: 10px; }
+.player-stats .stat-line { display: flex; align-items: center; justify-content: space-between; padding: 8px 6px; border-bottom: 1px solid var(--border-ui); gap: 8px; }
+.player-stats .stat-line:last-child { border-bottom: none; }
+.stat-label { font-size: 13px; color: var(--text-muted); font-weight: 600; }
+.stat-value { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 16px; color: var(--text); }
+.stat-value .stat-number { margin-left: 4px; }

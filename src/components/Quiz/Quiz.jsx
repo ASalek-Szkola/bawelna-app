@@ -1,18 +1,19 @@
 import React, { useState, useMemo, useEffect } from 'react';
+import PropTypes from 'prop-types';
+import '../../styles/Quiz.css';
 
 const shuffle = (arr) => arr.slice().sort(() => Math.random() - 0.5);
 
 const Quiz = ({ open, questionData, baseReward, onClose }) => {
   const[selected, setSelected] = useState(null);
   const [input, setInput] = useState('');
-  const[result, setResult] = useState(null); // 'success', 'fail' lub null
+  const[result, setResult] = useState(null);
 
   const question = questionData?.question ?? null;
   const correct_answer = questionData?.correct_answer ?? null;
   const options = questionData?.options ??[];
   const fact = questionData?.fact ?? null;
 
-  // Tasowanie opcji i usuwanie duplikatów przy załadowaniu pytania
   const choices = useMemo(() => {
     if (!questionData) return [];
     const opts = Array.isArray(options) ? options :[];
@@ -22,11 +23,8 @@ const Quiz = ({ open, questionData, baseReward, onClose }) => {
   }, [questionData]);
 
   const hasChoices = choices.length > 0;
-  
-  // Obliczanie bonusu
   const bonus = baseReward ? Math.floor(baseReward * 0.25) : 0;
 
-  // Resetowanie stanu modalu przy otwieraniu nowego pytania
   useEffect(() => {
     setSelected(null);
     setInput('');
@@ -47,7 +45,6 @@ const Quiz = ({ open, questionData, baseReward, onClose }) => {
       ? selected === correct_answer
       : String(input || '').trim().toLowerCase() === String(correct_answer || '').trim().toLowerCase();
 
-    // Ustawia stan na sprawdzony
     setResult(isCorrect ? 'success' : 'fail');
   };
 
@@ -56,7 +53,7 @@ const Quiz = ({ open, questionData, baseReward, onClose }) => {
 
   return (
     <div className="quiz-modal" style={{ position: 'fixed', left: 0, top: 0, right: 0, bottom: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--modal-overlay)', zIndex: 9999 }}>
-      <div style={{ background: 'var(--modal-bg)', color: 'var(--modal-text)', padding: 20, borderRadius: 12, width: 560, maxWidth: '92%', boxShadow: 'var(--box-shadow)', border: '1px solid var(--border-ui)', transformOrigin: 'center', animation: result === 'success' ? 'quiz-success 420ms ease' : result === 'fail' ? 'quiz-fail 420ms ease' : 'none' }}>
+      <div className="quiz-panel" style={{ background: 'var(--modal-bg)', color: 'var(--modal-text)', padding: 20, borderRadius: 12, width: 560, maxWidth: '92%', boxShadow: 'var(--box-shadow)', border: '1px solid var(--border-ui)', transformOrigin: 'center', animation: result === 'success' ? 'quiz-success 420ms ease' : result === 'fail' ? 'quiz-fail 420ms ease' : 'none' }}>
         <h3 style={{ marginTop: 0 }}>Koniec fali! Bonusowy Quiz</h3>
 
         {!questionData ? (
@@ -72,7 +69,6 @@ const Quiz = ({ open, questionData, baseReward, onClose }) => {
                   let color = selected === c ? 'var(--button-selected-text)' : 'var(--button-text)';
                   let border = '1px solid var(--border-ui)';
 
-                  // Logika podświetlania poprawnych i błędnych odpowiedzi po kliknięciu "Sprawdź"
                   if (isChecked) {
                     if (c === correct_answer) {
                       bg = 'var(--success-green)';
@@ -110,7 +106,6 @@ const Quiz = ({ open, questionData, baseReward, onClose }) => {
               </div>
             )}
 
-            {/* Okno z podsumowaniem, pojawia się po wciśnięciu "Sprawdź" */}
             {isChecked && (
               <div style={{ marginTop: 16, padding: 12, borderRadius: 8, background: 'var(--bg-panel)', border: result === 'success' ? '2px solid var(--success-green)' : '2px solid var(--enemy-health-low)' }}>
                 <div style={{ color: result === 'success' ? 'var(--success-green)' : 'var(--enemy-health-low)', fontSize: '1.1rem', marginBottom: 8 }}>
@@ -147,6 +142,17 @@ const Quiz = ({ open, questionData, baseReward, onClose }) => {
       </div>
     </div>
   );
+};
+
+Quiz.propTypes = {
+  open: PropTypes.bool,
+  questionData: PropTypes.object,
+  baseReward: PropTypes.number,
+  onClose: PropTypes.func,
+};
+
+Quiz.defaultProps = {
+  open: false,
 };
 
 export default Quiz;

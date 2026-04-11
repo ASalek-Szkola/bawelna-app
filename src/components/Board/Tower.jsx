@@ -1,11 +1,13 @@
 import React from 'react';
-import towerConfig from './config/towerConfig.json';
+import PropTypes from 'prop-types';
+import towerConfig from '../../config/towerConfig.json';
+import '../../styles/Tower.css';
 
 const Tower = ({ x, y, type, onClick, isShooting, onRightClick }) => {
   const towerData = towerConfig[type];
   if (!towerData) return null;
 
-  const SIZE = 40; // musi zgadzać się z .tower w App.css i preview
+  const SIZE = 40;
   return (
     <div
       className={`tower ${isShooting ? 'tower-shooting' : ''}`}
@@ -22,11 +24,11 @@ const Tower = ({ x, y, type, onClick, isShooting, onRightClick }) => {
         onClick && onClick();
       }}
       onContextMenu={(e) => {
-        // Prevent browser context menu and stop bubbling to board
         e.preventDefault();
         e.stopPropagation();
         onRightClick && onRightClick();
       }}
+      aria-label={`Wieżyczka ${type}`}
     >
       <img
         src={towerData.image}
@@ -37,4 +39,21 @@ const Tower = ({ x, y, type, onClick, isShooting, onRightClick }) => {
   );
 };
 
-export default Tower;
+Tower.propTypes = {
+  x: PropTypes.number.isRequired,
+  y: PropTypes.number.isRequired,
+  type: PropTypes.string.isRequired,
+  onClick: PropTypes.func,
+  isShooting: PropTypes.bool,
+  onRightClick: PropTypes.func,
+};
+
+Tower.defaultProps = {
+  isShooting: false,
+};
+
+function areEqual(prev, next) {
+  return prev.x === next.x && prev.y === next.y && prev.type === next.type && prev.isShooting === next.isShooting;
+}
+
+export default React.memo(Tower, areEqual);

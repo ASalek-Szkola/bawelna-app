@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import towerConfig from './config/towerConfig.json';
+import PropTypes from 'prop-types';
+import towerConfig from '../../config/towerConfig.json';
+import '../../styles/TowerInfo.css';
 
 const TowerInfo = ({ type, level, onUpgrade, onSell, cooldown, onTargetingChange, targetingMode }) => {
   const [cooldownTime, setCooldownTime] = useState(cooldown);
@@ -64,18 +66,34 @@ const TowerInfo = ({ type, level, onUpgrade, onSell, cooldown, onTargetingChange
       </div>
 
       <div className="tower-actions">
-        {next && <button className="tower-btn" onClick={onUpgrade}>Ulepsz ({next.cost} ₿)</button>}
-        <button className="tower-btn" onClick={onSell}>Sprzedaj ({sellValue} ₿)</button>
+        {next && <button className="tower-btn" onClick={onUpgrade} aria-label={`Ulepsz wieżę za ${next.cost} ₿`}>Ulepsz ({next.cost} ₿)</button>}
+        <button className="tower-btn" onClick={onSell} aria-label={`Sprzedaj wieżę za ${sellValue} ₿`}>Sprzedaj ({sellValue} ₿)</button>
         <button
           className={"tower-btn target-btn" + (targetingMode === 'first' ? ' selected' : '')}
           onClick={handleToggleTargeting}
           aria-pressed={targetingMode === 'first'}
+          aria-label="Zmień tryb celowania"
         >
           {targetingMode === 'first' ? 'Pierwszy' : 'Najsilniejszy'}
         </button>
       </div>
     </div>
   );
+};
+
+TowerInfo.propTypes = {
+  type: PropTypes.string.isRequired,
+  level: PropTypes.number.isRequired,
+  onUpgrade: PropTypes.func.isRequired,
+  onSell: PropTypes.func.isRequired,
+  cooldown: PropTypes.number,
+  onTargetingChange: PropTypes.func.isRequired,
+  targetingMode: PropTypes.string,
+};
+
+TowerInfo.defaultProps = {
+  cooldown: 0,
+  targetingMode: 'first',
 };
 
 export default React.memo(TowerInfo);

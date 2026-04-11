@@ -1,10 +1,11 @@
-// GameBoard.jsx
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import Tower from './Tower';
 import Enemy from './Enemy';
-import mapConfig from './config/mapConfig.json';
-import towerConfig from './config/towerConfig.json';
-import { isPointOnPath } from './utils/pathUtils';
+import mapConfig from '../../config/mapConfig.json';
+import towerConfig from '../../config/towerConfig.json';
+import { isPointOnPath } from '../../utils/pathUtils';
+import '../../styles/GameBoard.css';
 
 const GameBoard = ({ 
   towers, 
@@ -14,9 +15,9 @@ const GameBoard = ({
   enemies =[],               
   onEnemyEscape,              
   selectedTower,              
-  onBoardRightClick,          
+  onBoardRightClick,         
   onTowerRightClick,
-  scale = 1                   // Receives scale from App.jsx wrapper
+  scale = 1                   
 }) => {
   const { width, height } = mapConfig.board;
   const { path, pathWidth } = mapConfig;
@@ -24,7 +25,6 @@ const GameBoard = ({
   const [previewPos, setPreviewPos] = useState(null);
   const previewValid = previewPos ? !isPointOnPath(previewPos.x, previewPos.y, path, pathWidth) : false;
 
-  // Uses scale to calculate accurate coordinates on shrunken boards
   const handleBoardClick = (e) => {
     if (!onBoardClick) return;
     const rect = e.currentTarget.getBoundingClientRect();
@@ -120,6 +120,24 @@ const GameBoard = ({
       )}
     </div>
   );
+};
+
+GameBoard.propTypes = {
+  towers: PropTypes.array.isRequired,
+  onTowerClick: PropTypes.func,
+  onBoardClick: PropTypes.func,
+  shopSelectedType: PropTypes.string,
+  enemies: PropTypes.array,
+  onEnemyEscape: PropTypes.func,
+  selectedTower: PropTypes.object,
+  onBoardRightClick: PropTypes.func,
+  onTowerRightClick: PropTypes.func,
+  scale: PropTypes.number,
+};
+
+GameBoard.defaultProps = {
+  enemies: [],
+  scale: 1,
 };
 
 export default GameBoard;

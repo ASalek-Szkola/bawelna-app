@@ -1,13 +1,13 @@
 // App.jsx
 import React, { useEffect } from 'react';
-import GameInfo from './GameInfo';
-import GameBoard from './GameBoard';
-import TowerInfo from './TowerInfo';
-import WaveManager from './WaveManager';
-import TowerShop from './TowerShop';
-import './App.css';
-import Quiz from './Quiz';
-import QuizFacts from './QuizFacts';
+import GameInfo from './components/HUD/GameInfo';
+import GameBoard from './components/Board/GameBoard';
+import TowerInfo from './components/TowerPanel/TowerInfo';
+import WaveManager from './components/HUD/WaveManager';
+import TowerShop from './components/TowerPanel/TowerShop';
+import './styles/layout.css';
+import Quiz from './components/Quiz/Quiz';
+import QuizFacts from './components/Quiz/QuizFacts';
 import mapConfig from './config/mapConfig.json';
 
 import useBoardScaling from './hooks/useBoardScaling';

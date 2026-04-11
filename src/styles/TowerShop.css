@@ -1,0 +1,15 @@
+.tower-shop { padding: 16px; width: 100%; box-sizing: border-box; }
+.tower-shop-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; width: 100%; }
+.tower-card { position: relative; z-index: 1; width: 100%; padding: 12px; background: var(--shop-item-bg); color: var(--shop-item-text); border-radius: 12px; border: 1px solid var(--border-ui); display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; transition: all 0.25s ease; box-sizing: border-box; }
+.tower-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.12); z-index: 50; }
+.tower-card.selected { box-shadow: 0 0 18px var(--accent); border-color: var(--accent); }
+.tower-card .cost-badge { position: absolute; right: 10px; top: 10px; background: var(--accent); color: #fff; padding: 4px 8px; border-radius: 999px; font-weight: 700; font-size: 12px; }
+.tower-card-image { width: 64px; height: 64px; object-fit: contain; max-width: 100%; }
+.tower-name { font-weight: 700; text-align: center; }
+.tower-stats { font-size: 13px; color: var(--text-muted); }
+.tooltip-title { font-weight: 800; margin-bottom: 6px; }
+.tooltip-footer { margin-top: 6px; font-size: 12px; opacity: 0.8; }
+.shop-instructions { margin-top: 10px; font-size: 13px; width: 100%; box-sizing: border-box; }
+.tower-card .tooltip { display: none; position: absolute; left: 50%; top: 105%; transform: translateX(-50%); min-width: 160px; padding: 10px; background: var(--shop-item-bg); color: var(--shop-item-text); border: 1px solid var(--border-ui); border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); z-index: 120; }
+.tower-card:hover .tooltip { display: block; }
+.tower-card.disabled { opacity: 0.6; pointer-events: none; }

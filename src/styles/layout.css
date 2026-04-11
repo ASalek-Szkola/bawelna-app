@@ -1,0 +1,67 @@
+.app {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  overflow: hidden;
+  box-sizing: border-box;
+  background-color: var(--bg-app);
+  color: var(--text);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.left-panel, .right-panel { height: 100%; overflow-y: auto; }
+
+.left-panel {
+  flex: 0 0 280px;
+  display: flex; 
+  flex-direction: column; 
+  padding: 16px;
+}
+
+.center-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  overflow: hidden;
+}
+
+.center-inner { display:flex; flex-direction: column; align-items:center; justify-content:center; width:100%; height:100%; }
+
+.right-panel {
+  flex: 0 0 320px;
+  height: 100%;
+  padding: 8px 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background-color: var(--bg-panel);
+}
+
+.right-panel > .panel { width: 100%; box-sizing: border-box; }
+
+.panel-section { margin-bottom: 16px; }
+.panel h3 { margin-top: 0; }
+
+.bottom-ticker { position: relative; margin-top: auto; margin-bottom: 20px; width: 100%; max-width: 1000px; padding: 12px 18px; border-radius: 12px; background: rgba(255,255,255,0.06); color: var(--text); box-shadow: 0 8px 30px rgba(0,0,0,0.18); backdrop-filter: blur(8px); display: flex; align-items: center; gap: 12px; font-size: 14px; }
+
+.sidebar-footer { margin-top: auto; display: flex; justify-content: center; padding-top: 12px; }
+.theme-toggle { padding: 6px 10px; border-radius: 8px; border: 1px solid var(--border-ui); background: transparent; color: var(--text); font-size: 13px; }
+
+@media (max-width: 1024px) {
+  .app { flex-direction: column; overflow-y: auto; height: auto; min-height: 100vh; }
+  .left-panel { flex: none; width: 100%; height: auto; flex-direction: row; flex-wrap: wrap; align-items: flex-start; gap: 16px; padding: 16px; }
+  .left-panel > .panel-section { flex: 1; min-width: 250px; margin-bottom: 0; }
+  .sidebar-footer { width: 100%; margin-top: 0; }
+  .center-panel { flex: none; width: 100%; height: auto; padding: 16px; overflow: visible; }
+  .right-panel { flex: none; width: 100%; height: auto; overflow: visible; padding: 16px; }
+  .bottom-ticker { margin: 16px auto 0 auto; width: 100%; }
+}
+
+@media (max-width: 600px) {
+  .left-panel { flex-direction: column; }
+  .tower-top { flex-direction: column; align-items: center; }
+  .tower-actions { grid-template-columns: 1fr; }
+  .bottom-ticker { flex-direction: column; text-align: center; gap: 8px; }
+}

@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import '../../styles/GameInfo.css';
 
 const IconHeart = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
@@ -26,6 +28,12 @@ const StatLine = ({ label, value, Icon }) => (
   </div>
 );
 
+StatLine.propTypes = {
+  label: PropTypes.string.isRequired,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  Icon: PropTypes.func.isRequired,
+};
+
 const GameInfo = ({ health, wave, money }) => {
   return (
     <div className="game-info">
@@ -38,6 +46,12 @@ const GameInfo = ({ health, wave, money }) => {
       </div>
     </div>
   );
+};
+
+GameInfo.propTypes = {
+  health: PropTypes.number.isRequired,
+  wave: PropTypes.number.isRequired,
+  money: PropTypes.number.isRequired,
 };
 
 export default React.memo(GameInfo);

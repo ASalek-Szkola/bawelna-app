@@ -1,5 +1,7 @@
 import React from 'react';
-import towerConfig from './config/towerConfig.json';
+import PropTypes from 'prop-types';
+import towerConfig from '../../config/towerConfig.json';
+import '../../styles/TowerShop.css';
 
 const TowerShop = ({ money, selectedType, onSelectType }) => {
   return (
@@ -15,6 +17,7 @@ const TowerShop = ({ money, selectedType, onSelectType }) => {
               key={type}
               role="button"
               tabIndex={0}
+              aria-label={`Wybierz ${type} wieżyczkę. Koszt ${level1.cost ?? '-'} `}
               className={`tower-card ${isSelected ? 'selected' : ''} ${!affordable ? 'disabled' : ''}`}
               onClick={() => { if (affordable) onSelectType(type); }}
               onKeyDown={(e) => { if ((e.key === 'Enter' || e.key === ' ') && affordable) onSelectType(type); }}
@@ -40,6 +43,16 @@ const TowerShop = ({ money, selectedType, onSelectType }) => {
       </p>
     </div>
   );
+};
+
+TowerShop.propTypes = {
+  money: PropTypes.number.isRequired,
+  selectedType: PropTypes.string,
+  onSelectType: PropTypes.func.isRequired,
+};
+
+TowerShop.defaultProps = {
+  selectedType: null,
 };
 
 export default React.memo(TowerShop);

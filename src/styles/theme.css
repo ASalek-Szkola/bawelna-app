@@ -4,10 +4,10 @@
   font-weight: 400;
 
   /* Modern semantic variables (provide safe fallbacks for legacy names) */
-  --bg-app: #f4f1ea;       /* parchment (light) */
-  --bg-panel: #ffffff;    /* light panel */
-  --accent: #8b4513;      /* saddle brown (light) */
-  --text: #2c2c2c;        /* primary text (light) */
+  --bg-app: #f4f1ea;
+  --bg-panel: #ffffff;
+  --accent: #8b4513;
+  --text: #2c2c2c;
 
   /* legacy compatibility variables */
   --bg-main: var(--bg-app);
@@ -25,10 +25,8 @@
   --button-border: transparent;
   --button-selected-bg: var(--accent);
   --button-selected-text: #fff;
-  /* button shorthand vars used by components */
   --btn-bg: var(--button-bg);
   --btn-text: var(--button-text);
-  /* alias for accent to use in components expecting --accent-color */
   --accent-color: var(--accent);
 
   /* Range / preview */
@@ -57,15 +55,10 @@
   --box-shadow: var(--panel-shadow);
   --text-muted: #666666;
 
-  /* success color used for inline upgrade values */
   --success-green: #2ecc71;
-
-  /* board border color (overridden per theme) */
   --board-border: rgba(139,69,19,0.06);
-
-  /* Shop item colors (theme-aware) */
-  --shop-item-bg: #ffffff; /* Light default */
-  --shop-item-text: #1a1a1a; /* Light default text */
+  --shop-item-bg: #ffffff;
+  --shop-item-text: #1a1a1a;
 
   color-scheme: light dark;
   font-synthesis: none;
@@ -73,7 +66,7 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-/* Light theme explicit class (applies to .app) */
+
 .light-theme {
   --bg-app: #f4f1ea;
   --bg-panel: #ffffff;
@@ -87,7 +80,6 @@
   --board-border: rgba(139,69,19,0.08);
 }
 
-/* Dark theme overrides — apply by adding `dark-theme` to the top-level container */
 .dark-theme {
   --bg-app: #121212;
   --bg-panel: #1e1e1e;
@@ -100,86 +92,15 @@
   --panel-bg: rgba(30,30,30,0.9);
   --modal-bg: rgba(30,30,30,0.9);
   --text-muted: #aaaaaa;
-  /* dark theme shop overrides */
   --shop-item-bg: #2d2d2d;
   --shop-item-text: #f0f0f0;
-  /* Dark theme button color overrides for better contrast */
   --btn-bg: #444444;
   --btn-text: #ffffff;
   --accent-color: var(--accent);
   --board-border: #2b2b2b;
 }
 
-/* Helpful utility classes & modern panel styling */
-.app {
-  transition: all 0.3s ease;
-  background: var(--bg-app);
-  color: var(--text);
-}
-
-.panel {
-  background: var(--bg-panel);
-  border-radius: var(--panel-radius);
-  box-shadow: var(--box-shadow);
-  padding: 16px;
-  border: 1px solid var(--border-ui);
-  transition: all 0.3s ease;
-}
-
-.bottom-ticker {
-  position: relative;
-  margin-top: auto;
-  margin-bottom: 20px;
-  width: 100%;
-  max-width: 1000px;
-  padding: 12px 18px;
-  border-radius: 12px;
-  background: rgba(255,255,255,0.06);
-  color: var(--text);
-  box-shadow: 0 8px 30px rgba(0,0,0,0.18);
-  backdrop-filter: blur(8px);
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 14px;
-}
-
-.quiz-modal {
-  backdrop-filter: blur(10px);
-}
-
-/* Quiz typography */
-.quiz-question {
-  font-family: Georgia, 'Times New Roman', serif;
-  font-size: 1.15rem;
-  margin-bottom: 12px;
-  color: var(--text);
-}
-.quiz-answer {
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-}
-
-@keyframes quiz-success {
-  0% { transform: scale(1); box-shadow: 0 0 0 rgba(0,0,0,0); }
-  40% { transform: scale(1.03); box-shadow: 0 8px 32px rgba(40,180,80,0.12); }
-  100% { transform: scale(1); box-shadow: 0 0 0 rgba(0,0,0,0); }
-}
-
-@keyframes quiz-fail {
-  0% { transform: translateY(0); }
-  30% { transform: translateY(-6px); }
-  100% { transform: translateY(0); }
-}
-
-a {
-  font-weight: 500;
-  color: var(--text-primary);
-  text-decoration: inherit;
-}
-a:hover {
-  color: var(--text-secondary);
-}
-
+/* Global utilities */
 *, *::before, *::after { box-sizing: border-box; }
 
 body {
@@ -187,11 +108,6 @@ body {
   min-width: 320px;
   min-height: 100vh;
   background-color: var(--bg-app);
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
 }
 
 button {
@@ -206,12 +122,17 @@ button {
   cursor: pointer;
   transition: border-color 0.25s, background-color 0.15s;
 }
-button:hover {
-  border-color: var(--border-color);
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
+button:hover { border-color: var(--border-color); }
+button:focus, button:focus-visible { outline: 4px auto -webkit-focus-ring-color; }
 
-/* Prefer the system theme for initial choice could be handled in JS; CSS keeps variables for light as default */
+/* Quiz animations used globally */
+@keyframes quiz-success {
+  0% { transform: scale(1); box-shadow: 0 0 0 rgba(0,0,0,0); }
+  40% { transform: scale(1.03); box-shadow: 0 8px 32px rgba(40,180,80,0.12); }
+  100% { transform: scale(1); box-shadow: 0 0 0 rgba(0,0,0,0); }
+}
+@keyframes quiz-fail {
+  0% { transform: translateY(0); }
+  30% { transform: translateY(-6px); }
+  100% { transform: translateY(0); }
+}

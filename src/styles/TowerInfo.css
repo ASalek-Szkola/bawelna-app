@@ -1,0 +1,17 @@
+.tower-info .tower-title { text-transform: uppercase; margin: 0 0 10px 0; padding-bottom: 8px; border-bottom: 1px solid var(--border-ui); font-size: 1.05em; letter-spacing: 0.6px; }
+.tower-top { display: flex; gap: 12px; align-items: flex-start; }
+.tower-image { width: 96px; height: auto; object-fit: contain; }
+.tower-stats { flex: 1; }
+.stat-row { display: grid; grid-template-columns: 1fr auto; align-items: center; padding: 6px 0; line-height: 1.6; border-bottom: 1px dashed var(--border-ui); }
+.stat-label { color: var(--text-muted); text-align: left; font-weight: 600; }
+.stat-value { display: flex; justify-content: flex-end; align-items: center; gap: 8px; font-weight: 700; color: var(--text); min-width: 86px; }
+.stat-next { font-size: 0.95em; font-weight: 700; color: var(--text-muted); }
+.stat-next.improved { color: var(--success-green); }
+.cooldown { padding-top: 8px; color: var(--text-muted); font-size: 0.92em; font-style: italic; }
+.tower-actions { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin-top: 12px; align-items: center; }
+.tower-actions .tower-btn { background-color: var(--btn-bg); color: var(--btn-text); border: 1px solid var(--border-ui); border-radius: 8px; padding: 0.6em 1.1em; min-width: 0; white-space: nowrap; cursor: pointer; transition: filter 0.12s ease, background-color 0.12s ease; }
+.tower-actions .tower-btn:hover { filter: brightness(1.08); }
+.tower-actions .tower-btn:disabled { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
+.target-btn.selected { background-color: var(--accent-color); color: var(--button-selected-text, #fff); border-color: var(--accent-color); }
+.target-btn { grid-column: 1 / -1; padding: 10px; }
+.dark-theme .tower-actions .tower-btn { background-color: var(--btn-bg); color: var(--btn-text); }

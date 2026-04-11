@@ -1,6 +1,8 @@
 import React from 'react';
-import waveConfig from './config/waveConfig.json';
-import enemyConfig from './config/enemyConfig.json';
+import PropTypes from 'prop-types';
+import waveConfig from '../../config/waveConfig.json';
+import enemyConfig from '../../config/enemyConfig.json';
+import '../../styles/WaveManager.css';
 
 const WaveManager = ({ wave, onStartWave, waveActive, enemies = [] }) => {
   const waveData = waveConfig.waves[wave - 1];
@@ -42,12 +44,24 @@ const WaveManager = ({ wave, onStartWave, waveActive, enemies = [] }) => {
       </div>
 
       <div className="wave-actions">
-        <button className="primary-btn" onClick={onStartWave} disabled={waveActive}>
+        <button className="primary-btn" onClick={onStartWave} disabled={waveActive} aria-label={waveActive ? 'Fala trwa' : 'Rozpocznij falę'}>
           {waveActive ? 'Fala trwa' : 'Rozpocznij falę'}
         </button>
       </div>
     </div>
   );
+};
+
+WaveManager.propTypes = {
+  wave: PropTypes.number.isRequired,
+  onStartWave: PropTypes.func.isRequired,
+  waveActive: PropTypes.bool,
+  enemies: PropTypes.array,
+};
+
+WaveManager.defaultProps = {
+  enemies: [],
+  waveActive: false,
 };
 
 export default React.memo(WaveManager);

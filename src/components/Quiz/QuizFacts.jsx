@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import quizConfig from './config/quizConfig.json';
+import PropTypes from 'prop-types';
+import quizConfig from '../../config/quizConfig.json';
+import '../../styles/QuizFacts.css';
 
 const QuizFacts = ({ onHistoryUpdate, intervalMs = 8000, maxHistory = 50 }) => {
   const facts = Array.isArray(quizConfig.questions)
@@ -36,7 +38,7 @@ const QuizFacts = ({ onHistoryUpdate, intervalMs = 8000, maxHistory = 50 }) => {
   }, []);
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 12, width: '100%', justifyContent: 'space-between' }}>
+    <div className="quiz-facts" style={{ display: 'flex', alignItems: 'center', gap: 12, width: '100%', justifyContent: 'space-between' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, minWidth: 0 }}>
         <div style={{ fontWeight: 700 }}>Ciekawostka</div>
         <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', color: 'var(--text)' }}>{lastFact ? lastFact.fact : 'Brak ciekawostek'}</div>
@@ -46,6 +48,12 @@ const QuizFacts = ({ onHistoryUpdate, intervalMs = 8000, maxHistory = 50 }) => {
       </div>
     </div>
   );
+};
+
+QuizFacts.propTypes = {
+  onHistoryUpdate: PropTypes.func,
+  intervalMs: PropTypes.number,
+  maxHistory: PropTypes.number,
 };
 
 export default React.memo(QuizFacts);
