@@ -1,3 +1,4 @@
+/* \styles\layout.css */
 .app {
   width: 100vw;
   height: 100vh;
@@ -33,7 +34,7 @@
 .right-panel {
   flex: 0 0 320px;
   height: 100%;
-  padding: 8px 0;
+  padding: 8px 16px; /* This padding is correct for the right panel itself */
   overflow-x: hidden;
   overflow-y: auto;
   background-color: var(--bg-panel);
