@@ -1,5 +1,5 @@
 // App.jsx
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import GameInfo from './components/HUD/GameInfo';
 import GameBoard from './components/Board/GameBoard';
 import TowerInfo from './components/TowerPanel/TowerInfo';
@@ -15,16 +15,21 @@ import useTowers from './hooks/useTowers';
 import useGameLoop from './hooks/useGameLoop';
 import useGameState from './hooks/useGameState';
 
+import { generateSingleWaveData } from './utils/waveGenerator'; // Importuj funkcję do generowania pojedynczych fal
+
 const App = () => {
-  // Headless game state/hooks
   const boardScale = useBoardScaling();
 
+  const [difficulty, setDifficulty] = useState('Easy');
+
+  // Headless game state/hooks
   const {
     health, setHealth, money, setMoney, wave, setWave,
     factsHistory, setFactsHistory,
     quizOpen, quizQuestion, pendingWaveResult, handleQuizClose,
-    syncLoopState
-  } = useGameState();
+    syncLoopState,
+    currentWaveData // Pobieramy currentWaveData z useGameState
+  } = useGameState(difficulty); // Przekazujemy difficulty do useGameState
 
   const {
     towers, setTowers, selectedTower, selectedTowerId, setSelectedTowerId,
@@ -33,7 +38,11 @@ const App = () => {
     handlePlaceTower, handleSellTower, handleUpgrade, handleTargetingChange
   } = useTowers({ money, setMoney });
 
-  const { enemies, waveActive, startWave, setWaveActive, clearEnemies } = useGameLoop({ towers, setTowers, onEnemyEscape: (damage) => setHealth((prev) => Math.max(0, prev + Number(damage) || 0)) });
+  const { enemies, waveActive, startWave, setWaveActive, clearEnemies } = useGameLoop({
+    towers,
+    setTowers,
+    onEnemyEscape: (damage) => setHealth((prev) => Math.max(0, prev + Number(damage) || 0)),
+  });
 
   const [theme, setTheme] = React.useState(() => {
     if (typeof window !== 'undefined' && window.matchMedia) {
@@ -66,7 +75,41 @@ const App = () => {
           <GameInfo health={health} wave={wave} money={money} />
         </div>
         <div className="panel-section">
-          <WaveManager wave={wave} onStartWave={() => startWave(wave)} waveActive={waveActive} enemies={enemies} />
+          <div style={{ marginBottom: '10px' }}>
+            <label htmlFor="difficulty-select" style={{ marginRight: '8px' }}>Poziom trudności:</label>
+            <select
+              id="difficulty-select"
+              value={difficulty}
+              onChange={(e) => {
+                setDifficulty(e.target.value);
+                setWave(1); // Resetuj falę przy zmianie trudności
+                setHealth(100); // Resetuj zdrowie
+                setMoney(500); // Resetuj pieniądze
+                setTowers([]); // Usuń wieże
+                clearEnemies(); // Usuń wrogów
+                setWaveActive(false); // Zatrzymaj aktualną falę
+              }}
+              style={{
+                padding: '6px 10px',
+                borderRadius: '8px',
+                border: '1px solid var(--border-ui)',
+                backgroundColor: 'var(--button-bg)',
+                color: 'var(--button-text)',
+              }}
+            >
+              <option value="Easy">Łatwy</option>
+              <option value="Normal">Normalny</option>
+              <option value="Hard">Trudny</option>
+            </select>
+          </div>
+          <WaveManager
+            wave={wave}
+            onStartWave={() => startWave(currentWaveData)} // Przekaż currentWaveData do startWave
+            waveActive={waveActive}
+            enemies={enemies}
+            currentWaveData={currentWaveData} // Przekaż aktualne dane fali
+            difficulty={difficulty} // Przekaż difficulty do WaveManager
+          />
         </div>
         <div className="sidebar-footer">
           <button className="theme-toggle" onClick={() => setTheme((t) => (t === 'dark' ? 'light' : 'dark'))}>
@@ -77,11 +120,11 @@ const App = () => {
 
       <main className="center-panel">
         <div className="center-inner">
-          <div 
-            className="game-board-wrapper" 
-            style={{ 
-              width: mapConfig.board.width * boardScale, 
-              height: mapConfig.board.height * boardScale 
+          <div
+            className="game-board-wrapper"
+            style={{
+              width: mapConfig.board.width * boardScale,
+              height: mapConfig.board.height * boardScale
             }}
           >
             <div style={{
@@ -99,7 +142,7 @@ const App = () => {
                 onBoardRightClick={handleBoardRightClick}
                 onTowerRightClick={handleSellTower}
                 shopSelectedType={shopSelectedType}
-                
+
                 enemies={enemies}
                 selectedTower={selectedTower}
                 scale={boardScale}
@@ -126,11 +169,11 @@ const App = () => {
         )}
       </aside>
 
-      <Quiz 
-        open={quizOpen} 
-        questionData={quizQuestion} 
-        baseReward={pendingWaveResult?.reward} 
-        onClose={handleQuizClose} 
+      <Quiz
+        open={quizOpen}
+        questionData={quizQuestion}
+        baseReward={pendingWaveResult?.reward}
+        onClose={handleQuizClose}
       />
     </div>
   );

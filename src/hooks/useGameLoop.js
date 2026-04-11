@@ -1,8 +1,8 @@
+// \hooks\useGameLoop.js
 import { useState, useEffect, useRef, useCallback } from 'react';
 import mapConfig from '../config/mapConfig.json';
 import enemyConfig from '../config/enemyConfig.json';
 import towerConfig from '../config/towerConfig.json';
-import waveConfig from '../config/waveConfig.json';
 
 export default function useGameLoop({ towers = [], setTowers = () => {}, onEnemyEscape = () => {} } = {}) {
   const [enemies, setEnemies] = useState([]);
@@ -14,9 +14,13 @@ export default function useGameLoop({ towers = [], setTowers = () => {}, onEnemy
 
   const [waveActive, setWaveActive] = useState(false);
 
-  const startWave = useCallback((waveNumber) => {
-    const waveData = waveConfig.waves[waveNumber - 1];
-    if (!waveData) return;
+  // startWave teraz przyjmuje bezpośrednio waveData dla tej konkretnej fali
+  const startWave = useCallback((waveData) => { // Zmieniono argument
+    if (!waveData || !waveData.enemies) {
+      console.warn(`Brak danych dla fali. Nie można rozpocząć.`);
+      setWaveActive(false);
+      return;
+    }
 
     let totalCount = 0;
     waveData.enemies.forEach(({ count }) => (totalCount += count));
@@ -43,7 +47,7 @@ export default function useGameLoop({ towers = [], setTowers = () => {}, onEnemy
 
     setEnemies(newEnemies);
     setWaveActive(true);
-  }, []);
+  }, []); // startWave nie zależy od waveConfig, bo dostaje konkretne waveData
 
   // Game loop: movement, spawning, tower shooting
   useEffect(() => {
@@ -160,7 +164,6 @@ export default function useGameLoop({ towers = [], setTowers = () => {}, onEnemy
         return { ...tower, cooldown: Math.max(0, newCooldown), shootingTimer: Math.max(0, newShootingTimer), isShooting };
       });
 
-      // Remove dead enemies
       updatedEnemies = updatedEnemies.filter(e => e.health > 0);
 
       if (escapeDamageTotal !== 0) {

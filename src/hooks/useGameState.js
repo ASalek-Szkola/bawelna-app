@@ -1,8 +1,9 @@
-import { useState, useRef, useCallback } from 'react';
+// \hooks\useGameState.js
+import { useState, useRef, useCallback, useEffect } from 'react';
 import quizConfig from '../config/quizConfig.json';
-import waveConfig from '../config/waveConfig.json';
+import { generateSingleWaveData } from '../utils/waveGenerator'; // Importuj generator pojedynczej fali
 
-export default function useGameState() {
+export default function useGameState(difficulty) { // Teraz przyjmuje 'difficulty'
   const [health, setHealth] = useState(100);
   const [wave, setWave] = useState(1);
   const [money, setMoney] = useState(500);
@@ -13,11 +14,20 @@ export default function useGameState() {
   const quizOpeningRef = useRef(false);
   const [pendingWaveResult, setPendingWaveResult] = useState(null);
 
-  // store references to loop controls so Quiz close can clear/stop the loop
+  // Stan do przechowywania konfiguracji obecnej fali
+  const [currentWaveData, setCurrentWaveData] = useState(() =>
+    generateSingleWaveData(difficulty, 1) // Generuj dane dla pierwszej fali
+  );
+
+  // Użyj useEffect do generowania danych nowej fali, gdy wave lub difficulty się zmieni
+  useEffect(() => {
+    setCurrentWaveData(generateSingleWaveData(difficulty, wave));
+  }, [difficulty, wave]); // Zależności: difficulty i wave
+
   const loopControls = useRef({ setWaveActive: null, clearEnemies: null });
 
+  // currentWaveData jest teraz zarządzane wewnętrznie, więc syncLoopState już go nie potrzebuje jako argumentu
   const syncLoopState = useCallback((enemies = [], waveActive = false, setWaveActive = null, clearEnemies = null) => {
-    // update stored control functions
     loopControls.current.setWaveActive = setWaveActive;
     loopControls.current.clearEnemies = clearEnemies;
 
@@ -25,8 +35,15 @@ export default function useGameState() {
 
     const allDeadOrEscaped = enemies.length === 0 || (enemies.length > 0 && enemies.every((e) => e.health <= 0 || e.escaped));
 
+    if (!currentWaveData) {
+        console.warn("Brak danych dla bieżącej fali. Możliwy błąd w generowaniu fal.");
+        if (typeof setWaveActive === 'function') setWaveActive(false);
+        if (typeof clearEnemies === 'function') clearEnemies();
+        return;
+    }
+
     if (waveActive && !quizOpen && !quizOpeningRef.current && allDeadOrEscaped) {
-      const reward = waveConfig.waves[wave - 1]?.reward || 0;
+      const reward = currentWaveData.reward || 0; // Użyj currentWaveData
       let chosenQuestion = null;
       const allQuestions = Array.isArray(quizConfig?.questions) ? quizConfig.questions : [];
 
@@ -50,24 +67,23 @@ export default function useGameState() {
         setQuizOpen(true);
       } else {
         setMoney((prev) => prev + reward);
-        setWave((prev) => prev + 1);
+        setWave((prev) => prev + 1); // Zwiększenie numeru fali spowoduje regenerację currentWaveData
         if (typeof clearEnemies === 'function') clearEnemies();
         if (typeof setWaveActive === 'function') setWaveActive(false);
       }
     }
-  }, [factsHistory, quizOpen, wave]);
+  }, [factsHistory, quizOpen, wave, currentWaveData]); // Dodano currentWaveData do zależności
 
   const handleQuizClose = useCallback((isCorrect) => {
     const base = pendingWaveResult?.reward || 0;
     const bonus = isCorrect ? Math.floor(base * 0.25) : 0;
     setMoney((prev) => prev + base + bonus);
-    setWave((prev) => prev + 1);
+    setWave((prev) => prev + 1); // Zwiększenie numeru fali spowoduje regenerację currentWaveData
     setPendingWaveResult(null);
     quizOpeningRef.current = false;
     setQuizOpen(false);
     setQuizQuestion(null);
 
-    // ensure loop cleaned up
     try {
       if (loopControls.current.clearEnemies) loopControls.current.clearEnemies();
       if (typeof loopControls.current.setWaveActive === 'function') loopControls.current.setWaveActive(false);
@@ -87,6 +103,7 @@ export default function useGameState() {
     quizQuestion,
     pendingWaveResult,
     handleQuizClose,
-    syncLoopState
+    syncLoopState,
+    currentWaveData // Zwracamy currentWaveData
   };
 }
