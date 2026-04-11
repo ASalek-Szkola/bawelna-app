@@ -50,4 +50,4 @@ const WaveManager = ({ wave, onStartWave, waveActive, enemies = [] }) => {
   );
 };
 
-export default WaveManager;
+export default React.memo(WaveManager);

@@ -42,4 +42,4 @@ const TowerShop = ({ money, selectedType, onSelectType }) => {
   );
 };
 
-export default TowerShop;
+export default React.memo(TowerShop);

@@ -78,4 +78,4 @@ const TowerInfo = ({ type, level, onUpgrade, onSell, cooldown, onTargetingChange
   );
 };
 
-export default TowerInfo;
+export default React.memo(TowerInfo);

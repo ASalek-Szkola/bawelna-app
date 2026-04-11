@@ -40,4 +40,4 @@ const GameInfo = ({ health, wave, money }) => {
   );
 };
 
-export default GameInfo;
+export default React.memo(GameInfo);

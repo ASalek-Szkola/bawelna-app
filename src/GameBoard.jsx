@@ -1,18 +1,16 @@
 // GameBoard.jsx
-import React from 'react';
+import React, { useState } from 'react';
 import Tower from './Tower';
 import Enemy from './Enemy';
 import mapConfig from './config/mapConfig.json';
 import towerConfig from './config/towerConfig.json';
+import { isPointOnPath } from './utils/pathUtils';
 
 const GameBoard = ({ 
   towers, 
   onTowerClick, 
   onBoardClick, 
   shopSelectedType, 
-  previewPos, 
-  previewValid, 
-  onBoardMouseMove,
   enemies =[],               
   onEnemyEscape,              
   selectedTower,              
@@ -22,6 +20,9 @@ const GameBoard = ({
 }) => {
   const { width, height } = mapConfig.board;
   const { path, pathWidth } = mapConfig;
+
+  const [previewPos, setPreviewPos] = useState(null);
+  const previewValid = previewPos ? !isPointOnPath(previewPos.x, previewPos.y, path, pathWidth) : false;
 
   // Uses scale to calculate accurate coordinates on shrunken boards
   const handleBoardClick = (e) => {
@@ -33,11 +34,18 @@ const GameBoard = ({
   };
 
   const handleMouseMove = (e) => {
-    if (!onBoardMouseMove) return;
+    if (!shopSelectedType) {
+      if (previewPos) setPreviewPos(null);
+      return;
+    }
     const rect = e.currentTarget.getBoundingClientRect();
     const x = Math.round((e.clientX - rect.left) / scale);
     const y = Math.round((e.clientY - rect.top) / scale);
-    onBoardMouseMove(x, y);
+    setPreviewPos({ x, y });
+  };
+
+  const handleMouseLeave = () => {
+    setPreviewPos(null);
   };
 
   const pathD = path.map((p, i) => (i === 0 ? `M ${p.x} ${p.y}` : `L ${p.x} ${p.y}`)).join(' ');
@@ -51,6 +59,7 @@ const GameBoard = ({
         if (onBoardRightClick) onBoardRightClick();
       }}
       onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
     >
       <svg width={width} height={height} style={{ position: 'absolute', left: 0, top: 0, pointerEvents: 'none', zIndex: 0 }}>
         <path d={pathD} stroke="var(--path-color)" strokeWidth={pathWidth} strokeLinecap="round" strokeLinejoin="round" fill="none" opacity="0.85" />

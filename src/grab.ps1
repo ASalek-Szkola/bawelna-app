@@ -1,5 +1,5 @@
 # Define the file extensions to look for
-$extensions = @("*.jsx", "*.css", "*.json")
+$extensions = @("*.jsx", "*.css", "*.json", "*.js")
 
 # Initialize an empty string to hold all content
 $allContent = ""

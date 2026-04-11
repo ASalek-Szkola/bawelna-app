@@ -48,4 +48,4 @@ const QuizFacts = ({ onHistoryUpdate, intervalMs = 8000, maxHistory = 50 }) => {
   );
 };
 
-export default QuizFacts;
+export default React.memo(QuizFacts);
