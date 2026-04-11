@@ -1,17 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import Tower from './Tower';
 import Enemy from './Enemy';
 import mapConfig from '../../config/mapConfig.json';
 import towerConfig from '../../config/towerConfig.json';
-import { isPointOnPath } from '../../utils/pathUtils';
+import { isPointOnPath, isOverlappingTower } from '../../utils/pathUtils';
 import '../../styles/GameBoard.css';
 
 const GameBoard = ({ 
   towers, 
   onTowerClick, 
   onBoardClick, 
-  shopSelectedType, 
+  shopSelectedType, // Ten prop jest kluczowy dla trybu stawiania
   enemies =[],               
   onEnemyEscape,              
   selectedTower,              
@@ -23,9 +23,23 @@ const GameBoard = ({
   const { path, pathWidth } = mapConfig;
 
   const [previewPos, setPreviewPos] = useState(null);
-  const previewValid = previewPos ? !isPointOnPath(previewPos.x, previewPos.y, path, pathWidth) : false;
+
+  // Dynamiczne sprawdzanie poprawności miejsca dla podglądu
+  const isPlacementValid = useMemo(() => {
+    if (!previewPos || !shopSelectedType) return false;
+    
+    const TOWER_SIZE = 40; // Rozmiar wieży, zgodny z Tower.jsx i useTowers.js
+    
+    const onPath = isPointOnPath(previewPos.x, previewPos.y, path, pathWidth);
+    const overlapping = towers.some(t => isOverlappingTower(previewPos.x, previewPos.y, t.x, t.y, TOWER_SIZE));
+    
+    return !onPath && !overlapping;
+  }, [previewPos, shopSelectedType, towers, path, pathWidth]);
+
 
   const handleBoardClick = (e) => {
+    // Jeśli shopSelectedType jest aktywne, to klikamy w celu postawienia
+    // jeśli nie jest aktywne, to klikamy w celu odznaczenia wybranej wieży
     if (!onBoardClick) return;
     const rect = e.currentTarget.getBoundingClientRect();
     const x = Math.round((e.clientX - rect.left) / scale);
@@ -55,7 +69,7 @@ const GameBoard = ({
       className="game-board-inner"
       onClick={handleBoardClick}
       onContextMenu={(e) => {
-        if (shopSelectedType) e.preventDefault();
+        if (shopSelectedType) e.preventDefault(); // Zapobiegnij menu kontekstowemu, gdy próbujemy stawiać
         if (onBoardRightClick) onBoardRightClick();
       }}
       onMouseMove={handleMouseMove}
@@ -67,9 +81,14 @@ const GameBoard = ({
 
       {towers.map((tower) => (
         <Tower
-          key={tower.id} x={tower.x} y={tower.y} type={tower.type} isShooting={tower.isShooting}
+          key={tower.id} 
+          x={tower.x} 
+          y={tower.y} 
+          type={tower.type} 
+          isShooting={tower.isShooting}
           onClick={() => onTowerClick && onTowerClick(tower.id)}
           onRightClick={() => onTowerRightClick && onTowerRightClick(tower.id)}
+          isPlacingNewTower={!!shopSelectedType} // Przekazujemy informację do Tower
         />
       ))}
 
@@ -83,14 +102,35 @@ const GameBoard = ({
           const towerData = towerConfig[shopSelectedType];
           const range = towerData?.levels?.[0]?.range ?? 100;
           const diameter = range * 2; 
-          const ringColor = previewValid ? 'var(--preview-valid-fill)' : 'var(--preview-invalid-fill)';
-          const ringBorder = previewValid ? 'var(--preview-valid-border)' : 'var(--preview-invalid-border)';
+          const ringColor = isPlacementValid ? 'var(--preview-valid-fill)' : 'var(--preview-invalid-fill)';
+          const ringBorder = isPlacementValid ? 'var(--preview-valid-border)' : 'var(--preview-invalid-border)';
 
           return (
-            <div style={{ position: 'absolute', left: `${previewPos.x}px`, top: `${previewPos.y}px`, pointerEvents: 'none', transform: 'translate(-50%, -50%)', zIndex: 18 }}>
+            <div 
+              style={{ 
+                position: 'absolute', 
+                left: `${previewPos.x}px`, 
+                top: `${previewPos.y}px`, 
+                // Ważne: pointerEvents: 'none' jest nadal potrzebne, aby kliknięcie przeszło do GameBoard
+                pointerEvents: 'none', 
+                transform: 'translate(-50%, -50%)', 
+                zIndex: 18,
+                opacity: isPlacementValid ? 1 : 0.6 
+              }}
+            >
               <div style={{ position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)', width: `${diameter}px`, height: `${diameter}px`, borderRadius: '50%', background: ringColor, border: `2px solid ${ringBorder}`, boxSizing: 'border-box', zIndex: 0, pointerEvents: 'none' }} />
               <div style={{ width: `${SIZE}px`, height: `${SIZE}px`, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 20 }}>
-                <img src={towerData?.image} alt="preview" style={{ width: SIZE, height: SIZE, display: 'block', opacity: previewValid ? 0.98 : 0.85, filter: previewValid ? 'drop-shadow(0 0 6px var(--preview-valid-border))' : 'drop-shadow(0 0 6px var(--preview-invalid-border))' }} />
+                <img 
+                  src={towerData?.image} 
+                  alt="preview" 
+                  style={{ 
+                    width: SIZE, 
+                    height: SIZE, 
+                    display: 'block', 
+                    opacity: 0.98,
+                    filter: isPlacementValid ? 'none' : 'grayscale(100%) brightness(0.5)' 
+                  }} 
+                />
               </div>
             </div>
           );
@@ -99,6 +139,7 @@ const GameBoard = ({
 
       {selectedTower && selectedTower.x != null && selectedTower.y != null && (
         <>
+          {/* Ciemne tło dla wybranej wieży - upewnij się, że ma odpowiedni zIndex */}
           <div style={{ position: 'absolute', left: 0, top: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.45)', zIndex: 30, pointerEvents: 'none', transition: 'opacity 0.3s ease' }} />
           {(() => {
             const SIZE = 40;

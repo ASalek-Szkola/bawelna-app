@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import towerConfig from '../config/towerConfig.json';
 import mapConfig from '../config/mapConfig.json';
-import { isPointOnPath } from '../utils/pathUtils';
+import { isPointOnPath, isOverlappingTower } from '../utils/pathUtils'; // dodaj import
 
 export default function useTowers({ money = 0, setMoney = () => {} } = {}) {
   const [towers, setTowers] = useState([]);
@@ -12,6 +12,7 @@ export default function useTowers({ money = 0, setMoney = () => {} } = {}) {
 
   const handleSelectShopTower = (type) => {
     setShopSelectedType(type);
+    setSelectedTowerId(null); // Odznaczamy aktywną wieżę przy wyborze ze sklepu
   };
 
   const handleBoardRightClick = () => {
@@ -19,35 +20,48 @@ export default function useTowers({ money = 0, setMoney = () => {} } = {}) {
       setShopSelectedType(null);
       return;
     }
-    if (selectedTowerId) setSelectedTowerId(null);
+    setSelectedTowerId(null);
   };
 
   const handlePlaceTower = (x, y) => {
+    // Jeśli nic nie wybraliśmy ze sklepu, kliknięcie w puste miejsce odznacza wybraną wieżę
     if (!shopSelectedType) {
       setSelectedTowerId(null);
       return;
     }
+
+    const TOWER_SIZE = 40;
+
+    // 1. Sprawdź kolizję ze ścieżką
     if (isPointOnPath(x, y, mapConfig.path, mapConfig.pathWidth)) {
-      setShopSelectedType(null);
+      return; 
+    }
+
+    // 2. Sprawdź kolizję z innymi wieżami (KLUCZOWA NAPRAWA)
+    const overlaps = towers.some(t => isOverlappingTower(x, y, t.x, t.y, TOWER_SIZE));
+    if (overlaps) {
+      // Jeśli kliknęliśmy na inną wieżę mając coś w "ręce", 
+      // po prostu nic nie rób (nie stawiaj i nie odznaczaj sklepu)
       return;
     }
 
-    const half = 20;
+    // 3. Sprawdź fundusze
     const levelData = towerConfig[shopSelectedType].levels[0];
     if (!levelData) return;
     if (money < levelData.cost) {
-      // keep UI responsibilities (alerts) out of hooks when possible, but keep minimal feedback
-      alert('Brak wystarczających środków.');
+      alert('Brak monet!');
+      setShopSelectedType(null);
       return;
     }
 
     const newTower = {
       id: Date.now(),
-      x: Math.round(x - half),
-      y: Math.round(y - half),
+      x: Math.round(x - TOWER_SIZE / 2),
+      y: Math.round(y - TOWER_SIZE / 2),
       type: shopSelectedType,
       level: 0,
-      cooldown: 0
+      cooldown: 0,
+      targetingMode: 'first'
     };
 
     setMoney((prev) => prev - levelData.cost);
@@ -82,17 +96,8 @@ export default function useTowers({ money = 0, setMoney = () => {} } = {}) {
   };
 
   return {
-    towers,
-    setTowers,
-    selectedTower,
-    selectedTowerId,
-    setSelectedTowerId,
-    shopSelectedType,
-    handleSelectShopTower,
-    handleBoardRightClick,
-    handlePlaceTower,
-    handleSellTower,
-    handleUpgrade,
-    handleTargetingChange
+    towers, setTowers, selectedTower, selectedTowerId, setSelectedTowerId,
+    shopSelectedType, handleSelectShopTower, handleBoardRightClick,
+    handlePlaceTower, handleSellTower, handleUpgrade, handleTargetingChange
   };
 }

@@ -1,9 +1,10 @@
+// \components\Board\Tower.jsx
 import React from 'react';
 import PropTypes from 'prop-types';
 import towerConfig from '../../config/towerConfig.json';
 import '../../styles/Tower.css';
 
-const Tower = ({ x, y, type, onClick, isShooting, onRightClick }) => {
+const Tower = ({ x, y, type, onClick, isShooting, onRightClick, isPlacingNewTower }) => { 
   const towerData = towerConfig[type];
   if (!towerData) return null;
 
@@ -17,18 +18,33 @@ const Tower = ({ x, y, type, onClick, isShooting, onRightClick }) => {
         position: 'absolute',
         width: `${SIZE}px`,
         height: `${SIZE}px`,
-        cursor: 'pointer',
+        cursor: isPlacingNewTower ? 'default' : 'pointer', 
       }}
       onClick={(e) => {
-        e.stopPropagation();
+        // Ważne: Zawsze zatrzymaj propagację, aby kliknięcie nie przebiło się do GameBoard
+        e.stopPropagation(); 
+        if (isPlacingNewTower) { 
+          // Jeśli jesteśmy w trybie stawiania nowej wieży, 
+          // całkowicie ignoruj to kliknięcie. Nie zaznaczaj starej wieży.
+          return; 
+        }
+        // Jeśli nie jesteśmy w trybie stawiania, wtedy normalnie wywołaj onClick (zaznaczenie wieży).
         onClick && onClick();
       }}
       onContextMenu={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
+        // Ważne: Zawsze zapobiegnij domyślnemu menu kontekstowemu przeglądarki
+        e.preventDefault(); 
+        // Ważne: Zawsze zatrzymaj propagację
+        e.stopPropagation(); 
+        if (isPlacingNewTower) { 
+          // Jeśli jesteśmy w trybie stawiania nowej wieży, 
+          // całkowicie ignoruj prawy klik.
+          return;
+        }
+        // Jeśli nie jesteśmy w trybie stawiania, wtedy normalnie wywołaj onRightClick (sprzedaż/ulepszanie).
         onRightClick && onRightClick();
       }}
-      aria-label={`Wieżyczka ${type}`}
+      aria-label={`WieĹĽyczka ${type}`}
     >
       <img
         src={towerData.image}
@@ -46,14 +62,20 @@ Tower.propTypes = {
   onClick: PropTypes.func,
   isShooting: PropTypes.bool,
   onRightClick: PropTypes.func,
+  isPlacingNewTower: PropTypes.bool,
 };
 
 Tower.defaultProps = {
   isShooting: false,
+  isPlacingNewTower: false,
 };
 
 function areEqual(prev, next) {
-  return prev.x === next.x && prev.y === next.y && prev.type === next.type && prev.isShooting === next.isShooting;
+  return prev.x === next.x && 
+         prev.y === next.y && 
+         prev.type === next.type && 
+         prev.isShooting === next.isShooting &&
+         prev.isPlacingNewTower === next.isPlacingNewTower; 
 }
 
 export default React.memo(Tower, areEqual);

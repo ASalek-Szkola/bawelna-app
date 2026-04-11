@@ -20,3 +20,18 @@ export function isPointOnPath(x, y, path = [], pathWidth = 0) {
 export function distance(a, b) {
   return Math.hypot(a.x - b.x, a.y - b.y);
 }
+
+// Sprawdza, czy nowa wieża (o środku nx, ny) nachodzi na istniejącą wieżę (tx, ty)
+export function isOverlappingTower(nx, ny, tx, ty, size = 40) {
+  // Obliczamy lewy górny róg nowej wieży (tak jak jest zapisywana w stanie)
+  const newX = nx - size / 2;
+  const newY = ny - size / 2;
+  
+  // Sprawdzenie kolizji prostokątnej (AABB)
+  return !(
+    newX + size <= tx || 
+    newX >= tx + size || 
+    newY + size <= ty || 
+    newY >= ty + size
+  );
+}
