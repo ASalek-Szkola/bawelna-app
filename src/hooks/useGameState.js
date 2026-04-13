@@ -11,6 +11,7 @@ export default function useGameState(difficulty) { // Teraz przyjmuje 'difficult
   const [factsHistory, setFactsHistory] = useState([]);
   const [quizOpen, setQuizOpen] = useState(false);
   const [quizQuestion, setQuizQuestion] = useState(null);
+  const [usedQuestionsIndices, setUsedQuestionsIndices] = useState([]);
   const quizOpeningRef = useRef(false);
   const [pendingWaveResult, setPendingWaveResult] = useState(null);
 
@@ -42,23 +43,42 @@ export default function useGameState(difficulty) { // Teraz przyjmuje 'difficult
         return;
     }
 
-    if (waveActive && !quizOpen && !quizOpeningRef.current && allDeadOrEscaped) {
-      const reward = currentWaveData.reward || 0; // Użyj currentWaveData
-      let chosenQuestion = null;
+      if (waveActive && !quizOpen && !quizOpeningRef.current && allDeadOrEscaped) {
+      const reward = currentWaveData.reward || 0;
       const allQuestions = Array.isArray(quizConfig?.questions) ? quizConfig.questions : [];
+      
+      // Filtrujemy pytania, których jeszcze nie było w tej turze (puli)
+      let availableIndices = allQuestions
+        .map((_, i) => i)
+        .filter(i => !usedQuestionsIndices.includes(i));
 
+      // Jeśli pula się wyczerpała, resetujemy i bierzemy wszystkie
+      if (availableIndices.length === 0) {
+        availableIndices = allQuestions.map((_, i) => i);
+      }
+
+      let chosenIdx = -1;
+
+      // Próba dopasowania do faktu z historii, ale tylko z dostępnych (nieużytych) pytań
       if (factsHistory && factsHistory.length > 0) {
         const pickFact = factsHistory[Math.floor(Math.random() * factsHistory.length)].fact;
-        const qCandidates = allQuestions.filter((q) => q && q.question && q.fact && String(q.fact).trim() === String(pickFact).trim());
-        if (qCandidates.length) chosenQuestion = qCandidates[Math.floor(Math.random() * qCandidates.length)];
+        const matchingIndices = availableIndices.filter(idx => {
+          const q = allQuestions[idx];
+          return q && q.fact && String(q.fact).trim() === String(pickFact).trim();
+        });
+        
+        if (matchingIndices.length > 0) {
+          chosenIdx = matchingIndices[Math.floor(Math.random() * matchingIndices.length)];
+        }
       }
 
-      if (!chosenQuestion) {
-        const qCandidates = allQuestions.filter((q) => q && q.question);
-        if (qCandidates.length) chosenQuestion = qCandidates[Math.floor(Math.random() * qCandidates.length)];
+      // Jeśli nie dopasowano faktu, wybierz losowo z dostępnych
+      if (chosenIdx === -1 && availableIndices.length > 0) {
+        chosenIdx = availableIndices[Math.floor(Math.random() * availableIndices.length)];
       }
 
-      if (chosenQuestion) {
+      if (chosenIdx !== -1) {
+        const chosenQuestion = { ...allQuestions[chosenIdx], _originalIndex: chosenIdx };
         quizOpeningRef.current = true;
         setQuizQuestion(chosenQuestion);
         setPendingWaveResult({ reward, waveNumber: wave });
@@ -78,7 +98,13 @@ export default function useGameState(difficulty) { // Teraz przyjmuje 'difficult
     const base = pendingWaveResult?.reward || 0;
     const bonus = isCorrect ? Math.floor(base * 0.25) : 0;
     setMoney((prev) => prev + base + bonus);
-    setWave((prev) => prev + 1); // Zwiększenie numeru fali spowoduje regenerację currentWaveData
+    setWave((prev) => prev + 1);
+    
+    // Dodaj index pytania do użytych
+    if (quizQuestion && quizQuestion._originalIndex !== undefined) {
+      setUsedQuestionsIndices(prev => [...prev, quizQuestion._originalIndex]);
+    }
+
     setPendingWaveResult(null);
     quizOpeningRef.current = false;
     setQuizOpen(false);

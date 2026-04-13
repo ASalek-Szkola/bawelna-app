@@ -1,1124 +1,204 @@
 {
   "questions": [
     {
-      "question": "Kiedy zaczęło się niewolnictwo czarnoskórych w Ameryce?",
+      "question": "Z czego w większości składają się amerykańskie banknoty dolarowe?",
       "options": [
-        "1492",
-        "1619",
-        "1776"
+        "Z papieru drzewnego",
+        "Z bawełny i lnu",
+        "Z włókien syntetycznych"
       ],
-      "correct_answer": "1619",
-      "fact": "W 1619 roku pierwszy transport czarnoskórych niewolników dotarł do Jamestown w Wirginii, co jest uznawane za początek niewolnictwa na terenach dzisiejszych Stanów Zjednoczonych."
+      "fact": "Amerykańskie banknoty nie są robione ze zwykłego papieru! Składają się w 75% z bawełny i 25% z lnu, co czyni je znacznie bardziej odpornymi na zagniecenia i pranie niż zwykły papier.",
+      "correctIndex": 1
     },
     {
-      "question": "Jakie były główne produkty wytwarzane przez niewolników w Ameryce?",
+      "question": "Z którego kontynentu, pod kątem historycznym, pochodzi uprawa bawełny?",
       "options": [
-        "Wino i piwo",
-        "Tytoń i bawełna",
-        "Zboża i owoce"
+        "Wyłącznie z Azji (Indie)",
+        "Z Ameryki Północnej",
+        "Została udomowiona niezależnie w obu Amerykach, Indiach i Afryce"
       ],
-      "correct_answer": "Tytoń i bawełna",
-      "fact": "Czarnoskórzy niewolnicy byli wykorzystywani głównie w uprawach bawełny, tytoniu, a także w produkcji cukru na plantacjach w Południowych Stanach Zjednoczonych."
+      "fact": "Fascynujący fakt: uprawa bawełny została udomowiona całkowicie niezależnie i o różnym czasie w kilku niespokrewnionych ze sobą regionach m.in. w dolinie Indusu, w starożytnym Peru, a także w Afryce!",
+      "correctIndex": 2
     },
     {
-      "question": "Jak nazywał się słynny czarnoskóry lider, który walczył o zniesienie niewolnictwa?",
+      "question": "Kiedy została wynaleziona pierwsza nowoczesna odziarniarka bawełny (tzw. cotton gin), która zrewolucjonizowała produkcję?",
       "options": [
-        "Frederick Douglass",
-        "Harriet Tubman",
-        "Sojourner Truth"
+        "1793 r. przez Eliego Whitneya",
+        "1850 r. przez Thomasa Edisona",
+        "1901 r. przez Henry'ego Forda"
       ],
-      "correct_answer": "Frederick Douglass",
-      "fact": "Frederick Douglass był jednym z najsłynniejszych abolicjonistów, który samemu uciekł z niewolnictwa, a potem poświęcił swoje życie walce o zniesienie niewolnictwa w Stanach Zjednoczonych."
+      "fact": "Odziarniarka bawełny wynaleziona w 1793 roku przyspieszyła oddzielanie włókien od nasion o 50 razy! Niestety spowodowało to drastyczny wręcz wzrost popytu na niewolniczą pracę, ponieważ sam plon trzeba było ręcznie zbierać.",
+      "correctIndex": 0
     },
     {
-      "question": "Który z tych dokumentów zniósł niewolnictwo w Stanach Zjednoczonych?",
+      "question": "Ile litrów wody potrzeba przeciętnie do wyprodukowania jednej bawełnianej koszulki (t-shirtu)?",
       "options": [
-        "Deklaracja niepodległości",
-        "Emancypacja",
-        "Konstytucja Stanów Zjednoczonych"
+        "Około 250 litrów",
+        "Ponad 2700 litrów",
+        "Poniżej 50 litrów"
       ],
-      "correct_answer": "Emancypacja",
-      "fact": "Proklamacja Emancypacji, wydana przez Abrahama Lincolna w 1863 roku, znosiła niewolnictwo na terenach objętych wojną domową."
+      "fact": "Uprawa bawełny jest niezwykle wodożerna. Do wytworzenia jednej koszulki potrzeba około 2700 litrów wody, czyli tyle, ile dorosły człowiek, pijąc codziennie wodę, spożywa przez 3 lata!",
+      "correctIndex": 1
     },
     {
-      "question": "Jakie państwo było głównym miejscem, do którego transportowano czarnoskórych niewolników z Afryki?",
+      "question": "W jakich popularnych produktach codziennego użytku można znaleźć jadalny olej wytwarzany z nasion bawełny?",
       "options": [
-        "Jamajka",
-        "Stany Zjednoczone",
-        "Brazylia"
+        "W margarynach i przekąskach/chipsach",
+        "Prawie wyłącznie w kosmetykach samochodowych",
+        "Wcale, roślina w całości jest niejadalna"
       ],
-      "correct_answer": "Brazylia",
-      "fact": "Brazylia była jednym z największych importerów czarnoskórych niewolników, do kraju tego trafiło ich około 5 milionów, co stanowiło ponad połowę wszystkich transportowanych do Ameryki."
+      "fact": "Nasiona bawełny – po zneutralizowaniu toksycznego gossypolu dla ludzi – są tłoczone na relatywnie tani olej z wysokim punktem dymienia, często używany do smażenia frytek i w masowych przegryzkach.",
+      "correctIndex": 0
     },
     {
-      "question": "Kto była Harriet Tubman?",
+      "question": "Kim był słynny amerykański badacz, nazywany \"Ojcem Czarnej Historii\" (tzw. Black History Month)?",
       "options": [
-        "Abolicjonistka, która pomogła wielu niewolnikom uciec na wolność",
-        "Pierwsza czarnoskóra nauczycielka w USA",
-        "Przywódczyni wojskowa w czasie Wojny Secesyjnej"
-      ],
-      "correct_answer": "Abolicjonistka, która pomogła wielu niewolnikom uciec na wolność",
-      "fact": "Harriet Tubman była byłym niewolnikiem, który stał się jednym z najsłynniejszych liderów w ruchu abolicjonistycznym, prowadząc 'Szlak Wolności', pomagając setkom niewolników uciec na Północ."
-    },
-    {
-      "question": "W jakim roku zniesiono niewolnictwo w Stanach Zjednoczonych?",
-      "options": [
-        "1863",
-        "1865",
-        "1870"
-      ],
-      "correct_answer": "1865",
-      "fact": "Niewolnictwo zostało oficjalnie zniesione w Stanach Zjednoczonych po ratyfikacji 13. poprawki do Konstytucji w 1865 roku."
-    },
-    {
-      "question": "Kto był pierwszym czarnoskórym prezydentem Stanów Zjednoczonych?",
-      "options": [
-        "Barack Obama",
-        "Martin Luther King",
+        "Martin Luther King Jr.",
+        "Carter G. Woodson",
         "Frederick Douglass"
       ],
-      "correct_answer": "Barack Obama",
-      "fact": "Barack Obama został pierwszym czarnoskórym prezydentem Stanów Zjednoczonych, pełniąc urząd od 2009 do 2017 roku."
+      "fact": "Carter G. Woodson, harwardzki historyk, w 1926 roku zainicjował Tydzień Historii Murzynów, który z biegiem dekad przekształcił się w celebrowany na świecie Black History Month, dając głos czarnoskórym badaczom.",
+      "correctIndex": 1
     },
     {
-      "question": "Jakie wydarzenie jest uznawane za początek wojny domowej w USA?",
+      "question": "Jak nazywała się uformowana w XIX wieku najsłynniejsza sieć tajnych kryjówek do ucieczki z plantacji na wolną Północ?",
       "options": [
-        "Bitwa pod Gettysburgiem",
-        "Bitwa pod Fort Sumter",
-        "Proklamacja Emancypacji"
+        "Freedom Trail (Szlak Wolności)",
+        "Underground Railroad (Kolej Podziemna)",
+        "The Midnight Express (Północny Ekspres)"
       ],
-      "correct_answer": "Bitwa pod Fort Sumter",
-      "fact": "Wojna secesyjna w USA rozpoczęła się w 1861 roku, kiedy wojskowa załoga Unii została zaatakowana przez konfederatów pod Fortem Sumter w Południowej Karolinie."
+      "fact": "Kolej Podziemna to tylko szyfr! Nie była fizycznym pociągiem. Bezpieczne domy nazywano stacjami, przewodników konduktorami, a ładunek uciekającymi w pocie czoła pasażerami.",
+      "correctIndex": 1
     },
     {
-      "question": "Który z poniższych ruchów walczył o zniesienie niewolnictwa?",
+      "question": "Jaki naturalny kolor ma najczęściej bawełna historycznych dzikich odmian rosnąca prosto z krzewu?",
       "options": [
-        "Ruch na rzecz równości kobiet",
-        "Abolicjonizm",
-        "Ruch na rzecz praw obywatelskich"
+        "Od początku jest śnieżnobiała",
+        "Występuje też naturalnie jako kremowa, brązowa, a nawet zielonkawa",
+        "Zawsze jest intensywnie szara i bez zapachu"
       ],
-      "correct_answer": "Abolicjonizm",
-      "fact": "Abolicjonizm to ruch społeczny, który dążył do zniesienia niewolnictwa, a jego najsłynniejszymi przedstawicielami byli Frederick Douglass, Harriet Tubman i Sojourner Truth."
+      "fact": "Choć biały kolor stał się powszechnym wymogiem by ułatwić masowe farbowanie w przemyśle odzieżowym, przed modyfikacjami powszechne były odmiany bawełny barwy brązowej (khaki) i oliwkowozielonej!",
+      "correctIndex": 1
     },
     {
-      "question": "Jak nazywała się pierwsza czarnoskóra kobieta, która uzyskała licencjat na Uniwersytecie w Stanach Zjednoczonych?",
+      "question": "Dred Scott w 1857 wytoczył przełomowy amerykański proces sądowy swojemu właścicielowi. O co on walczył?",
       "options": [
-        "Sojourner Truth",
-        "Harriet Tubman",
-        "Mary McLeod Bethune"
+        "O sprawiedliwą zapłatę za przymusowy zbiór z wielu lat pracy",
+        "O prawowitą wolność własną i całej swojej rodziny",
+        "O prawo powrotu statkiem wstecz do Afryki"
       ],
-      "correct_answer": "Sojourner Truth",
-      "fact": "Sojourner Truth była abolicjonistką i działaczką na rzecz praw kobiet, znaną również z przemówienia 'Ain't I a Woman?' wygłoszonego w 1851 roku."
+      "fact": "W kuriozalnym dla tych czasów procesie zniewolony Dred Scott argumentował, że sam fakt pobytu z \"panem\" przez 3 lata w \"wolnym stanie\" czyni go automatycznie wolnym. Przeprawa ta jednak, niestety z negatywnym skutkiem, zaostrzyła nastroje do wybuchu Wojny.",
+      "correctIndex": 1
     },
     {
-      "question": "Jakie miasto było jednym z głównych portów handlowych dla czarnoskórych niewolników w USA?",
+      "question": "Z którego zakątka świata pochodzi zgrabne określenie \"Denim\", wytrzymała bawełniana odzież – znana masowo głównie jako dżinsy?",
       "options": [
-        "Charleston",
-        "New York",
-        "Chicago"
+        "Od kopalni i pociągów Teksasu (USA)",
+        "Z nadmorskiej Genui we Włoszech, ale to w Nîmes we Francji uszyto 'Sarge de Nimes' pieszczotliwie nazywając the Denim",
+        "Z mroźnego Londynu, od fabryk dżinsowych"
       ],
-      "correct_answer": "Charleston",
-      "fact": "Charleston w Południowej Karolinie był jednym z głównych portów handlowych, do którego przybywali czarnoskórzy niewolnicy transportowani przez Atlantyk."
+      "fact": "Słowo 'denim' de facto wywodzi się od miasteczka we Francji z którego kupowano materiał, mianowicie z Serge de Nîmes („serża z Nîmes”). Kolor niebieskowyblakły stał się popkulturą dopiero, gdy gorączka złota dotarła do USA w późnych rekreacjach robotniczych.",
+      "correctIndex": 1
     },
     {
-      "question": "W którym roku zakończyła się Wojna Secesyjna?",
+      "question": "Powszechnie przyjęto, że bawełna to włókno pochodzenia... jakiego konkretnie organu botanicznego?",
       "options": [
-        "1863",
-        "1865",
-        "1870"
+        "Z twardych liści okrywowych rośliny",
+        "Są to bardzo wyciągnięte korzenie powiewające na wietrze",
+        "Jest to owoc, a dokładnie okrywowe włókna wyrastające na nasionach."
       ],
-      "correct_answer": "1865",
-      "fact": "Wojna Secesyjna zakończyła się w 1865 roku, kiedy wojska Konfederacji poddały się wojskom Unii, co doprowadziło do zniesienia niewolnictwa."
+      "fact": "Bawełna rosnąca w twardym i pękającym pąku jest z botanicznego punktu widzenia formą ewolucyjnej kłębistej łuski... To gąbczaste eteryczne włókno otaczające drobne nasionko po po rozkwitnięciu chroni samo nasiono i w skali natury pozwala mu podróżować na wietrze!",
+      "correctIndex": 2
     },
     {
-      "question": "Kto był autorem książki 'Harriet Beecher Stowe, Uncle Tom's Cabin'?",
+      "question": "Jaki kraj produkuje współcześnie najwięcej gęstej bawełny i jednocześnie najwięcej na świecie z niej w swoich granicach konsumuje/przetwarza?",
       "options": [
-        "Abraham Lincoln",
-        "Frederick Douglass",
-        "Harriet Beecher Stowe"
+        "Chiny",
+        "Stany Zjednoczone",
+        "Indie"
       ],
-      "correct_answer": "Harriet Beecher Stowe",
-      "fact": "Harriet Beecher Stowe była autorką powieści 'Niegrzeczny Tom', która wpłynęła na postawy społeczne w USA i pomogła w walce z niewolnictwem."
+      "fact": "Chiny oraz Indie trzymają miano dominujących potęg w królestwie bawełnianym, rocznie przędąc tysiące ton do masowej azjatyckiej maszynerii odzieżowej, przy czym Indie w roku 2022 o krok przejęły pałeczkę pod kątem samego plonu.",
+      "correctIndex": 0
     },
     {
-      "question": "Jak nazywał się pierwszy czarnoskóry niewolnik, który uzyskał wolność w USA?",
+      "question": "Historyczny 'Wielki Ruch Z Północy', jakiego dokonało ok 6 milionów czarnoskórych ludzi po ewolucji rolnictwa, miał wpływ na upadek jakiego zjawiska?",
       "options": [
-        "Nat Turner",
-        "Dred Scott",
-        "Olaudah Equiano"
+        "Uwięzienie niewolników na plantacjach z racji rozwoju pociągów północnych",
+        "Przedłużające się zdominowanie rynku bawełny przez uprawy ręczne",
+        "Powstanie silnych jazzowych nurtów w Chicago i Detroit z racji opuszczenia rolniczego południa"
       ],
-      "correct_answer": "Olaudah Equiano",
-      "fact": "Olaudah Equiano był jednym z najbardziej znanych czarnoskórych niewolników, który zdobył wolność i został autorem autobiografii, w której opisał swoje doświadczenia."
+      "fact": "Masywna i nieformalna migracja na północne, wielkie miejskie rynki w XIX i XX wieku drastycznie odwróciła środek ciężkości rolniczej dominacji. Dała też ogromny pop i nową duszę stającym na nogach rynkom pracowniczym w ośrodkach miłujących R&B, Soul oraz Blues!",
+      "correctIndex": 2
     },
     {
-      "question": "Które z poniższych państw było jednym z pierwszych, które zniesło niewolnictwo?",
+      "question": "Zastanawiałeś się kiedyś dlaczego uważa się jedwab za ekskluzywniejszy od bawełny pod kątem wytrzymałości w rozciągających się napięciach?",
       "options": [
-        "Brazylia",
-        "Haiti",
-        "USA"
+        "Ze względu na mocno zbitą celulozę przewodu liściowego u bawełny",
+        "Związane to jest z obniżeniem wody – u jedwabiu odciągamy jej do poziomu 20%",
+        "Jedwab to wytrzymała przędza z wydzielin pająków i gąsienic jako ciągłe i mocniejsze włókno. Bawełna to roślina!"
       ],
-      "correct_answer": "Haiti",
-      "fact": "Haiti stało się pierwszym niezależnym państwem, które znosiło niewolnictwo w 1804 roku, po udanej rewolucji niewolników."
+      "fact": "Jedwab pochodzi z obśliniania przez maleήkie larwy! Natomiast naturalne włókna bawełniane to pasma o wiele lżejszej i o 50% gąbczastszej struktury, łatwo przepuszczające pot u człowieka - dlatego tak kochamy ubierać w nią się w słoneczne popołudnie.",
+      "correctIndex": 2
     },
     {
-      "question": "Kto był pierwszym czarnoskórym sędzią w USA?",
+      "question": "Kto został mianowany pierwszym czarnoskórym mężem stanu do prestiżowego fotela w amerykańskim Sądzie Najwyższym?",
       "options": [
         "Thurgood Marshall",
         "Clarence Thomas",
-        "Barack Obama"
+        "Hiram Revels"
       ],
-      "correct_answer": "Thurgood Marshall",
-      "fact": "Thurgood Marshall był pierwszym czarnoskórym sędzią w Sądzie Najwyższym USA, mianowanym przez prezydenta Lyndona B. Johnsona w 1967 roku."
+      "fact": "Genialny w retoryce sędzia Thurgood Marshall to legenda walki z prawną segregacją (znana sprawa delegalizacji segregacji w szkołach). Za owocną działalność i wstawiennictwo za ubogimi spędził ponad dwadzieścia lat aktywnie w ławach Sądu Najwyższego!",
+      "correctIndex": 0
     },
     {
-      "question": "Co oznacza termin 'middle passage' w kontekście niewolnictwa?",
+      "question": "Pojedynczy gest oporu jakiej kobiety w autobusie w 1955 roku stał się iskrą, która rozpaliła na dobre Ruch Praw Obywatelskich w USA?",
       "options": [
-        "Proces zniesienia niewolnictwa",
-        "Transport czarnoskórych niewolników przez Atlantyk",
-        "Nazwa dla handlu bronią"
-      ],
-      "correct_answer": "Transport czarnoskórych niewolników przez Atlantyk",
-      "fact": "Middle Passage to termin używany do opisania brutalnej podróży niewolników przez Atlantyk, gdzie tysiące Afrykanów były transportowane do Ameryki w okropnych warunkach."
-    },
-    {
-      "question": "Jak nazywała się pierwsza czarnoskóra kobieta, która wygłosiła przemówienie na rzecz zniesienia niewolnictwa?",
-      "options": [
-        "Sojourner Truth",
         "Harriet Tubman",
-        "Ida B. Wells"
+        "Rosa Parks",
+        "Sojourner Truth"
       ],
-      "correct_answer": "Sojourner Truth",
-      "fact": "Sojourner Truth była abolicjonistką, która stała się słynna po swoim przemówieniu 'Ain't I a Woman?' wygłoszonym w 1851 roku."
+      "fact": "Gdy znużona po pracy Rosa Parks pewnego czwartku odmówiła ustąpienia miejsca białemu pasażerowi w miejskim autobusie w Montgomery, została krótko po tym aresztowana. Zdarzenie to doprowadziło do bezprecedensowego 381-dniowego bojkotu komunikacji przez czarnych obywateli, wymuszając historyczne dla miasta zniesienie segregacji pasażerów transportu.",
+      "correctIndex": 1
     },
     {
-      "question": "W którym roku ogłoszono Proklamację Emancypacyjną?",
+      "question": "W jaki sposób najsłynniejszy aktywista i pastor, Martin Luther King Jr., skutecznie i podziwianie prowadził swoją rewolucyjną walkę o równouprawnienie i lepsze jutro Afroamerykanów?",
       "options": [
-        "1861",
-        "1863",
-        "1865"
+        "Poprzez wysoce rygorystyczne ale i pokojowe protesty i masowe obywatelskie nieposłuszeństwo",
+        "Poprzez zbrojne powstania w mniejszych przemysłowych miastach",
+        "Poprzez tworzenie alternatywnych rad politycznych na oddzielnych terytoriach"
       ],
-      "correct_answer": "1863",
-      "fact": "Proklamacja Emancypacji, wydana przez Abrahama Lincolna 1 stycznia 1863 roku, wyzwoliła wszystkich niewolników w Stanach Zjednoczonych, które były w stanie wojny z Unią."
+      "fact": "Inspirowany naukami Mahatmy Gandhiego, Martin Luther King autentycznie wierzył, że tylko stanowcza \"non-violence\" (nieagresja i wytrwała praca) może udowodnić moralną wyższość i złamać od wewnątrz szkodliwy ustrojowo-rasistowski system.",
+      "correctIndex": 0
     },
     {
-      "question": "Jakie wydarzenie miało miejsce w 1857 roku w sprawie Dreda Scotta?",
+      "question": "Niezwykle bohaterska uciekinierka z plantacji, Harriet Tubman, odbyła kilkanaście śmiertelnie niebezpiecznych i trudnych misji z powrotem na gnębiące Południe. W jakim celu ryzykowała swoim życiem o powrót tam?",
       "options": [
-        "Dred Scott dostał wolność",
-        "Sąd Najwyższy USA orzekł, że Afrykanie nie mogą być obywatelami USA",
-        "Został uchwalony 13. poprawka do Konstytucji"
+        "Poufnej zemsty na bogatych politykach Południa",
+        "Wyprowadzenia, po osłoną nocy, na wolność ponad 70 innych niewolników",
+        "Zdobycia w ukryciu map tras konfederackich by zniszczyć stacje metra"
       ],
-      "correct_answer": "Sąd Najwyższy USA orzekł, że Afrykanie nie mogą być obywatelami USA",
-      "fact": "W sprawie Dred Scotta Sąd Najwyższy USA w 1857 roku orzekł, że Afrykanie, zarówno ci wolni, jak i ci, którzy byli niewolnikami, nie mogą być obywatelami USA."
+      "fact": "Harriet Tubman z powodu swoich perfekcyjnych, brawurowych misji dla potajemnej sieci \"Kolei Podziemnej\" – otrzymała zaszczytny biblijny przydomek \"Mojżesz swoich braci\". Była tak przydatna, że pracowała później także jako uzbrojony szpieg i zwiadowca dla potężnej armii Unii!",
+      "correctIndex": 1
     },
     {
-      "question": "Jaki był główny cel ruchu Underground Railroad?",
+      "question": "Słynną decyzją Sądu Najwyższego USA rządom wszystkich oburzonych wschodnich i południowych stanów w 1954 nakazano pilnie zlikwidować krzywdzący i rygorystyczny dyskryminujący zabytek. Co nakazano zdelegalizować w pierwszej kolejności?",
       "options": [
-        "Przewożenie niewolników przez granice do Kanady",
-        "Organizowanie walki z niewolnictwem",
-        "Zbieranie funduszy na edukację czarnoskórych"
+        "Tradycyjną i chłodną w odbiorze segregację rasową w zrównanym dostępie do sal szkolnych w nowo budowanych szkołach",
+        "Męczące, przymusowe prace na farmach za małe obywatelskie zadłużenia państwowe",
+        "Ostatnie już rygory stanowe zakazujące pod surową karą zawierania państwowych małżeństw międzyrasowych we wszystkich urzędach na południu"
       ],
-      "correct_answer": "Przewożenie niewolników przez granice do Kanady",
-      "fact": "Underground Railroad to sieć tajnych dróg i bezpiecznych domów, które pomagały niewolnikom uciec na Północ lub do Kanady, gdzie niewolnictwo zostało zniesione."
+      "fact": "W historycznej, przełomowej sprawie „Brown vs. Rada Edukacji”, sąd USA odrzucił pożerającą do tamtej pory życie Afroamerykanów starą doktrynę \"oddzielni i w efekcie zawsze nierówni\". Postanowiono natychmiast zmieszać społeczeństwa, łącząc ławki oraz dostęp dzieci każdej rasy do porządnej amereykańskiej domeny oświatowej!",
+      "correctIndex": 0
     },
     {
-      "question": "Kto był autorem książki 'The Interesting Narrative of the Life of Olaudah Equiano'?",
+      "question": "Kultowy już do dziś cytat rzeki ludzkich obietnic: \"Znam dobrze ten trud... I Have a Dream! Oby moje czworo dzieci żyło kiedś tam w narodzie wolnym tak by osądzano je za to, kim są pod sercem, a nie za kolor ich skóry.\", padł w ikonicznym w historii obrony praw mniejszości przemówieniu. Przez kogo mianowicie pod Pomnikiem Lincolna z 1963 został wypowiedziany?",
       "options": [
-        "Olaudah Equiano",
-        "Frederick Douglass",
-        "Booker T. Washington"
+        "Długu wyczekujący swej amnestii bojownik Malcolm X żarliwie przemówił tak na połączonym i otwartym zjednoczeniu muzułmanów z czarnymi amerykanami",
+        "Spokojna ale stanowczo wyrażająca się w swym buncie Rosa Parks tuż po swoim ostatecznym wyjściu na wolność",
+        "Porażający charyzmą pastor Martin Luther King Jr w czasie finałowych dni wiecu - wielkiego Marszu Nadziei na Waszyngton o zjednoczenie pracy z godnością!"
       ],
-      "correct_answer": "Olaudah Equiano",
-      "fact": "Olaudah Equiano napisał swoją autobiografię, w której opisuje swoje doświadczenia jako niewolnik i późniejszy aktywista na rzecz zniesienia niewolnictwa."
-    },
-    {
-      "question": "Jakie państwo było głównym centrum transatlantyckiego handlu niewolnikami?",
-      "options": [
-        "Brazylia",
-        "Portugalia",
-        "Wielka Brytania"
-      ],
-      "correct_answer": "Portugalia",
-      "fact": "Portugalia była jednym z głównych uczestników handlu niewolnikami, transportując czarnoskórych niewolników z Afryki do swoich kolonii w Ameryce Łacińskiej, zwłaszcza do Brazylii."
-    },
-    {
-      "question": "Co to była 'Zielona Księga' (The Negro Motorist Green Book)?",
-      "options": [
-        "Książka pomagająca czarnoskórym podróżnym w segregowanych Stanach Zjednoczonych",
-        "Podręcznik historii niewolnictwa",
-        "Pismo abolicjonistyczne"
-      ],
-      "correct_answer": "Książka pomagająca czarnoskórym podróżnym w segregowanych Stanach Zjednoczonych",
-      "fact": "'Zielona Księga' była przewoźnikiem i przewodnikiem turystycznym, który pomagał czarnoskórym podróżnym poruszać się po Stanach Zjednoczonych, wskazując miejsca, gdzie byli mile widziani."
-    },
-    {
-      "question": "Jaki był cel 'Ruchu Praw Obywatelskich' w USA?",
-      "options": [
-        "Zwalczenie segregacji rasowej",
-        "Zniesienie podatków",
-        "Legalizacja małżeństw międzyrasowych"
-      ],
-      "correct_answer": "Zwalczenie segregacji rasowej",
-      "fact": "Ruch Praw Obywatelskich dążył do zniesienia segregacji rasowej, zapewnienia równych praw obywatelskich oraz walki z dyskryminacją czarnoskórych Amerykanów."
-    },
-    {
-      "question": "Który z poniższych liderów był najbardziej znany ze swojej walki z segregacją i dyskryminacją rasową?",
-      "options": [
-        "Martin Luther King Jr.",
-        "Malcolm X",
-        "Rosa Parks"
-      ],
-      "correct_answer": "Martin Luther King Jr.",
-      "fact": "Martin Luther King Jr. był jednym z czołowych liderów Ruchu Praw Obywatelskich w USA, walcząc o równość, używając przemówień i protestów bez przemocy."
-    },
-    {
-      "question": "Co stało się w 1963 roku, w Birmingham, Alabama?",
-      "options": [
-        "Została zamknięta szkoła dla czarnoskórych",
-        "Protesty Ruchu Praw Obywatelskich zostały brutalnie stłumione",
-        "Rosa Parks została aresztowana"
-      ],
-      "correct_answer": "Protesty Ruchu Praw Obywatelskich zostały brutalnie stłumione",
-      "fact": "Protesty w Birmingham w 1963 roku były kluczowym momentem w walce o prawa obywatelskie w USA, gdzie demonstracje zostały brutalnie stłumione przez policję, co przyciągnęło międzynarodową uwagę."
-    },
-    {
-      "question": "W jakim kraju rozpoczęły się pierwsze masowe protesty przeciwko apartheidowi?",
-      "options": [
-        "Jamaika",
-        "RPA",
-        "USA"
-      ],
-      "correct_answer": "RPA",
-      "fact": "Protesty przeciwko apartheidowi, czyli systemowi segregacji rasowej w RPA, miały miejsce w latach 40-60 XX wieku, prowadzone przez Nelsona Mandelę i innych aktywistów."
-    },
-    {
-      "question": "Które z poniższych nazwisk wiąże się z rozpoczęciem modernizacji afrykańskiego ruchu wyzwoleńczego?",
-      "options": [
-        "Kwame Nkrumah",
-        "Nelson Mandela",
-        "Marcus Garvey"
-      ],
-      "correct_answer": "Kwame Nkrumah",
-      "fact": "Kwame Nkrumah był pierwszym prezydentem Ghany i jednym z liderów afrykańskiego ruchu wyzwoleńczego, który walczył o niepodległość Afryki."
-    },
-{
-  "question": "Kto był jednym z głównych liderów 'Ruchu Black Power' w USA?",
-  "options": [
-    "Malcolm X",
-    "Barack Obama",
-    "Martin Luther King Jr."
-  ],
-  "correct_answer": "Malcolm X",
-  "fact": "Malcolm X był jednym z kluczowych liderów 'Ruchu Black Power', który dążył do promowania dumy czarnoskórej społeczności i obrony przed rasizmem."
-},
-{
-  "question": "Kiedy została uchwalona 13. poprawka do Konstytucji USA, znosząca niewolnictwo?",
-  "options": [
-    "1863",
-    "1865",
-    "1870"
-  ],
-  "correct_answer": "1865",
-  "fact": "13. poprawka do Konstytucji Stanów Zjednoczonych została uchwalona 6 grudnia 1865 roku, znosząc niewolnictwo na terenie całego kraju."
-},
-{
-  "question": "Co oznacza termin 'Jim Crow' w kontekście historii USA?",
-  "options": [
-    "System segregacji rasowej",
-    "Imię czarnoskórego lidera",
-    "Nazwa organizacji abolicjonistycznej"
-  ],
-  "correct_answer": "System segregacji rasowej",
-  "fact": "Jim Crow to określenie na system praw i polityki segregacji rasowej, który istniał w USA od końca XIX wieku do lat 60. XX wieku."
-},
-{
-  "question": "Kto był liderem Czarnoskórego Ruchu Praw Obywatelskich w 1963 roku, organizując marsz na Waszyngton?",
-  "options": [
-    "Martin Luther King Jr.",
-    "Malcolm X",
-    "Rosa Parks"
-  ],
-  "correct_answer": "Martin Luther King Jr.",
-  "fact": "Martin Luther King Jr. był liderem słynnego Marszu na Waszyngton w 1963 roku, gdzie wygłosił swoje historyczne przemówienie 'I Have a Dream'."
-},
-{
-  "question": "Jaki był główny cel ruchu abolicjonistycznego w USA?",
-  "options": [
-    "Walka o prawa kobiet",
-    "Zniesienie niewolnictwa",
-    "Integracja rasowa"
-  ],
-  "correct_answer": "Zniesienie niewolnictwa",
-  "fact": "Ruch abolicjonistyczny dążył do zakończenia niewolnictwa w Stanach Zjednoczonych, zwłaszcza w południowych stanach, gdzie niewolnictwo było powszechne."
-},
-{
-  "question": "W jakim roku zginął Malcolm X?",
-  "options": [
-    "1963",
-    "1965",
-    "1968"
-  ],
-  "correct_answer": "1965",
-  "fact": "Malcolm X, jeden z czołowych liderów ruchu czarnoskórych w USA, został zamordowany 21 lutego 1965 roku w Nowym Jorku."
-},
-{
-  "question": "W jaki sposób Rosa Parks stała się symbolem walki z segregacją?",
-  "options": [
-    "Odmówiła oddania swojego miejsca w autobusie białemu pasażerowi",
-    "Została pierwszą czarnoskórą kobietą, która głosowała",
-    "Została pierwszą czarnoskórą nauczycielką w USA"
-  ],
-  "correct_answer": "Odmówiła oddania swojego miejsca w autobusie białemu pasażerowi",
-  "fact": "Rosa Parks stała się symbolem walki z segregacją, kiedy odmówiła oddania swojego miejsca w autobusie białemu pasażerowi, co wywołało protesty i bojkoty w Montgomery."
-},
-{
-  "question": "Co to była 'czarna pantera' (Black Panther Party)?",
-  "options": [
-    "Organizacja walcząca o prawa czarnoskórych w USA",
-    "Grupa antyniewolnicza z Afryki",
-    "Ruch obrony praw obywatelskich kobiet"
-  ],
-  "correct_answer": "Organizacja walcząca o prawa czarnoskórych w USA",
-  "fact": "Black Panther Party była organizacją założoną w 1966 roku, która walczyła o prawa czarnoskórej ludności w USA, promując samoobronę i walkę z przemocą policji."
-},
-{
-  "question": "Kiedy odbyła się pierwsza czarnoskóra demonstracja przeciwko segregacji?",
-  "options": [
-    "1941",
-    "1955",
-    "1960"
-  ],
-  "correct_answer": "1955",
-  "fact": "Pierwsza poważna demonstracja przeciwko segregacji miała miejsce w 1955 roku, kiedy Rosa Parks odmówiła oddania miejsca w autobusie, co zapoczątkowało bojkot w Montgomery."
-},
-{
-  "question": "Jakie wydarzenie miało miejsce podczas zamachów w 'Bloody Sunday'?",
-  "options": [
-    "Protesty na moście Edmund Pettus w Selmie",
-    "Wybuch zamachów na autobusach",
-    "Strajk generalny w Południowych Stanach"
-  ],
-  "correct_answer": "Protesty na moście Edmund Pettus w Selmie",
-  "fact": "'Bloody Sunday' to nazwa protestu, który miał miejsce 7 marca 1965 roku na moście Edmund Pettus w Selmie, gdzie policja brutalnie stłumiła demonstrację na rzecz praw wyborczych czarnoskórych."
-},
-{
-  "question": "Kto był pierwszym czarnoskórym prezydentem RPA?",
-  "options": [
-    "Nelson Mandela",
-    "Desmond Tutu",
-    "Kwame Nkrumah"
-  ],
-  "correct_answer": "Nelson Mandela",
-  "fact": "Nelson Mandela został pierwszym czarnoskórym prezydentem RPA w 1994 roku, po zakończeniu apartheidu."
-},
-{
-  "question": "W którym roku zniesiono apartheid w RPA?",
-  "options": [
-    "1985",
-    "1991",
-    "1994"
-  ],
-  "correct_answer": "1991",
-  "fact": "Apartheid w RPA został oficjalnie zniesiony w 1991 roku, kiedy to rozpoczęto proces demokratycznych reform i zniesiono segregację rasową."
-},
-{
-  "question": "Które z poniższych wydarzeń miało miejsce podczas marszu na Waszyngton?",
-  "options": [
-    "Przemówienie 'I Have a Dream' Martina Luthera Kinga",
-    "Zatrzymanie segregacji w szkołach",
-    "Podpisanie ustawy o prawach obywatelskich"
-  ],
-  "correct_answer": "Przemówienie 'I Have a Dream' Martina Luthera Kinga",
-  "fact": "Marsz na Waszyngton w 1963 roku, w którym uczestniczyło ponad 250 tysięcy ludzi, zakończył się słynnym przemówieniem 'I Have a Dream' Martina Luthera Kinga Jr."
-},
-{
-  "question": "Które z poniższych miast było głównym ośrodkiem walki z segregacją rasową w latach 50. i 60. XX wieku?",
-  "options": [
-    "Chicago",
-    "Montgomery",
-    "Los Angeles"
-  ],
-  "correct_answer": "Montgomery",
-  "fact": "Montgomery w Alabamie było miejscem słynnego bojkotu autobusowego, który rozpoczął się w 1955 roku po aresztowaniu Rosy Parks."
-},
-{
-  "question": "Jakie było imię pierwszego czarnoskórego nauczyciela w Stanach Zjednoczonych?",
-  "options": [
-    "Booker T. Washington",
-    "Frederick Douglass",
-    "George Washington Carver"
-  ],
-  "correct_answer": "Booker T. Washington",
-  "fact": "Booker T. Washington był jednym z pierwszych czarnoskórych liderów edukacyjnych w Stanach Zjednoczonych, założył Tuskegee Institute, jedną z pierwszych szkół wyższych dla czarnoskórej młodzieży."
-},
-{
-  "question": "Który z poniższych czynników pomógł czarnoskórym Amerykanom uzyskać prawo do głosowania?",
-  "options": [
-    "Ustawa o prawach obywatelskich z 1964 roku",
-    "Prawo do głosowania kobiet w 1920 roku",
-    "Ustawa o prawach wyborczych z 1965 roku"
-  ],
-  "correct_answer": "Ustawa o prawach wyborczych z 1965 roku",
-  "fact": "Ustawa o prawach wyborczych z 1965 roku zapewniła czarnoskórym Amerykanom prawo do głosowania, eliminując bariery rasowe, które uniemożliwiały im udział w wyborach."
-},
-{
-  "question": "Co było podstawowym celem działalności organizacji NAACP?",
-  "options": [
-    "Zwalczanie segregacji rasowej i dyskryminacji",
-    "Promowanie turystyki czarnoskórej ludności",
-    "Ochrona praw emigrantów"
-  ],
-  "correct_answer": "Zwalczanie segregacji rasowej i dyskryminacji",
-  "fact": "NAACP (National Association for the Advancement of Colored People) była założona w 1909 roku z celem walki z segregacją rasową, dyskryminacją i promowaniem równych praw dla czarnoskórej ludności."
-},
-{
-  "question": "Kto był pierwszym czarnoskórym olimpijczykiem, który zdobył złoty medal?",
-  "options": [
-    "Jack Johnson",
-    "Joe Louis",
-    "DeHart Hubbard"
-  ],
-  "correct_answer": "DeHart Hubbard",
-  "fact": "DeHart Hubbard był pierwszym czarnoskórym Amerykaninem, który zdobył złoty medal na igrzyskach olimpijskich w 1936 roku, w skoku w dal."
-},
-{
-  "question": "Jak nazywał się pierwszy czarnoskóry senator Stanów Zjednoczonych?",
-  "options": [
-    "Hiram Revels",
-    "Frederick Douglass",
-    "Thurgood Marshall"
-  ],
-  "correct_answer": "Hiram Revels",
-  "fact": "Hiram Revels został pierwszym czarnoskórym senatorem USA w 1870 roku, reprezentującym stan Missisipi."
-},
-{
-  "question": "W którym roku USA oficjalnie zakończyły wojnę domową, co umożliwiło zniesienie niewolnictwa?",
-  "options": [
-    "1861",
-    "1863",
-    "1865"
-  ],
-  "correct_answer": "1865",
-  "fact": "Wojna secesyjna w USA zakończyła się w 1865 roku, co prowadziło do ostatecznego zniesienia niewolnictwa w całym kraju."
-},
-{
-  "question": "Kiedy i gdzie miała miejsce pierwsza demonstracja na rzecz praw czarnoskórej ludności?",
-  "options": [
-    "W 1905 roku w Nowym Jorku",
-    "W 1915 roku w Montgomery",
-    "W 1963 roku w Waszyngtonie"
-  ],
-  "correct_answer": "W 1963 roku w Waszyngtonie",
-  "fact": "Marsz na Waszyngton w 1963 roku, z udziałem setek tysięcy ludzi, stał się jednym z najważniejszych wydarzeń w historii ruchu praw obywatelskich."
-},
-{
-  "question": "Kto był twórcą i liderem ruchu Afroamerykanów w latach 20. XX wieku, znanego jako 'Harlem Renaissance'?",
-  "options": [
-    "Langston Hughes",
-    "Marcus Garvey",
-    "W.E.B. Du Bois"
-  ],
-  "correct_answer": "Langston Hughes",
-  "fact": "Langston Hughes był jednym z głównych twórców Harlem Renaissance, ruchu kulturalnego w latach 20. XX wieku, który zdefiniował czarnoskórą literaturę i sztukę."
-},
-{
-  "question": "Kto był autorem książki 'Up From Slavery'?",
-  "options": [
-    "W.E.B. Du Bois",
-    "Frederick Douglass",
-    "Booker T. Washington"
-  ],
-  "correct_answer": "Booker T. Washington",
-  "fact": "'Up From Slavery' to książka autorstwa Bookera T. Washingtona, w której opisał swoją drogę od niewolnictwa do stania się jednym z wiodących liderów edukacji czarnoskórej ludności."
-},
-{
-  "question": "Jakie wydarzenie miało miejsce w 1948 roku w USA związane z czarnoskórymi sportowcami?",
-  "options": [
-    "Złamano barierę rasową w baseballu przez Jackie Robinsona",
-    "Pierwszy czarnoskóry piłkarz grał w NFL",
-    "Powstał pierwszy czarnoskóry klub sportowy"
-  ],
-  "correct_answer": "Złamano barierę rasową w baseballu przez Jackie Robinsona",
-  "fact": "Jackie Robinson stał się pierwszym czarnoskórym graczem w Major League Baseball w 1947 roku, przełamując rasową barierę w amerykańskim sporcie."
-},
-{
-  "question": "Jaka organizacja miała na celu integrację czarnoskórej ludności z amerykańską kulturą i społeczeństwem w XX wieku?",
-  "options": [
-    "NAACP",
-    "UNIA",
-    "Black Panther Party"
-  ],
-  "correct_answer": "NAACP",
-  "fact": "NAACP (National Association for the Advancement of Colored People) działała na rzecz równości rasowej, walki z segregacją i promowania praw obywatelskich czarnoskórej ludności."
-},
-{
-  "question": "W którym stanie miało miejsce słynne powstanie niewolników, znane jako Powstanie Nat Turnera?",
-  "options": [
-    "Karolina Południowa",
-    "Wirginia",
-    "Alabama"
-  ],
-  "correct_answer": "Wirginia",
-  "fact": "Powstanie Nat Turnera miało miejsce w Wirginii w 1831 roku. Było to jedno z najbardziej znanych powstań niewolników w historii Stanów Zjednoczonych."
-},
-{
-  "question": "Kto był jednym z głównych liderów Czarnych Panter w latach 60. XX wieku?",
-  "options": [
-    "Huey P. Newton",
-    "Malcolm X",
-    "Martin Luther King Jr."
-  ],
-  "correct_answer": "Huey P. Newton",
-  "fact": "Huey P. Newton był jednym z założycieli i głównych liderów Black Panther Party, organizacji, która walczyła o prawa czarnoskórej ludności i samoobronę przed przemocą policji."
-},
-{
-  "question": "Jakie ważne wydarzenie miało miejsce w 1964 roku w USA, związane z równością rasową?",
-  "options": [
-    "Uchwała ustawy o prawach obywatelskich",
-    "Ruch czarnoskórej literatury zyskał uznanie",
-    "Powstał pierwszy czarnoskóry uniwersytet"
-  ],
-  "correct_answer": "Uchwała ustawy o prawach obywatelskich",
-  "fact": "W 1964 roku uchwalono ustawę o prawach obywatelskich, która zakazywała dyskryminacji rasowej w miejscach publicznych, zatrudnieniu i innych aspektach życia."
-},
-{
-  "question": "Co to była organizacja SNCC?",
-  "options": [
-    "Organizacja młodzieżowa walcząca o prawa obywatelskie",
-    "Partia czarnych panter",
-    "Koalicja na rzecz równych praw"
-  ],
-  "correct_answer": "Organizacja młodzieżowa walcząca o prawa obywatelskie",
-  "fact": "SNCC (Student Nonviolent Coordinating Committee) była organizacją młodzieżową, która odegrała kluczową rolę w ruchu praw obywatelskich, organizując sit-in i protesty."
-},
-{
-  "question": "Jaki kraj był jednym z pierwszych, który uznał niepodległość czarnoskórej ludności po zniesieniu niewolnictwa?",
-  "options": [
-    "USA",
-    "Haiti",
-    "Brazylia"
-  ],
-  "correct_answer": "Haiti",
-  "fact": "Haiti było pierwszym krajem, który po udanej rewolucji w 1804 roku stał się wolnym państwem czarnoskórej ludności."
-},
-{
-  "question": "Kiedy powstała organizacja Ku Klux Klan?",
-  "options": [
-    "1865",
-    "1890",
-    "1920"
-  ],
-  "correct_answer": "1865",
-  "fact": "Ku Klux Klan, organizacja terrorystyczna, powstała w 1865 roku i dążyła do utrzymania supremacji białych poprzez przemoc i zastraszanie czarnoskórej ludności."
-},
-{
-  "question": "Kto był autorem słynnego przemówienia 'I Have a Dream'?",
-  "options": [
-    "Malcolm X",
-    "Martin Luther King Jr.",
-    "Langston Hughes"
-  ],
-  "correct_answer": "Martin Luther King Jr.",
-  "fact": "Przemówienie 'I Have a Dream' Martina Luthera Kinga Jr. zostało wygłoszone podczas Marszu na Waszyngton w 1963 roku, wyrażając nadzieję na społeczną równość i koniec rasizmu."
-},
-{
-  "question": "W którym roku czarnoskórzy Amerykanie otrzymali prawo do głosowania?",
-  "options": [
-    "1865",
-    "1870",
-    "1965"
-  ],
-  "correct_answer": "1965",
-  "fact": "Po uchwaleniu Ustawy o Prawach Wyborczych w 1965 roku, czarnoskórzy Amerykanie zyskali pełne prawo do głosowania, eliminując bariery rasowe."
-},
-{
-  "question": "Kiedy zakończyła się niewolnictwo w Brazylii?",
-  "options": [
-    "1888",
-    "1901",
-    "1920"
-  ],
-  "correct_answer": "1888",
-  "fact": "Brazylia była ostatnim krajem w obu Amerykach, który zniósł niewolnictwo w 1888 roku poprzez uchwalenie ustawy znoszącej niewolnictwo."
-},
-{
-  "question": "W którym roku została uchwalona 14. poprawka do Konstytucji USA, gwarantująca równość wobec prawa?",
-  "options": [
-    "1865",
-    "1868",
-    "1870"
-  ],
-  "correct_answer": "1868",
-  "fact": "14. poprawka do Konstytucji USA została uchwalona w 1868 roku, zapewniając wszystkim obywatelom równość wobec prawa, w tym czarnoskórej ludności po zniesieniu niewolnictwa."
-},
-{
-  "question": "Jakie wydarzenie miało miejsce w 1955 roku i stało się symbolem walki z segregacją?",
-  "options": [
-    "Bojkot autobusów w Montgomery",
-    "Zakończenie segregacji w szkołach",
-    "Marsz na Waszyngton"
-  ],
-  "correct_answer": "Bojkot autobusów w Montgomery",
-  "fact": "Bojkot autobusów w Montgomery w 1955 roku rozpoczął się po aresztowaniu Rosy Parks, co było jednym z najważniejszych wydarzeń w walce z segregacją rasową."
-},
-{
-  "question": "Kto był liderem Ruchu Czarnej Mocy (Black Power)?",
-  "options": [
-    "Stokely Carmichael",
-    "Huey Newton",
-    "Martin Luther King Jr."
-  ],
-  "correct_answer": "Stokely Carmichael",
-  "fact": "Stokely Carmichael był jednym z czołowych liderów Ruchu Czarnej Mocy, który promował dumę czarnoskórej społeczności oraz postulat samoobrony."
-},
-{
-  "question": "Kto stał się pierwszym czarnoskórym członkiem Amerykańskiego Sądu Najwyższego?",
-  "options": [
-    "Thurgood Marshall",
-    "Hiram Revels",
-    "Clarence Thomas"
-  ],
-  "correct_answer": "Thurgood Marshall",
-  "fact": "Thurgood Marshall został pierwszym czarnoskórym sędzią w Sądzie Najwyższym USA w 1967 roku i odegrał kluczową rolę w walce o prawa obywatelskie."
-},
-{
-  "question": "W jakim roku zakończono segregację rasową w szkołach w USA?",
-  "options": [
-    "1954",
-    "1964",
-    "1970"
-  ],
-  "correct_answer": "1954",
-  "fact": "Decyzja Sądu Najwyższego w sprawie 'Brown vs. Board of Education' z 1954 roku uznała segregację rasową w szkołach publicznych za niekonstytucyjną."
-},
-{
-  "question": "Jaka była rola 'Freedom Riders' w latach 60. XX wieku?",
-  "options": [
-    "Protestowali przeciwko segregacji w środkach transportu",
-    "Organizowali protesty na rzecz praw wyborczych",
-    "Zorganizowali marsz na Waszyngton"
-  ],
-  "correct_answer": "Protestowali przeciwko segregacji w środkach transportu",
-  "fact": "'Freedom Riders' byli grupą działaczy, którzy w 1961 roku podróżowali autobusami przez Południowe Stany Zjednoczone, aby protestować przeciwko segregacji w transporcie publicznym."
-},
-{
-  "question": "Kto był pierwszym czarnoskórym, który zdobył Oscara za najlepszą rolę męską?",
-  "options": [
-    "Sidney Poitier",
-    "Denzel Washington",
-    "Morgan Freeman"
-  ],
-  "correct_answer": "Sidney Poitier",
-  "fact": "Sidney Poitier zdobył Oscara za najlepszą rolę męską w 1964 roku za film 'Lilies of the Field', stając się pierwszym czarnoskórym laureatem tej nagrody."
-},
-{
-  "question": "Kiedy powstał ruch 'Black Lives Matter'?",
-  "options": [
-    "2013",
-    "2010",
-    "2005"
-  ],
-  "correct_answer": "2013",
-  "fact": "Ruch 'Black Lives Matter' został założony w 2013 roku, po tym jak George Zimmerman został uniewinniony w sprawie zabójstwa Trayvona Martina, nieuzbrojonego czarnoskórego nastolatka."
-},
-{
-  "question": "Kiedy wprowadzono pierwsze ustawodawstwo w USA na rzecz równości czarnoskórej ludności?",
-  "options": [
-    "1865",
-    "1964",
-    "1920"
-  ],
-  "correct_answer": "1964",
-  "fact": "Ustawa o prawach obywatelskich z 1964 roku zakazała dyskryminacji rasowej w zatrudnieniu, edukacji, oraz w miejscach publicznych, stanowiąc kluczowy krok w walce o prawa czarnoskórej ludności."
-},
-{
-  "question": "Co oznacza 'segregacja de facto'?",
-  "options": [
-    "Segregacja na poziomie prawa",
-    "Segregacja, która wynika z praktyk społecznych i ekonomicznych",
-    "Zakaz segregacji w publicznych szkołach"
-  ],
-  "correct_answer": "Segregacja, która wynika z praktyk społecznych i ekonomicznych",
-  "fact": "Segregacja de facto to sytuacja, w której segregacja rasowa występuje mimo braku formalnych przepisów prawnych, wynikając z praktyk społecznych i ekonomicznych."
-},
-{
-  "question": "Kto był pierwszym czarnoskórym prezydentem USA?",
-  "options": [
-    "Barack Obama",
-    "Colin Powell",
-    "Al Sharpton"
-  ],
-  "correct_answer": "Barack Obama",
-  "fact": "Barack Obama został pierwszym czarnoskórym prezydentem Stanów Zjednoczonych, obejmując urząd w 2009 roku."
-},
-{
-  "question": "Co było celem 'March on Selma' w 1965 roku?",
-  "options": [
-    "Walczący o prawo do głosowania dla czarnoskórej ludności",
-    "Wymuszenie równości edukacyjnej",
-    "Protest przeciwko segregacji w pracy"
-  ],
-  "correct_answer": "Walczący o prawo do głosowania dla czarnoskórej ludności",
-  "fact": "'March on Selma' był marszem na rzecz praw wyborczych czarnoskórej ludności, który odbył się w 1965 roku i doprowadził do uchwalenia Ustawy o Prawach Wyborczych."
-},
-{
-  "question": "Kiedy powstał pierwszy czarnoskóry magazyn kulturalny w USA?",
-  "options": [
-    "1920",
-    "1930",
-    "1940"
-  ],
-  "correct_answer": "1920",
-  "fact": "Pierwszy czarnoskóry magazyn kulturalny, 'The Crisis', powstał w 1910 roku, prowadzony przez W.E.B. Du Bois, stał się ważnym głosem w walce o prawa obywatelskie."
-},
-{
-  "question": "W którym roku zniesiono segregację w armii USA?",
-  "options": [
-    "1948",
-    "1955",
-    "1961"
-  ],
-  "correct_answer": "1948",
-  "fact": "Prezydent Harry S. Truman wydał rozporządzenie w 1948 roku, znosząc segregację rasową w Siłach Zbrojnych USA."
-},
-{
-  "question": "Kto był jednym z pierwszych czarnoskórych kobiet, które walczyły o prawa wyborcze w USA?",
-  "options": [
-    "Sojourner Truth",
-    "Harriet Tubman",
-    "Ida B. Wells"
-  ],
-  "correct_answer": "Ida B. Wells",
-  "fact": "Ida B. Wells była jedną z pierwszych czarnoskórych kobiet, które walczyły o prawa wyborcze i przeciwstawiały się brutalnym praktykom linczowania."
-},
-{
-  "question": "Kiedy czarnoskórzy mieszkańcy USA uzyskali pełne prawo do głosowania?",
-  "options": [
-    "1865",
-    "1870",
-    "1965"
-  ],
-  "correct_answer": "1965",
-  "fact": "Po uchwaleniu Ustawy o Prawach Wyborczych z 1965 roku, czarnoskórzy obywatele zyskali pełne prawo do głosowania, eliminując rasowe bariery w głosowaniu."
-},
-{
-  "question": "Jak nazywała się organizacja, która promowała ideologię afrocentryczną i była aktywna w latach 60. XX wieku?",
-  "options": [
-    "Black Panther Party",
-    "UNIA",
-    "NAACP"
-  ],
-  "correct_answer": "UNIA",
-  "fact": "UNIA (Universal Negro Improvement Association) była organizacją promującą ideologię afrocentryczną, założoną przez Marcusa Garveya w 1914 roku, która walczyła o emancypację czarnoskórej ludności."
-},
-{
-  "question": "Kiedy uchwalono 13. poprawkę do Konstytucji USA, która znosiła niewolnictwo?",
-  "options": [
-    "1861",
-    "1863",
-    "1865"
-  ],
-  "correct_answer": "1865",
-  "fact": "13. poprawka do Konstytucji USA została uchwalona w 1865 roku, co oznaczało koniec niewolnictwa na terytorium Stanów Zjednoczonych."
-},
-{
-  "question": "Kto był pierwszym czarnoskórym dyrektorem generalnym Amerykańskiego Czerwonego Krzyża?",
-  "options": [
-    "Doris Milligan",
-    "Eliza McDuffie",
-    "Ruth Ellis"
-  ],
-  "correct_answer": "Doris Milligan",
-  "fact": "Doris Milligan była pierwszym czarnoskórym dyrektorem generalnym Amerykańskiego Czerwonego Krzyża, odgrywając kluczową rolę w rozwoju organizacji."
-},
-{
-  "question": "Jakie wydarzenie miało miejsce w 1967 roku w USA, związane z czarnoskórym politykiem?",
-  "options": [
-    "Pierwszy czarnoskóry członek rządu USA",
-    "Pierwszy czarnoskóry senator z Południa",
-    "Pierwszy czarnoskóry kandydat na prezydenta"
-  ],
-  "correct_answer": "Pierwszy czarnoskóry członek rządu USA",
-  "fact": "W 1967 roku Thurgood Marshall został pierwszym czarnoskórym członkiem rządu USA, obejmując stanowisko sędziego Sądu Najwyższego."
-},
-{
-  "question": "W którym roku powstał film '12 Years a Slave', który opowiada o doświadczeniu niewolnika?",
-  "options": [
-    "2012",
-    "2013",
-    "2014"
-  ],
-  "correct_answer": "2013",
-  "fact": "'12 Years a Slave' to film z 2013 roku, który zdobył Oscara za najlepszy film, opowiadający prawdziwą historię Solomon Northupa, czarnoskórego mężczyzny porwanego i sprzedanego w niewolę."
-},
-{
-  "question": "Kto jest autorem książki 'Narrative of the Life of Frederick Douglass'?",
-  "options": [
-    "Frederick Douglass",
-    "Harriet Tubman",
-    "W.E.B. Du Bois"
-  ],
-  "correct_answer": "Frederick Douglass",
-  "fact": "Frederick Douglass napisał swoje autobiograficzne dzieło 'Narrative of the Life of Frederick Douglass', w którym opisał swoje doświadczenia jako niewolnik i późniejsze życie po uwolnieniu."
-},
-{
-  "question": "Kiedy i gdzie miała miejsce pierwsza ogólnokrajowa akcja bojkotowa, która miała na celu walkę z segregacją?",
-  "options": [
-    "1955, Montgomery",
-    "1960, Atlanta",
-    "1965, Selma"
-  ],
-  "correct_answer": "1955, Montgomery",
-  "fact": "Bojkot autobusów w Montgomery w 1955 roku był pierwszą dużą akcją na poziomie krajowym, która miała na celu zakończenie segregacji rasowej w transporcie publicznym."
-},
-{
-  "question": "Kto był jednym z głównych liderów kampanii na rzecz zniesienia segregacji rasowej w USA?",
-  "options": [
-    "Malcolm X",
-    "Martin Luther King Jr.",
-    "Huey P. Newton"
-  ],
-  "correct_answer": "Martin Luther King Jr.",
-  "fact": "Martin Luther King Jr. był jednym z czołowych liderów ruchu na rzecz równości rasowej i praw obywatelskich w USA, który stał na czele pokojowych protestów przeciwko segregacji."
-},
-{
-  "question": "W jakim roku zakończono segregację rasową w szkołach publicznych w USA?",
-  "options": [
-    "1961",
-    "1964",
-    "1954"
-  ],
-  "correct_answer": "1954",
-  "fact": "Wyrok Sądu Najwyższego w sprawie 'Brown vs. Board of Education' z 1954 roku uznał segregację rasową w szkołach publicznych za niezgodną z konstytucją."
-},
-{
-  "question": "Kiedy USA uznały równouprawnienie czarnoskórej ludności w zakresie edukacji?",
-  "options": [
-    "1865",
-    "1954",
-    "1964"
-  ],
-  "correct_answer": "1954",
-  "fact": "Wyrok 'Brown vs. Board of Education' z 1954 roku rozpoczął proces integracji szkół publicznych i uznania równych praw edukacyjnych dla czarnoskórej ludności."
-},
-{
-  "question": "Kto był autorem książki 'The Souls of Black Folk', ważnego dzieła literackiego dotyczącego problemów czarnoskórej ludności?",
-  "options": [
-    "Langston Hughes",
-    "W.E.B. Du Bois",
-    "Zora Neale Hurston"
-  ],
-  "correct_answer": "W.E.B. Du Bois",
-  "fact": "'The Souls of Black Folk' autorstwa W.E.B. Du Bois to jedno z najważniejszych dzieł literackich dotyczących doświadczeń czarnoskórej ludności w USA i problemów rasowych."
-},
-{
-  "question": "Kiedy wprowadzono pierwszą ustawę zakazującą linczowania czarnoskórej ludności?",
-  "options": [
-    "1900",
-    "1920",
-    "1930"
-  ],
-  "correct_answer": "1920",
-  "fact": "Ustawa zakazująca linczowania czarnoskórej ludności została wprowadzona w 1920 roku, choć walka z linczami trwała przez wiele lat."
-},
-{
-  "question": "Co było celem działania organizacji 'Black Panther Party'?",
-  "options": [
-    "Przemiany społeczne i samoobrona czarnoskórej ludności",
-    "Segregacja rasowa",
-    "Tolerancja wobec rasizmu"
-  ],
-  "correct_answer": "Przemiany społeczne i samoobrona czarnoskórej ludności",
-  "fact": "Black Panther Party, założona w 1966 roku przez Hueya P. Newtona i Boba Sealea, miała na celu walkę o równość społeczną, polityczną i ekonomiczną czarnoskórej ludności."
-},
-{
-  "question": "Kto był pierwszym czarnoskórym amerykańskim wojskowym, który zdobył Medal Honoru?",
-  "options": [
-    "Henry O. Flipper",
-    "Doris Miller",
-    "Benjamin O. Davis Jr."
-  ],
-  "correct_answer": "Doris Miller",
-  "fact": "Doris Miller był pierwszym czarnoskórym żołnierzem, który otrzymał Medal Honoru za swoje bohaterstwo podczas ataku na Pearl Harbor."
-},
-{
-  "question": "W jakim roku uchwalono ustawę 'Voting Rights Act', która miała na celu zapewnienie czarnoskórej ludności prawa do głosowania?",
-  "options": [
-    "1965",
-    "1970",
-    "1980"
-  ],
-  "correct_answer": "1965",
-  "fact": "Ustawa o Prawach Wyborczych z 1965 roku była kluczowym krokiem w walce o prawa wyborcze dla czarnoskórej ludności w USA, eliminującym bariery rasowe w głosowaniu."
-},
-{
-  "question": "Kto był pierwszym czarnoskórym mężczyzną, który zdobył Oscara za najlepszą rolę męską?",
-  "options": [
-    "Sidney Poitier",
-    "Morgan Freeman",
-    "Denzel Washington"
-  ],
-  "correct_answer": "Sidney Poitier",
-  "fact": "Sidney Poitier zdobył Oscara za najlepszą rolę męską w 1964 roku za film 'Lilies of the Field', stając się pierwszym czarnoskórym laureatem tej nagrody."
-},
-{
-  "question": "Jak nazywał się pierwszy czarnoskóry prezydent Uniwersytetu Harvard?",
-  "options": [
-    "Ruth Simmons",
-    "Cornel West",
-    "George Washington Carver"
-  ],
-  "correct_answer": "Ruth Simmons",
-  "fact": "Ruth Simmons była pierwszym czarnoskórym prezydentem Uniwersytetu Harvard, sprawując tę funkcję w latach 2001–2010."
-},
-{
-  "question": "Kiedy odbyła się pierwsza pielgrzymka na rzecz praw obywatelskich w USA?",
-  "options": [
-    "1963",
-    "1965",
-    "1968"
-  ],
-  "correct_answer": "1963",
-  "fact": "W 1963 roku miała miejsce słynna 'March on Washington for Jobs and Freedom', w której uczestniczyło około 250,000 osób. To podczas tego wydarzenia Martin Luther King Jr. wygłosił swoje słynne przemówienie 'I Have a Dream'."
-},
-{
-  "question": "Kto był liderem ruchu społecznego, który walczył o prawa kobiet i czarnoskórej ludności w USA w latach 60. XX wieku?",
-  "options": [
-    "Angela Davis",
-    "Malcolm X",
-    "Stokely Carmichael"
-  ],
-  "correct_answer": "Angela Davis",
-  "fact": "Angela Davis była znaną działaczką na rzecz praw obywatelskich, feministką i intelektualistką, która walczyła o równość rasową i płciową w USA w latach 60. i 70. XX wieku."
-},
-{
-  "question": "Kiedy powstała organizacja NAACP (National Association for the Advancement of Colored People)?",
-  "options": [
-    "1909",
-    "1920",
-    "1945"
-  ],
-  "correct_answer": "1909",
-  "fact": "NAACP, czyli Narodowe Stowarzyszenie na rzecz Postępu Ludzi Kolorowych, zostało założone w 1909 roku, aby walczyć z dyskryminacją rasową i wspierać prawa obywatelskie czarnoskórej ludności."
-},
-{
-  "question": "Kiedy miała miejsce słynna demonstracja 'I Have a Dream'?",
-  "options": [
-    "1963",
-    "1965",
-    "1968"
-  ],
-  "correct_answer": "1963",
-  "fact": "Demonstracja 'I Have a Dream' miała miejsce w 1963 roku w Waszyngtonie, gdzie Martin Luther King Jr. wygłosił jedno z najbardziej ikonicznych przemówień w historii walki o równość rasową."
-},
-{
-  "question": "Kto był autorem książki 'Go Tell It on the Mountain'?",
-  "options": [
-    "James Baldwin",
-    "Langston Hughes",
-    "Zora Neale Hurston"
-  ],
-  "correct_answer": "James Baldwin",
-  "fact": "'Go Tell It on the Mountain' to powieść autorstwa Jamesa Baldwina, która stała się ważnym dziełem literackim dotyczącym doświadczeń czarnoskórej społeczności w Stanach Zjednoczonych."
-},
-{
-  "question": "Kiedy odbył się pierwszy Marsz na Waszyngton?",
-  "options": [
-    "1963",
-    "1965",
-    "1968"
-  ],
-  "correct_answer": "1963",
-  "fact": "Pierwszy Marsz na Waszyngton, który odbył się w 1963 roku, był jednym z najważniejszych wydarzeń w historii ruchu na rzecz praw obywatelskich w USA."
-},
-{
-  "question": "Kiedy powstała ustawa o prawach obywatelskich w USA, która zakazała segregacji w publicznych miejscach?",
-  "options": [
-    "1954",
-    "1964",
-    "1968"
-  ],
-  "correct_answer": "1964",
-  "fact": "Ustawa o prawach obywatelskich z 1964 roku zakazała dyskryminacji na tle rasowym, religijnym i narodowościowym w miejscach publicznych oraz w pracy."
-},
-{
-  "question": "Kiedy utworzono organizację 'Black Panther Party'?",
-  "options": [
-    "1964",
-    "1966",
-    "1970"
-  ],
-  "correct_answer": "1966",
-  "fact": "Black Panther Party, założona w 1966 roku przez Hueya P. Newtona i Boba Sealea, miała na celu obronę praw czarnoskórej ludności, a także promowanie samoobrony i edukacji."
-},
-{
-  "question": "Kto był autorem książki 'The Autobiography of Malcolm X'?",
-  "options": [
-    "Malcolm X",
-    "Alex Haley",
-    "James Baldwin"
-  ],
-  "correct_answer": "Alex Haley",
-  "fact": "Książka 'The Autobiography of Malcolm X' została napisana przez Alex Haleya na podstawie rozmów z Malcolmem X, i stała się jednym z najważniejszych dzieł o życiu Malcolma X."
-},
-{
-  "question": "W którym roku powstał pierwszy czarnoskóry bank w USA?",
-  "options": [
-    "1888",
-    "1900",
-    "1921"
-  ],
-  "correct_answer": "1888",
-  "fact": "Pierwszy czarnoskóry bank w USA, 'The Freedman's Savings Bank', został założony w 1865 roku, aby pomóc w finansowej emancypacji czarnoskórej ludności po wojnie secesyjnej."
-},
-{
-  "question": "Kiedy odbyła się pierwsza konferencja na rzecz praw czarnoskórej ludności w USA?",
-  "options": [
-    "1900",
-    "1948",
-    "1960"
-  ],
-  "correct_answer": "1900",
-  "fact": "Pierwsza konferencja na rzecz praw czarnoskórej ludności odbyła się w 1900 roku i była zorganizowana przez W.E.B. Du Bois w ramach Kongresu Praw Czarnoskórej Ludności."
-},
-{
-  "question": "Kiedy czarnoskórzy obywatele Stanów Zjednoczonych uzyskali pełne prawo do służby wojskowej?",
-  "options": [
-    "1948",
-    "1950",
-    "1965"
-  ],
-  "correct_answer": "1948",
-  "fact": "Prezydent Harry S. Truman wydał rozporządzenie w 1948 roku, które desegregowało Siły Zbrojne USA, dając czarnoskórym obywatelom pełne prawo do służby wojskowej."
-},
-{
-  "question": "W którym roku zorganizowano pierwszy czarnoskóry festiwal kultury, znany jako 'Harlem Renaissance'?",
-  "options": [
-    "1910",
-    "1920",
-    "1930"
-  ],
-  "correct_answer": "1920",
-  "fact": "Festiwal 'Harlem Renaissance' miał miejsce w latach 1920-1930 i był okresem wielkiego rozwoju kultury czarnoskórej w sztuce, literaturze i muzyce w Harlemie, Nowy Jork."
-},
-{
-  "question": "Kiedy powstała organizacja 'Southern Christian Leadership Conference' (SCLC)?",
-  "options": [
-    "1955",
-    "1960",
-    "1964"
-  ],
-  "correct_answer": "1957",
-  "fact": "Southern Christian Leadership Conference (SCLC) została założona w 1957 roku przez Martina Luthera Kinga Jr., aby walczyć o prawa obywatelskie w sposób pokojowy i chrześcijański."
-},
-{
-  "question": "W jakim roku zorganizowano pierwszy czarnoskóry marsz przeciwko apartheidowi w USA?",
-  "options": [
-    "1965",
-    "1970",
-    "1980"
-  ],
-  "correct_answer": "1965",
-  "fact": "Pierwszy czarnoskóry marsz przeciwko apartheidowi miał miejsce w 1965 roku, gdy zaczęły pojawiać się organizacje sprzeciwiające się segregacji i rasizmowi."
-}
+      "fact": "Tak potępianie dające nadzieję we wzniosłej wręcz tonacji historycznej improwizowane przemówienie Martina Luthera zaistniało w samym sercu Waszyngtonu przed liczącą 250 tysięcy ludzi masą wiernych, co było jednym z ostatnich impulsów nakazujących w Kongresie Amerykańskim przepchnąć niezwłocznie \"Akt o Prawach Obywatelskich\"!",
+      "correctIndex": 2
+    }
   ]
 }

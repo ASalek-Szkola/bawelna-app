@@ -10,15 +10,15 @@ const Quiz = ({ open, questionData, baseReward, onClose }) => {
   const[result, setResult] = useState(null);
 
   const question = questionData?.question ?? null;
-  const correct_answer = questionData?.correct_answer ?? null;
-  const options = questionData?.options ??[];
+  const options = questionData?.options ?? [];
+  const correctIndex = questionData?.correctIndex ?? 0;
+  const correct_answer = options[correctIndex] ?? null;
   const fact = questionData?.fact ?? null;
 
   const choices = useMemo(() => {
     if (!questionData) return [];
-    const opts = Array.isArray(options) ? options :[];
-    const allChoices = [...opts, questionData.correct_answer];
-    const uniqueChoices = Array.from(new Set(allChoices));
+    const opts = Array.isArray(options) ? options : [];
+    const uniqueChoices = Array.from(new Set(opts));
     return shuffle(uniqueChoices);
   }, [questionData]);
 
