@@ -33,6 +33,7 @@ const App = () => {
   const [isPaused, setIsPaused] = useState(false);
   const [altGraphics, setAltGraphics] = useState(false);
   const [disableQuiz, setDisableQuiz] = useState(false);
+  const [autoStartNextWave, setAutoStartNextWave] = useState(false);
 
   // Headless game state/hooks
   const {
@@ -104,6 +105,23 @@ const App = () => {
     syncLoopState(enemies, waveActive, setWaveActive, clearEnemies, towers);
   }, [enemies, waveActive, syncLoopState, setWaveActive, clearEnemies, towers]);
 
+  // Auto-start next wave when option enabled and conditions met
+  useEffect(() => {
+    if (!autoStartNextWave) return;
+    if (waveActive) return;
+    if (quizOpen) return;
+    if (pendingWaveResult) return;
+    if (!currentWaveData || !currentWaveData.enemies) return;
+    if (enemies && enemies.length > 0) return;
+
+    // Start the next wave using currentWaveData (which is regenerated when `wave` increments)
+    try {
+      startWave(currentWaveData);
+    } catch (err) {
+      /* swallow */
+    }
+  }, [autoStartNextWave, waveActive, enemies, quizOpen, pendingWaveResult, currentWaveData, startWave]);
+
   const handleResetGame = () => {
     setWave(1);
     setHealth(100);
@@ -157,6 +175,8 @@ const App = () => {
             onGameSpeedChange={setGameSpeed}
             isPaused={isPaused}
             onPauseToggle={() => setIsPaused((p) => !p)}
+            autoStartNextWave={autoStartNextWave}
+            onAutoStartChange={setAutoStartNextWave}
           />
         </div>
         <div className="sidebar-footer">

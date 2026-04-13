@@ -5,7 +5,7 @@ import enemyConfig from '../../config/enemyConfig.json';
 import '../../styles/WaveManager.css';
 import { generateSingleWaveData } from '../../utils/waveGenerator'; // Importuj tutaj
 
-const WaveManager = ({ wave, onStartWave, waveActive, enemies = [], currentWaveData, difficulty, gameSpeed, onGameSpeedChange, isPaused, onPauseToggle }) => {
+const WaveManager = ({ wave, onStartWave, waveActive, enemies = [], currentWaveData, difficulty, gameSpeed, onGameSpeedChange, isPaused, onPauseToggle, autoStartNextWave, onAutoStartChange }) => {
   const waveData = currentWaveData; // Używamy propa currentWaveData
 
   // Generuj dane dla następnej fali na potrzeby podglądu
@@ -20,46 +20,72 @@ const WaveManager = ({ wave, onStartWave, waveActive, enemies = [], currentWaveD
   const percentComplete = totalInWave ? Math.round(((totalInWave - aliveCount) / totalInWave) * 100) : 0;
 
   return (
-    <div className="wave-manager panel wave-control">
-      <h3 className="wave-title">Fala {wave}</h3>
+    <>
+      <div className="panel wave-section top-section">
+        <h3 className="wave-title">Fala {wave}</h3>
 
-      <div className="wave-progress">
-        <div className="progress-track">
-          <div className="progress-fill" style={{ width: `${percentComplete}%` }} />
-        </div>
-        <div className="progress-label">{percentComplete}% ukończono</div>
-      </div>
-
-      <div className="wave-upcoming">
-        <div className="upcoming-label">Nadchodzące:</div>
-        <div className="upcoming-list">
-          {nextWaveData && nextWaveData.enemies && nextWaveData.enemies.length > 0 ? nextWaveData.enemies.flatMap(e => Array.from({ length: Math.min(e.count, 6) }).map((_, i) => (
-            <div key={`${e.type}-${i}`} className="enemy-tile">
-              <img src={enemyConfig[e.type]?.image} alt={e.type} className="enemy-img" onError={(ev) => { ev.target.style.display = 'none'; }} />
-            </div>
-          ))) : <div className="muted">Brak podglądu / Koniec fal</div>}
-        </div>
-      </div>
-
-      <div className="wave-reward">
-        <div className="reward-label">Nagroda</div>
-        <div className="reward-value"><strong>{waveData.reward}</strong></div>
-      </div>
-
-      <div className="wave-actions">
-        {waveActive && (
-          <div className="speed-controls">
-            <button className={`speed-btn ${isPaused ? 'active' : ''}`} onClick={onPauseToggle} title="Pauza">⏸</button>
-            <button className={`speed-btn ${gameSpeed === 1 && !isPaused ? 'active' : ''}`} onClick={() => { onGameSpeedChange(1); if(isPaused) onPauseToggle(); }} title="x1">▶</button>
-            <button className={`speed-btn ${gameSpeed === 2 && !isPaused ? 'active' : ''}`} onClick={() => { onGameSpeedChange(2); if(isPaused) onPauseToggle(); }} title="x2">▶▶</button>
-            <button className={`speed-btn ${gameSpeed === 3 && !isPaused ? 'active' : ''}`} onClick={() => { onGameSpeedChange(3); if(isPaused) onPauseToggle(); }} title="x3">▶▶▶</button>
+        <div className="wave-progress">
+          <div className="progress-track">
+            <div className="progress-fill" style={{ width: `${percentComplete}%` }} />
           </div>
-        )}
-        <button className="primary-btn" onClick={onStartWave} disabled={waveActive} aria-label={waveActive ? 'Fala trwa' : 'Rozpocznij falę'}>
-          {waveActive ? 'Fala trwa' : 'Rozpocznij falę'}
-        </button>
+          <div className="progress-label">{percentComplete}% ukończono</div>
+        </div>
+
+        <div className="wave-upcoming">
+          <div className="upcoming-label">Nadchodzące:</div>
+          <div className="upcoming-list">
+            {nextWaveData && nextWaveData.enemies && nextWaveData.enemies.length > 0 ? nextWaveData.enemies.flatMap(e => Array.from({ length: Math.min(e.count, 6) }).map((_, i) => (
+              <div key={`${e.type}-${i}`} className="enemy-tile">
+                <img src={enemyConfig[e.type]?.image} alt={e.type} className="enemy-img" onError={(ev) => { ev.target.style.display = 'none'; }} />
+              </div>
+            ))) : <div className="muted">Brak podglądu / Koniec fal</div>}
+          </div>
+        </div>
+
+        <div className="wave-reward">
+          <div className="reward-label">Nagroda</div>
+          <div className="reward-value"><strong>{waveData.reward}</strong></div>
+        </div>
       </div>
-    </div>
+
+      <div className="panel wave-section bottom-section">
+        <div className="wave-actions">
+          <div className="settings-section auto-start-section">
+            <label>Automatycznie rozpocznij następną falę</label>
+            <div className="toggle-row">
+              <button
+                id="auto-start-toggle"
+                role="switch"
+                aria-checked={autoStartNextWave}
+                className={`pill-toggle ${autoStartNextWave ? 'pill-toggle--on' : ''}`}
+                onClick={() => onAutoStartChange(!autoStartNextWave)}
+                title={autoStartNextWave ? 'Wyłącz automatyczne rozpoczęcie' : 'Włącz automatyczne rozpoczęcie'}
+              >
+                <span className="pill-toggle__thumb" />
+              </button>
+              <span className="toggle-label-hint">{autoStartNextWave ? 'Włączone' : 'Wyłączone'}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="panel wave-section actions-section">
+        <div className="wave-actions">
+          <button className="primary-btn" onClick={onStartWave} disabled={waveActive} aria-label={waveActive ? 'Fala trwa' : 'Rozpocznij falę'}>
+            {waveActive ? 'Fala trwa' : 'Rozpocznij falę'}
+          </button>
+
+          {waveActive && (
+            <div className="speed-controls speed-controls--below">
+              <button className={`speed-btn ${isPaused ? 'active' : ''}`} onClick={onPauseToggle} title="Pauza">⏸</button>
+              <button className={`speed-btn ${gameSpeed === 1 && !isPaused ? 'active' : ''}`} onClick={() => { onGameSpeedChange(1); if(isPaused) onPauseToggle(); }} title="x1">▶</button>
+              <button className={`speed-btn ${gameSpeed === 2 && !isPaused ? 'active' : ''}`} onClick={() => { onGameSpeedChange(2); if(isPaused) onPauseToggle(); }} title="x2">▶▶</button>
+              <button className={`speed-btn ${gameSpeed === 3 && !isPaused ? 'active' : ''}`} onClick={() => { onGameSpeedChange(3); if(isPaused) onPauseToggle(); }} title="x3">▶▶▶</button>
+            </div>
+          )}
+        </div>
+      </div>
+    </>
   );
 };
 
@@ -74,6 +100,8 @@ WaveManager.propTypes = {
   onGameSpeedChange: PropTypes.func,
   isPaused: PropTypes.bool,
   onPauseToggle: PropTypes.func,
+  autoStartNextWave: PropTypes.bool,
+  onAutoStartChange: PropTypes.func,
 };
 
 WaveManager.defaultProps = {
@@ -82,6 +110,8 @@ WaveManager.defaultProps = {
   currentWaveData: { enemies: [], reward: 0 },
   gameSpeed: 1,
   isPaused: false,
+  autoStartNextWave: false,
+  onAutoStartChange: () => {},
 };
 
 export default React.memo(WaveManager);
