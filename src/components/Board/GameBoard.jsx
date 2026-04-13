@@ -2,7 +2,6 @@ import React, { useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import Tower from './Tower';
 import Enemy from './Enemy';
-import mapConfig from '../../config/mapConfig.json';
 import towerConfig from '../../config/towerConfig.json';
 import { isPointOnPath, isOverlappingTower } from '../../utils/pathUtils';
 import '../../styles/GameBoard.css';
@@ -17,10 +16,12 @@ const GameBoard = ({
   selectedTower,              
   onBoardRightClick,         
   onTowerRightClick,
-  scale = 1                   
+  scale = 1,
+  mapData
 }) => {
-  const { width, height } = mapConfig.board;
-  const { path, pathWidth } = mapConfig;
+  if (!mapData) return null;
+  const { width, height } = mapData.board;
+  const { path, pathWidth } = mapData;
 
   const [previewPos, setPreviewPos] = useState(null);
 
@@ -174,6 +175,7 @@ GameBoard.propTypes = {
   onBoardRightClick: PropTypes.func,
   onTowerRightClick: PropTypes.func,
   scale: PropTypes.number,
+  mapData: PropTypes.object,
 };
 
 GameBoard.defaultProps = {

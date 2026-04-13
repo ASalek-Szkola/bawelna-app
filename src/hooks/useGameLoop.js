@@ -1,10 +1,9 @@
 // \hooks\useGameLoop.js
 import { useState, useEffect, useRef, useCallback } from 'react';
-import mapConfig from '../config/mapConfig.json';
 import enemyConfig from '../config/enemyConfig.json';
 import towerConfig from '../config/towerConfig.json';
 
-export default function useGameLoop({ towers = [], setTowers = () => {}, onEnemyEscape = () => {} } = {}) {
+export default function useGameLoop({ towers = [], setTowers = () => {}, onEnemyEscape = () => {}, mapData } = {}) {
   const [enemies, setEnemies] = useState([]);
   const enemiesRef = useRef(enemies);
   const towersRef = useRef(towers);
@@ -58,7 +57,8 @@ export default function useGameLoop({ towers = [], setTowers = () => {}, onEnemy
       const prevEnemies = enemiesRef.current || [];
       const prevTowers = towersRef.current || [];
 
-      const path = mapConfig.path;
+      if (!mapData || !mapData.path) return;
+      const path = mapData.path;
       const spawnPoint = path[0];
 
       const totalInWave = prevEnemies[0]?.totalInWave || prevEnemies.length;
@@ -185,7 +185,7 @@ export default function useGameLoop({ towers = [], setTowers = () => {}, onEnemy
     }, tickMs);
 
     return () => clearInterval(interval);
-  }, [waveActive, setTowers, onEnemyEscape]);
+  }, [waveActive, setTowers, onEnemyEscape, mapData]);
 
   const clearEnemies = useCallback(() => setEnemies([]), []);
 

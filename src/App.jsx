@@ -1,5 +1,5 @@
 // App.jsx
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import GameInfo from "./components/HUD/GameInfo";
 import GameBoard from "./components/Board/GameBoard";
 import TowerInfo from "./components/TowerPanel/TowerInfo";
@@ -9,7 +9,7 @@ import "./styles/layout.css";
 import Quiz from "./components/Quiz/Quiz";
 import QuizFacts from "./components/Quiz/QuizFacts";
 import SettingsMenu from "./components/Settings/SettingsMenu";
-import mapConfig from "./config/mapConfig.json";
+import mapsConfig from "./config/mapsConfig.json";
 
 import useBoardScaling from "./hooks/useBoardScaling";
 import useTowers from "./hooks/useTowers";
@@ -19,7 +19,13 @@ import useGameState from "./hooks/useGameState";
 import { generateSingleWaveData } from "./utils/waveGenerator"; // Importuj funkcję do generowania pojedynczych fal
 
 const App = () => {
-  const boardScale = useBoardScaling();
+  const [selectedMapId, setSelectedMapId] = useState(mapsConfig[0].id);
+  const currentMapData = useMemo(
+    () => mapsConfig.find((m) => m.id === selectedMapId) || mapsConfig[0],
+    [selectedMapId],
+  );
+
+  const boardScale = useBoardScaling(currentMapData.board);
 
   const [difficulty, setDifficulty] = useState("Easy");
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -55,7 +61,7 @@ const App = () => {
     handleSellTower,
     handleUpgrade,
     handleTargetingChange,
-  } = useTowers({ money, setMoney });
+  } = useTowers({ money, setMoney, mapData: currentMapData });
 
   const { enemies, waveActive, startWave, setWaveActive, clearEnemies } =
     useGameLoop({
@@ -63,6 +69,7 @@ const App = () => {
       setTowers,
       onEnemyEscape: (damage) =>
         setHealth((prev) => Math.max(0, prev + Number(damage) || 0)),
+      mapData: currentMapData,
     });
 
   const [theme, setTheme] = React.useState(() => {
@@ -91,14 +98,23 @@ const App = () => {
     syncLoopState(enemies, waveActive, setWaveActive, clearEnemies);
   }, [enemies, waveActive, syncLoopState, setWaveActive, clearEnemies]);
 
-  const handleDifficultyChange = (newDifficulty) => {
-    setDifficulty(newDifficulty);
+  const handleResetGame = () => {
     setWave(1);
     setHealth(100);
     setMoney(500);
     setTowers([]);
     clearEnemies();
     setWaveActive(false);
+  };
+
+  const handleDifficultyChange = (newDifficulty) => {
+    setDifficulty(newDifficulty);
+    handleResetGame();
+  };
+
+  const handleMapChange = (newMapId) => {
+    setSelectedMapId(newMapId);
+    handleResetGame();
   };
 
   return (
@@ -146,14 +162,14 @@ const App = () => {
           <div
             className="game-board-wrapper"
             style={{
-              width: mapConfig.board.width * boardScale,
-              height: mapConfig.board.height * boardScale,
+              width: currentMapData.board.width * boardScale,
+              height: currentMapData.board.height * boardScale,
             }}
           >
             <div
               style={{
-                width: mapConfig.board.width,
-                height: mapConfig.board.height,
+                width: currentMapData.board.width,
+                height: currentMapData.board.height,
                 transform: `scale(${boardScale})`,
                 transformOrigin: "top left",
                 position: "absolute",
@@ -162,6 +178,7 @@ const App = () => {
               }}
             >
               <GameBoard
+                mapData={currentMapData}
                 towers={towers}
                 onTowerClick={setSelectedTowerId}
                 onBoardClick={handlePlaceTower}
@@ -218,6 +235,9 @@ const App = () => {
         theme={theme}
         onThemeToggle={() => setTheme((t) => (t === "dark" ? "light" : "dark"))}
         waveActive={waveActive}
+        maps={mapsConfig}
+        selectedMapId={selectedMapId}
+        onMapChange={handleMapChange}
       />
     </div>
   );

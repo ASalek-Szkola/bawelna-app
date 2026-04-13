@@ -1,9 +1,8 @@
 import { useState, useMemo } from 'react';
 import towerConfig from '../config/towerConfig.json';
-import mapConfig from '../config/mapConfig.json';
 import { isPointOnPath, isOverlappingTower } from '../utils/pathUtils'; // dodaj import
 
-export default function useTowers({ money = 0, setMoney = () => {} } = {}) {
+export default function useTowers({ money = 0, setMoney = () => {}, mapData } = {}) {
   const [towers, setTowers] = useState([]);
   const [selectedTowerId, setSelectedTowerId] = useState(null);
   const [shopSelectedType, setShopSelectedType] = useState(null);
@@ -33,7 +32,7 @@ export default function useTowers({ money = 0, setMoney = () => {} } = {}) {
     const TOWER_SIZE = 40;
 
     // 1. Sprawdź kolizję ze ścieżką
-    if (isPointOnPath(x, y, mapConfig.path, mapConfig.pathWidth)) {
+    if (mapData && isPointOnPath(x, y, mapData.path, mapData.pathWidth)) {
       return; 
     }
 

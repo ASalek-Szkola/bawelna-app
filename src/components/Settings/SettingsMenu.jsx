@@ -1,30 +1,42 @@
 import React, { useState } from 'react';
 import './SettingsMenu.css';
 
-const SettingsMenu = ({ isOpen, onClose, difficulty, onDifficultyChange, theme, onThemeToggle, waveActive }) => {
+const SettingsMenu = ({ isOpen, onClose, difficulty, onDifficultyChange, theme, onThemeToggle, waveActive, maps = [], selectedMapId, onMapChange }) => {
   const [showConfirm, setShowConfirm] = useState(false);
-  const [pendingDifficulty, setPendingDifficulty] = useState(null);
+  const [pendingChange, setPendingChange] = useState(null);
 
   if (!isOpen) return null;
 
   const handleDifficultySelect = (val) => {
     if (waveActive) {
-      setPendingDifficulty(val);
+      setPendingChange({ type: 'difficulty', value: val });
       setShowConfirm(true);
     } else {
       onDifficultyChange(val);
     }
   };
 
+  const handleMapSelect = (val) => {
+    if (waveActive) {
+      setPendingChange({ type: 'map', value: val });
+      setShowConfirm(true);
+    } else {
+      onMapChange(val);
+    }
+  };
+
   const confirmChange = () => {
-    onDifficultyChange(pendingDifficulty);
+    if (pendingChange) {
+      if (pendingChange.type === 'difficulty') onDifficultyChange(pendingChange.value);
+      if (pendingChange.type === 'map') onMapChange(pendingChange.value);
+    }
     setShowConfirm(false);
-    setPendingDifficulty(null);
+    setPendingChange(null);
   };
 
   const cancelChange = () => {
     setShowConfirm(false);
-    setPendingDifficulty(null);
+    setPendingChange(null);
   };
 
   return (
@@ -41,6 +53,28 @@ const SettingsMenu = ({ isOpen, onClose, difficulty, onDifficultyChange, theme, 
         </div>
 
         <div className="settings-content">
+          <div className="settings-section">
+            <label htmlFor="map-select">Wybór Mapy</label>
+            <div className="custom-select-container">
+              <select
+                id="map-select"
+                value={selectedMapId}
+                onChange={(e) => handleMapSelect(e.target.value)}
+              >
+                {maps.map((map) => (
+                  <option key={map.id} value={map.id}>
+                    {map.name} ({map.difficulty})
+                  </option>
+                ))}
+              </select>
+              <div className="select-arrow" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </div>
+            </div>
+          </div>
+
           <div className="settings-section">
             <label htmlFor="difficulty-select">Poziom trudności</label>
             <div className="custom-select-container">
@@ -102,8 +136,8 @@ const SettingsMenu = ({ isOpen, onClose, difficulty, onDifficultyChange, theme, 
                 <line x1="12" y1="17" x2="12.01" y2="17"></line>
               </svg>
             </div>
-            <h3>Zmienić poziom?</h3>
-            <p>Fala jest w toku. Jeśli zmienisz poziom trudności, utracisz obecny postęp i gra zacznie się od nowa.</p>
+            <h3>Zmienić ustawienia gry?</h3>
+            <p>Fala jest w toku. Jeśli zmienisz to ustawienie, utracisz obecny postęp i gra zacznie się od nowa.</p>
             <div className="confirm-actions">
               <button className="confirm-btn primary" onClick={confirmChange}>Tak, zmień</button>
               <button className="confirm-btn secondary" onClick={cancelChange}>Anuluj</button>
