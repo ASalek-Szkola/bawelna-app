@@ -43,7 +43,7 @@ const WaveManager = ({ wave, onStartWave, waveActive, enemies = [], currentWaveD
 
       <div className="wave-reward">
         <div className="reward-label">Nagroda</div>
-        <div className="reward-value"><strong>{waveData.reward} â‚ż</strong></div>
+        <div className="reward-value"><strong>{waveData.reward}</strong></div>
       </div>
 
       <div className="wave-actions">

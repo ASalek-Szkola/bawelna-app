@@ -26,9 +26,9 @@
     "heavy-picker": {
       "image": "src/assets/zdjecia_bawelnadefense/zbieracz4.png",
       "levels": [
-        { "cost": 200, "range": 150, "damage": 4, "fireRate": 3000 },
-        { "cost": 300, "range": 160, "damage": 6, "fireRate": 2800 },
-        { "cost": 400, "range": 170, "damage": 8, "fireRate": 2600 }
+        { "cost": 200, "range": 150, "damage": 4, "fireRate": 3000, "splashRadius": 60 },
+        { "cost": 300, "range": 160, "damage": 6, "fireRate": 2800, "splashRadius": 70 },
+        { "cost": 400, "range": 170, "damage": 8, "fireRate": 2600, "splashRadius": 80 }
       ]
     }
   }

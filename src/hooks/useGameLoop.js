@@ -132,7 +132,7 @@ export default function useGameLoop({ towers = [], setTowers = () => {}, onEnemy
         if (!towerData) return tower;
 
         const level = Math.min(tower.level, towerData.levels.length - 1);
-        const { damage, fireRate } = towerData.levels[level];
+        const { damage, fireRate, splashRadius } = towerData.levels[level];
 
         let newCooldown = (tower.cooldown ?? 0) - tickMs;
         let newShootingTimer = (tower.shootingTimer ?? 0) - tickMs;
@@ -155,7 +155,17 @@ export default function useGameLoop({ towers = [], setTowers = () => {}, onEnemy
             : updatedEnemies.find(e => e.health > 0 && inRange(e));
 
           if (target) {
-            updatedEnemies = updatedEnemies.map((e) => e.id === target.id ? { ...e, health: Math.max(0, e.health - damage) } : e);
+            if (splashRadius) {
+              updatedEnemies = updatedEnemies.map((e) => {
+                if (!e.position || !target.position) return e;
+                const dx = e.position.x - target.position.x;
+                const dy = e.position.y - target.position.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                return dist <= splashRadius ? { ...e, health: Math.max(0, e.health - damage) } : e;
+              });
+            } else {
+              updatedEnemies = updatedEnemies.map((e) => e.id === target.id ? { ...e, health: Math.max(0, e.health - damage) } : e);
+            }
             newCooldown = fireRate;
             newShootingTimer = 150;
             isShooting = true;
