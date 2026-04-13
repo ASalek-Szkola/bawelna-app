@@ -184,37 +184,39 @@ const App = () => {
 
       <main className="center-panel">
         <div className="center-inner">
-          <div
-            className="game-board-wrapper"
-            style={{
-              width: currentMapData.board.width * boardScale,
-              height: currentMapData.board.height * boardScale,
-            }}
-          >
+          <div className="center-board-area">
             <div
+              className="game-board-wrapper"
               style={{
-                width: currentMapData.board.width,
-                height: currentMapData.board.height,
-                transform: `scale(${boardScale})`,
-                transformOrigin: "top left",
-                position: "absolute",
-                top: 0,
-                left: 0,
+                width: currentMapData.board.width * boardScale,
+                height: currentMapData.board.height * boardScale,
               }}
             >
-              <GameBoard
-                mapData={currentMapData}
-                towers={towers}
-                onTowerClick={setSelectedTowerId}
-                onBoardClick={handlePlaceTower}
-                onBoardRightClick={handleBoardRightClick}
-                onTowerRightClick={handleSellTower}
-                shopSelectedType={shopSelectedType}
-                enemies={enemies}
-                selectedTower={selectedTower}
-                scale={boardScale}
-                altGraphics={altGraphics}
-              />
+              <div
+                style={{
+                  width: currentMapData.board.width,
+                  height: currentMapData.board.height,
+                  transform: `scale(${boardScale})`,
+                  transformOrigin: "top left",
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                }}
+              >
+                <GameBoard
+                  mapData={currentMapData}
+                  towers={towers}
+                  onTowerClick={setSelectedTowerId}
+                  onBoardClick={handlePlaceTower}
+                  onBoardRightClick={handleBoardRightClick}
+                  onTowerRightClick={handleSellTower}
+                  shopSelectedType={shopSelectedType}
+                  enemies={enemies}
+                  selectedTower={selectedTower}
+                  scale={boardScale}
+                  altGraphics={altGraphics}
+                />
+              </div>
             </div>
           </div>
 
