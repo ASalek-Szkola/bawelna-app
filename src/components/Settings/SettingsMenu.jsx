@@ -1,8 +1,31 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './SettingsMenu.css';
 
-const SettingsMenu = ({ isOpen, onClose, difficulty, onDifficultyChange, theme, onThemeToggle }) => {
+const SettingsMenu = ({ isOpen, onClose, difficulty, onDifficultyChange, theme, onThemeToggle, waveActive }) => {
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [pendingDifficulty, setPendingDifficulty] = useState(null);
+
   if (!isOpen) return null;
+
+  const handleDifficultySelect = (val) => {
+    if (waveActive) {
+      setPendingDifficulty(val);
+      setShowConfirm(true);
+    } else {
+      onDifficultyChange(val);
+    }
+  };
+
+  const confirmChange = () => {
+    onDifficultyChange(pendingDifficulty);
+    setShowConfirm(false);
+    setPendingDifficulty(null);
+  };
+
+  const cancelChange = () => {
+    setShowConfirm(false);
+    setPendingDifficulty(null);
+  };
 
   return (
     <div className="settings-overlay" onClick={onClose}>
@@ -24,7 +47,7 @@ const SettingsMenu = ({ isOpen, onClose, difficulty, onDifficultyChange, theme, 
               <select
                 id="difficulty-select"
                 value={difficulty}
-                onChange={(e) => onDifficultyChange(e.target.value)}
+                onChange={(e) => handleDifficultySelect(e.target.value)}
               >
                 <option value="Easy">Łatwy</option>
                 <option value="Normal">Normalny</option>
@@ -68,6 +91,26 @@ const SettingsMenu = ({ isOpen, onClose, difficulty, onDifficultyChange, theme, 
           </div>
         </div>
       </div>
+
+      {showConfirm && (
+        <div className="confirm-overlay" onClick={cancelChange}>
+          <div className="confirm-dialog" onClick={e => e.stopPropagation()}>
+            <div className="confirm-icon">
+              <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                <line x1="12" y1="9" x2="12" y2="13"></line>
+                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+              </svg>
+            </div>
+            <h3>Zmienić poziom?</h3>
+            <p>Fala jest w toku. Jeśli zmienisz poziom trudności, utracisz obecny postęp i gra zacznie się od nowa.</p>
+            <div className="confirm-actions">
+              <button className="confirm-btn primary" onClick={confirmChange}>Tak, zmień</button>
+              <button className="confirm-btn secondary" onClick={cancelChange}>Anuluj</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

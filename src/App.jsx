@@ -217,6 +217,7 @@ const App = () => {
         onDifficultyChange={handleDifficultyChange}
         theme={theme}
         onThemeToggle={() => setTheme((t) => (t === "dark" ? "light" : "dark"))}
+        waveActive={waveActive}
       />
     </div>
   );
