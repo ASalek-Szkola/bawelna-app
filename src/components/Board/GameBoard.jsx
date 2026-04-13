@@ -10,14 +10,15 @@ const GameBoard = ({
   towers, 
   onTowerClick, 
   onBoardClick, 
-  shopSelectedType, // Ten prop jest kluczowy dla trybu stawiania
+  shopSelectedType,
   enemies =[],               
   onEnemyEscape,              
   selectedTower,              
   onBoardRightClick,         
   onTowerRightClick,
   scale = 1,
-  mapData
+  mapData,
+  altGraphics = false,
 }) => {
   if (!mapData) return null;
   const { width, height } = mapData.board;
@@ -90,7 +91,8 @@ const GameBoard = ({
           isShooting={tower.isShooting}
           onClick={() => onTowerClick && onTowerClick(tower.id)}
           onRightClick={() => onTowerRightClick && onTowerRightClick(tower.id)}
-          isPlacingNewTower={!!shopSelectedType} // Przekazujemy informację do Tower
+          isPlacingNewTower={!!shopSelectedType}
+          altGraphics={altGraphics}
         />
       ))}
 
@@ -123,7 +125,7 @@ const GameBoard = ({
               <div style={{ position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)', width: `${diameter}px`, height: `${diameter}px`, borderRadius: '50%', background: ringColor, border: `2px solid ${ringBorder}`, boxSizing: 'border-box', zIndex: 0, pointerEvents: 'none' }} />
               <div style={{ width: `${SIZE}px`, height: `${SIZE}px`, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 20 }}>
                 <img 
-                  src={towerData?.image} 
+                  src={altGraphics ? towerData?.image?.replace(/\.png$/, '-alt.png') : towerData?.image} 
                   alt="preview" 
                   style={{ 
                     width: SIZE, 

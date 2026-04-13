@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import towerConfig from '../../config/towerConfig.json';
 import '../../styles/TowerShop.css';
 
-const TowerShop = ({ money, selectedType, onSelectType }) => {
+const TowerShop = ({ money, selectedType, onSelectType, altGraphics = false }) => {
   return (
     <div className="tower-shop panel">
       <h3>Sklep wieżyczek</h3>
@@ -23,7 +23,7 @@ const TowerShop = ({ money, selectedType, onSelectType }) => {
               onKeyDown={(e) => { if ((e.key === 'Enter' || e.key === ' ') && affordable) onSelectType(type); }}
             >
               <div className="cost-badge">{level1.cost ?? '-'} ₿</div>
-              <img src={data.image} alt={type} className="tower-card-image" />
+              <img src={altGraphics ? data.image.replace(/\.png$/, '-alt.png') : data.image} alt={type} className="tower-card-image" />
               <div className="tower-name">{type.replace('-', ' ').toUpperCase()}</div>
               <div className="tower-stats">{`Dmg ${level1.damage ?? '-'} · Zas ${level1.range ?? '-'}`}</div>
 
@@ -49,6 +49,7 @@ TowerShop.propTypes = {
   money: PropTypes.number.isRequired,
   selectedType: PropTypes.string,
   onSelectType: PropTypes.func.isRequired,
+  altGraphics: PropTypes.bool,
 };
 
 TowerShop.defaultProps = {

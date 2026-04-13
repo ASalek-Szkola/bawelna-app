@@ -4,9 +4,18 @@ import PropTypes from 'prop-types';
 import towerConfig from '../../config/towerConfig.json';
 import '../../styles/Tower.css';
 
-const Tower = ({ x, y, type, level, onClick, isShooting, onRightClick, isPlacingNewTower }) => { 
+const Tower = ({ x, y, type, level, onClick, isShooting, onRightClick, isPlacingNewTower, altGraphics }) => { 
   const towerData = towerConfig[type];
   if (!towerData) return null;
+
+  const getImageSrc = (baseSrc, useAlt) => {
+    if (!useAlt) return baseSrc;
+    // Replace e.g. "zbieracz1.png" with "zbieracz1-alt.png"
+    const altSrc = baseSrc.replace(/\.png$/, '-alt.png');
+    return altSrc;
+  };
+
+  const imageSrc = getImageSrc(towerData.image, altGraphics);
 
   const SIZE = 40;
   return (
@@ -47,7 +56,7 @@ const Tower = ({ x, y, type, level, onClick, isShooting, onRightClick, isPlacing
       aria-label={`WieĹĽyczka ${type}`}
     >
       <img
-        src={towerData.image}
+        src={imageSrc}
         alt={`${type} tower`}
         style={{ width: `${SIZE}px`, height: `${SIZE}px`, display: 'block' }}
       />
@@ -64,12 +73,14 @@ Tower.propTypes = {
   isShooting: PropTypes.bool,
   onRightClick: PropTypes.func,
   isPlacingNewTower: PropTypes.bool,
+  altGraphics: PropTypes.bool,
 };
 
 Tower.defaultProps = {
   isShooting: false,
   isPlacingNewTower: false,
   level: 0,
+  altGraphics: false,
 };
 
 function areEqual(prev, next) {
@@ -78,7 +89,8 @@ function areEqual(prev, next) {
          prev.type === next.type && 
          prev.level === next.level &&
          prev.isShooting === next.isShooting &&
-         prev.isPlacingNewTower === next.isPlacingNewTower; 
+         prev.isPlacingNewTower === next.isPlacingNewTower &&
+         prev.altGraphics === next.altGraphics; 
 }
 
 export default React.memo(Tower, areEqual);

@@ -31,6 +31,7 @@ const App = () => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [gameSpeed, setGameSpeed] = useState(1);
   const [isPaused, setIsPaused] = useState(false);
+  const [altGraphics, setAltGraphics] = useState(false);
 
   // Headless game state/hooks
   const {
@@ -212,6 +213,7 @@ const App = () => {
                 enemies={enemies}
                 selectedTower={selectedTower}
                 scale={boardScale}
+                altGraphics={altGraphics}
               />
             </div>
           </div>
@@ -240,6 +242,7 @@ const App = () => {
             money={money}
             selectedType={shopSelectedType}
             onSelectType={handleSelectShopTower}
+            altGraphics={altGraphics}
           />
         )}
       </aside>
@@ -262,6 +265,8 @@ const App = () => {
         maps={mapsConfig}
         selectedMapId={selectedMapId}
         onMapChange={handleMapChange}
+        altGraphics={altGraphics}
+        onAltGraphicsToggle={() => setAltGraphics((v) => !v)}
       />
     </div>
   );

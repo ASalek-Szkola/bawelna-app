@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './SettingsMenu.css';
 
-const SettingsMenu = ({ isOpen, onClose, difficulty, onDifficultyChange, theme, onThemeToggle, waveActive, maps = [], selectedMapId, onMapChange }) => {
+const SettingsMenu = ({ isOpen, onClose, difficulty, onDifficultyChange, theme, onThemeToggle, waveActive, maps = [], selectedMapId, onMapChange, altGraphics, onAltGraphicsToggle }) => {
   const [showConfirm, setShowConfirm] = useState(false);
   const [pendingChange, setPendingChange] = useState(null);
 
@@ -121,6 +121,25 @@ const SettingsMenu = ({ isOpen, onClose, difficulty, onDifficultyChange, theme, 
                   </svg>
                 )}
               </button>
+            </div>
+          </div>
+
+          <div className="settings-section">
+            <label htmlFor="alt-graphics-toggle">Alternatywne grafiki</label>
+            <div className="toggle-row">
+              <button
+                id="alt-graphics-toggle"
+                role="switch"
+                aria-checked={altGraphics}
+                className={`pill-toggle ${altGraphics ? 'pill-toggle--on' : ''}`}
+                onClick={onAltGraphicsToggle}
+                title={altGraphics ? 'Wyłącz alternatywne grafiki' : 'Włącz alternatywne grafiki'}
+              >
+                <span className="pill-toggle__thumb" />
+              </button>
+              <span className="toggle-label-hint">
+                {altGraphics ? 'Włączone' : 'Wyłączone'}
+              </span>
             </div>
           </div>
         </div>
