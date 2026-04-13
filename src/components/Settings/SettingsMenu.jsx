@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './SettingsMenu.css';
 
-const SettingsMenu = ({ isOpen, onClose, difficulty, onDifficultyChange, theme, onThemeToggle, waveActive, maps = [], selectedMapId, onMapChange, altGraphics, onAltGraphicsToggle }) => {
+const SettingsMenu = ({ isOpen, onClose, difficulty, onDifficultyChange, theme, onThemeToggle, waveActive, maps = [], selectedMapId, onMapChange, altGraphics, onAltGraphicsToggle, disableQuiz, onDisableQuizToggle }) => {
   const [showConfirm, setShowConfirm] = useState(false);
   const [pendingChange, setPendingChange] = useState(null);
 
@@ -139,6 +139,25 @@ const SettingsMenu = ({ isOpen, onClose, difficulty, onDifficultyChange, theme, 
               </button>
               <span className="toggle-label-hint">
                 {altGraphics ? 'Włączone' : 'Wyłączone'}
+              </span>
+            </div>
+          </div>
+
+          <div className="settings-section">
+            <label htmlFor="disable-quiz-toggle">Quiz i ciekawostki</label>
+            <div className="toggle-row">
+              <button
+                id="disable-quiz-toggle"
+                role="switch"
+                aria-checked={disableQuiz}
+                className={`pill-toggle ${disableQuiz ? 'pill-toggle--on' : ''}`}
+                onClick={onDisableQuizToggle}
+                title={disableQuiz ? 'Włącz quiz i ciekawostki' : 'Wyłącz quiz i ciekawostki'}
+              >
+                <span className="pill-toggle__thumb" />
+              </button>
+              <span className="toggle-label-hint">
+                {disableQuiz ? 'Wyłączone' : 'Włączone'}
               </span>
             </div>
           </div>

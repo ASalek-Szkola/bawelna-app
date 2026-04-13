@@ -4,7 +4,7 @@ import quizConfig from '../config/quizConfig.json';
 import { generateSingleWaveData } from '../utils/waveGenerator';
 import towerConfig from '../config/towerConfig.json';
 
-export default function useGameState(difficulty) { // Teraz przyjmuje 'difficulty'
+export default function useGameState(difficulty, disableQuiz = false) { // Teraz przyjmuje 'difficulty' i 'disableQuiz'
   const [health, setHealth] = useState(100);
   const [wave, setWave] = useState(1);
   const [money, setMoney] = useState(500);
@@ -38,27 +38,27 @@ export default function useGameState(difficulty) { // Teraz przyjmuje 'difficult
     const allDeadOrEscaped = enemies.length === 0 || (enemies.length > 0 && enemies.every((e) => e.health <= 0 || e.escaped));
 
     if (!currentWaveData) {
-        console.warn("Brak danych dla bieżącej fali. Możliwy błąd w generowaniu fal.");
-        if (typeof setWaveActive === 'function') setWaveActive(false);
-        if (typeof clearEnemies === 'function') clearEnemies();
-        return;
+      console.warn("Brak danych dla bieżącej fali. Możliwy błąd w generowaniu fal.");
+      if (typeof setWaveActive === 'function') setWaveActive(false);
+      if (typeof clearEnemies === 'function') clearEnemies();
+      return;
     }
 
-      if (waveActive && !quizOpen && !quizOpeningRef.current && allDeadOrEscaped) {
-      let reward = currentWaveData.reward || 0;
-      
-      const farmIncome = towers.reduce((sum, t) => {
-         const tData = towerConfig[t.type];
-         if (t.type === 'farm-tower' && tData) {
-            const level = Math.min(t.level || 0, tData.levels.length - 1);
-            return sum + (tData.levels[level].incomePerWave || 0);
-         }
-         return sum;
-      }, 0);
-      reward += farmIncome;
-      
+    // --- reward i farmIncome dostępne dla obu ścieżek ---
+    let reward = currentWaveData.reward || 0;
+    const farmIncome = towers.reduce((sum, t) => {
+      const tData = towerConfig[t.type];
+      if (t.type === 'farm-tower' && tData) {
+        const level = Math.min(t.level || 0, tData.levels.length - 1);
+        return sum + (tData.levels[level].incomePerWave || 0);
+      }
+      return sum;
+    }, 0);
+    reward += farmIncome;
+
+    if (waveActive && !quizOpen && !quizOpeningRef.current && allDeadOrEscaped && !disableQuiz) {
       const allQuestions = Array.isArray(quizConfig?.questions) ? quizConfig.questions : [];
-      
+
       // Filtrujemy pytania, których jeszcze nie było w tej turze (puli)
       let availableIndices = allQuestions
         .map((_, i) => i)
@@ -78,7 +78,6 @@ export default function useGameState(difficulty) { // Teraz przyjmuje 'difficult
           const q = allQuestions[idx];
           return q && q.fact && String(q.fact).trim() === String(pickFact).trim();
         });
-        
         if (matchingIndices.length > 0) {
           chosenIdx = matchingIndices[Math.floor(Math.random() * matchingIndices.length)];
         }
@@ -103,8 +102,14 @@ export default function useGameState(difficulty) { // Teraz przyjmuje 'difficult
         if (typeof clearEnemies === 'function') clearEnemies();
         if (typeof setWaveActive === 'function') setWaveActive(false);
       }
+    } else if (waveActive && !quizOpen && !quizOpeningRef.current && allDeadOrEscaped && disableQuiz) {
+      // Jeśli disableQuiz, daj nagrodę bezpośrednio i przejdź do następnej fali
+      setMoney((prev) => prev + reward);
+      setWave((prev) => prev + 1);
+      if (typeof clearEnemies === 'function') clearEnemies();
+      if (typeof setWaveActive === 'function') setWaveActive(false);
     }
-  }, [factsHistory, quizOpen, wave, currentWaveData]); // Dodano currentWaveData do zależności
+  }, [factsHistory, quizOpen, wave, currentWaveData, disableQuiz]); // Dodano currentWaveData i disableQuiz do zależności
 
   const handleQuizClose = useCallback((isCorrect) => {
     const base = pendingWaveResult?.reward || 0;

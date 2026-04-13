@@ -32,6 +32,7 @@ const App = () => {
   const [gameSpeed, setGameSpeed] = useState(1);
   const [isPaused, setIsPaused] = useState(false);
   const [altGraphics, setAltGraphics] = useState(false);
+  const [disableQuiz, setDisableQuiz] = useState(false);
 
   // Headless game state/hooks
   const {
@@ -49,7 +50,7 @@ const App = () => {
     handleQuizClose,
     syncLoopState,
     currentWaveData, // Pobieramy currentWaveData z useGameState
-  } = useGameState(difficulty); // Przekazujemy difficulty do useGameState
+  } = useGameState(difficulty, disableQuiz); // Przekazujemy difficulty i disableQuiz do useGameState
 
   const {
     towers,
@@ -221,7 +222,7 @@ const App = () => {
           </div>
 
           <div className="bottom-ticker">
-            <QuizFacts onHistoryUpdate={(h) => setFactsHistory(h)} />
+            {!disableQuiz && <QuizFacts onHistoryUpdate={(h) => setFactsHistory(h)} />}
           </div>
         </div>
       </main>
@@ -269,6 +270,8 @@ const App = () => {
         onMapChange={handleMapChange}
         altGraphics={altGraphics}
         onAltGraphicsToggle={() => setAltGraphics((v) => !v)}
+        disableQuiz={disableQuiz}
+        onDisableQuizToggle={() => setDisableQuiz((v) => !v)}
       />
     </div>
   );
