@@ -4,14 +4,14 @@ import PropTypes from 'prop-types';
 import towerConfig from '../../config/towerConfig.json';
 import '../../styles/Tower.css';
 
-const Tower = ({ x, y, type, onClick, isShooting, onRightClick, isPlacingNewTower }) => { 
+const Tower = ({ x, y, type, level, onClick, isShooting, onRightClick, isPlacingNewTower }) => { 
   const towerData = towerConfig[type];
   if (!towerData) return null;
 
   const SIZE = 40;
   return (
     <div
-      className={`tower ${isShooting ? 'tower-shooting' : ''}`}
+      className={`tower tower-lvl-${level} ${isShooting ? 'tower-shooting' : ''}`}
       style={{
         left: `${x}px`,
         top: `${y}px`,
@@ -59,6 +59,7 @@ Tower.propTypes = {
   x: PropTypes.number.isRequired,
   y: PropTypes.number.isRequired,
   type: PropTypes.string.isRequired,
+  level: PropTypes.number,
   onClick: PropTypes.func,
   isShooting: PropTypes.bool,
   onRightClick: PropTypes.func,
@@ -68,12 +69,14 @@ Tower.propTypes = {
 Tower.defaultProps = {
   isShooting: false,
   isPlacingNewTower: false,
+  level: 0,
 };
 
 function areEqual(prev, next) {
   return prev.x === next.x && 
          prev.y === next.y && 
          prev.type === next.type && 
+         prev.level === next.level &&
          prev.isShooting === next.isShooting &&
          prev.isPlacingNewTower === next.isPlacingNewTower; 
 }

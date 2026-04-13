@@ -3,7 +3,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import enemyConfig from '../config/enemyConfig.json';
 import towerConfig from '../config/towerConfig.json';
 
-export default function useGameLoop({ towers = [], setTowers = () => {}, onEnemyEscape = () => {}, mapData } = {}) {
+export default function useGameLoop({ towers = [], setTowers = () => {}, onEnemyEscape = () => {}, mapData, gameSpeed = 1, isPaused = false } = {}) {
   const [enemies, setEnemies] = useState([]);
   const enemiesRef = useRef(enemies);
   const towersRef = useRef(towers);
@@ -54,6 +54,8 @@ export default function useGameLoop({ towers = [], setTowers = () => {}, onEnemy
     const tickMs = 33;
 
     const interval = setInterval(() => {
+      if (isPaused) return;
+
       const prevEnemies = enemiesRef.current || [];
       const prevTowers = towersRef.current || [];
 
@@ -75,9 +77,15 @@ export default function useGameLoop({ towers = [], setTowers = () => {}, onEnemy
 
       let spawnedThisTick = false;
       let escapeDamageTotal = 0;
-      const speedScale = tickMs / 100;
+      const speedScale = (tickMs / 100) * gameSpeed;
 
       let movedEnemies = prevEnemies.map((enemy, idx) => {
+        let currentSlowTimer = (enemy.slowTimer || 0) > 0 ? (enemy.slowTimer || 0) - (tickMs * gameSpeed) : 0;
+        let slowFactorMul = 1;
+        if (currentSlowTimer > 0) {
+           slowFactorMul = 1 - (enemy.slowFactor || 0.5);
+        }
+
         if (!enemy.spawned) {
           if (!spawnedThisTick && idx === firstNotSpawnedIndex && (spawnedPositions.length === 0 || minDist >= spacing)) {
             spawnedThisTick = true;
@@ -97,7 +105,7 @@ export default function useGameLoop({ towers = [], setTowers = () => {}, onEnemy
         const dy = next.y - current.y;
         const distance = Math.sqrt(dx * dx + dy * dy);
 
-        const step = (enemy.speed || 0) * speedScale;
+        const step = (enemy.speed || 0) * speedScale * slowFactorMul;
 
         if (distance === 0) {
           const newPathIndex = nextIndex;
@@ -122,7 +130,7 @@ export default function useGameLoop({ towers = [], setTowers = () => {}, onEnemy
         }
 
         if (enemy.health <= 0) return null;
-        return { ...enemy, position: newPosition, pathIndex: newPathIndex };
+        return { ...enemy, position: newPosition, pathIndex: newPathIndex, slowTimer: Math.max(0, currentSlowTimer) };
       }).filter(Boolean);
 
       let updatedEnemies = movedEnemies.slice();
@@ -134,8 +142,8 @@ export default function useGameLoop({ towers = [], setTowers = () => {}, onEnemy
         const level = Math.min(tower.level, towerData.levels.length - 1);
         const { damage, fireRate, splashRadius } = towerData.levels[level];
 
-        let newCooldown = (tower.cooldown ?? 0) - tickMs;
-        let newShootingTimer = (tower.shootingTimer ?? 0) - tickMs;
+        let newCooldown = (tower.cooldown ?? 0) - (tickMs * gameSpeed);
+        let newShootingTimer = (tower.shootingTimer ?? 0) - (tickMs * gameSpeed);
         let isShooting = newShootingTimer > 0;
 
         if (newCooldown <= 0) {
@@ -161,10 +169,28 @@ export default function useGameLoop({ towers = [], setTowers = () => {}, onEnemy
                 const dx = e.position.x - target.position.x;
                 const dy = e.position.y - target.position.y;
                 const dist = Math.sqrt(dx * dx + dy * dy);
-                return dist <= splashRadius ? { ...e, health: Math.max(0, e.health - damage) } : e;
+                if (dist <= splashRadius) {
+                   let dmg = damage;
+                   if (e.type === 'tank' && tower.type === 'rapid-picker') dmg *= 0.5;
+                   if (e.type === 'tank' && tower.type === 'sniper-picker') dmg *= 1.5;
+                   let newSlowFactor = towerData.levels[level].slowFactor || e.slowFactor || 0;
+                   let newSlowTimer = towerData.levels[level].slowFactor ? Math.max(e.slowTimer || 0, 1500) : (e.slowTimer || 0);
+                   return { ...e, health: Math.max(0, e.health - dmg), slowTimer: newSlowTimer, slowFactor: newSlowFactor };
+                }
+                return e;
               });
             } else {
-              updatedEnemies = updatedEnemies.map((e) => e.id === target.id ? { ...e, health: Math.max(0, e.health - damage) } : e);
+              updatedEnemies = updatedEnemies.map((e) => {
+                  if (e.id === target.id) {
+                     let dmg = damage;
+                     if (e.type === 'tank' && tower.type === 'rapid-picker') dmg *= 0.5;
+                     if (e.type === 'tank' && tower.type === 'sniper-picker') dmg *= 1.5;
+                     let newSlowFactor = towerData.levels[level].slowFactor || e.slowFactor || 0;
+                     let newSlowTimer = towerData.levels[level].slowFactor ? Math.max(e.slowTimer || 0, 1500) : (e.slowTimer || 0);
+                     return { ...e, health: Math.max(0, e.health - dmg), slowTimer: newSlowTimer, slowFactor: newSlowFactor };
+                  }
+                  return e;
+              });
             }
             newCooldown = fireRate;
             newShootingTimer = 150;
@@ -185,9 +211,13 @@ export default function useGameLoop({ towers = [], setTowers = () => {}, onEnemy
     }, tickMs);
 
     return () => clearInterval(interval);
-  }, [waveActive, setTowers, onEnemyEscape, mapData]);
+  }, [waveActive, setTowers, onEnemyEscape, mapData, gameSpeed, isPaused]);
 
   const clearEnemies = useCallback(() => setEnemies([]), []);
 
-  return { enemies, setEnemies, waveActive, setWaveActive, startWave, clearEnemies };
+  const castNuke = useCallback(() => {
+    setEnemies(prev => prev.map(e => ({ ...e, health: e.type === 'boss' ? Math.max(0, e.health - 50) : 0 })));
+  }, []);
+
+  return { enemies, setEnemies, waveActive, setWaveActive, startWave, clearEnemies, castNuke };
 }

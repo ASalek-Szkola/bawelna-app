@@ -1,3 +1,7 @@
 .tower { display: block; }
 .tower img { display: block; width: 100%; height: 100%; }
 .tower-shooting { animation: flash 0.15s ease-out; }
+
+.tower-lvl-0 { box-sizing: border-box; }
+.tower-lvl-1 { box-sizing: border-box; border: 2px solid silver; border-radius: 4px; box-shadow: 0 0 5px silver; }
+.tower-lvl-2 { box-sizing: border-box; border: 2px solid gold; border-radius: 4px; box-shadow: 0 0 5px gold; }

@@ -1,7 +1,8 @@
 // \hooks\useGameState.js
 import { useState, useRef, useCallback, useEffect } from 'react';
 import quizConfig from '../config/quizConfig.json';
-import { generateSingleWaveData } from '../utils/waveGenerator'; // Importuj generator pojedynczej fali
+import { generateSingleWaveData } from '../utils/waveGenerator';
+import towerConfig from '../config/towerConfig.json';
 
 export default function useGameState(difficulty) { // Teraz przyjmuje 'difficulty'
   const [health, setHealth] = useState(100);
@@ -28,7 +29,7 @@ export default function useGameState(difficulty) { // Teraz przyjmuje 'difficult
   const loopControls = useRef({ setWaveActive: null, clearEnemies: null });
 
   // currentWaveData jest teraz zarządzane wewnętrznie, więc syncLoopState już go nie potrzebuje jako argumentu
-  const syncLoopState = useCallback((enemies = [], waveActive = false, setWaveActive = null, clearEnemies = null) => {
+  const syncLoopState = useCallback((enemies = [], waveActive = false, setWaveActive = null, clearEnemies = null, towers = []) => {
     loopControls.current.setWaveActive = setWaveActive;
     loopControls.current.clearEnemies = clearEnemies;
 
@@ -44,7 +45,18 @@ export default function useGameState(difficulty) { // Teraz przyjmuje 'difficult
     }
 
       if (waveActive && !quizOpen && !quizOpeningRef.current && allDeadOrEscaped) {
-      const reward = currentWaveData.reward || 0;
+      let reward = currentWaveData.reward || 0;
+      
+      const farmIncome = towers.reduce((sum, t) => {
+         const tData = towerConfig[t.type];
+         if (t.type === 'farm-tower' && tData) {
+            const level = Math.min(t.level || 0, tData.levels.length - 1);
+            return sum + (tData.levels[level].incomePerWave || 0);
+         }
+         return sum;
+      }, 0);
+      reward += farmIncome;
+      
       const allQuestions = Array.isArray(quizConfig?.questions) ? quizConfig.questions : [];
       
       // Filtrujemy pytania, których jeszcze nie było w tej turze (puli)

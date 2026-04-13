@@ -34,7 +34,7 @@ StatLine.propTypes = {
   Icon: PropTypes.func.isRequired,
 };
 
-const GameInfo = ({ health, wave, money }) => {
+const GameInfo = ({ health, wave, money, onCastNuke, spellCooldown = 0 }) => {
   return (
     <div className="game-info">
       <h3 className="game-info-title">Informacje o grze</h3>
@@ -44,6 +44,17 @@ const GameInfo = ({ health, wave, money }) => {
         <StatLine label="Fala" value={wave} Icon={IconWave} />
         <StatLine label="Monety" value={money} Icon={IconCoin} />
       </div>
+      <div className="skills-section panel-sm" style={{ marginTop: '10px', paddingTop: '10px', borderTop: '1px solid rgba(255, 255, 255, 0.1)' }}>
+         <h4 style={{ margin: '0 0 10px 0', fontSize: '12px', color: 'var(--text-muted)' }}>Umiejętności</h4>
+         <button 
+            className="primary-btn" 
+            style={{ width: '100%', fontSize: '13px', backgroundColor: spellCooldown > 0 || money < 500 ? 'var(--bg-mid)' : 'var(--primary-color)' }}
+            onClick={onCastNuke}
+            disabled={spellCooldown > 0 || money < 500}
+         >
+            Nuke (500) {spellCooldown > 0 ? `[${spellCooldown}s]` : ''}
+         </button>
+      </div>
     </div>
   );
 };
@@ -52,6 +63,8 @@ GameInfo.propTypes = {
   health: PropTypes.number.isRequired,
   wave: PropTypes.number.isRequired,
   money: PropTypes.number.isRequired,
+  onCastNuke: PropTypes.func,
+  spellCooldown: PropTypes.number,
 };
 
 export default React.memo(GameInfo);

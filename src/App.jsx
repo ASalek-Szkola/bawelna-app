@@ -29,6 +29,8 @@ const App = () => {
 
   const [difficulty, setDifficulty] = useState("Easy");
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [gameSpeed, setGameSpeed] = useState(1);
+  const [isPaused, setIsPaused] = useState(false);
 
   // Headless game state/hooks
   const {
@@ -63,13 +65,15 @@ const App = () => {
     handleTargetingChange,
   } = useTowers({ money, setMoney, mapData: currentMapData });
 
-  const { enemies, waveActive, startWave, setWaveActive, clearEnemies } =
+  const { enemies, waveActive, startWave, setWaveActive, clearEnemies, castNuke } =
     useGameLoop({
       towers,
       setTowers,
       onEnemyEscape: (damage) =>
         setHealth((prev) => Math.max(0, prev + Number(damage) || 0)),
       mapData: currentMapData,
+      gameSpeed,
+      isPaused,
     });
 
   const [theme, setTheme] = React.useState(() => {
@@ -95,8 +99,8 @@ const App = () => {
 
   // Sync game loop state into game state (quiz trigger, rewards)
   useEffect(() => {
-    syncLoopState(enemies, waveActive, setWaveActive, clearEnemies);
-  }, [enemies, waveActive, syncLoopState, setWaveActive, clearEnemies]);
+    syncLoopState(enemies, waveActive, setWaveActive, clearEnemies, towers);
+  }, [enemies, waveActive, syncLoopState, setWaveActive, clearEnemies, towers]);
 
   const handleResetGame = () => {
     setWave(1);
@@ -117,11 +121,27 @@ const App = () => {
     handleResetGame();
   };
 
+  const [spellCooldown, setSpellCooldown] = useState(0);
+
+  useEffect(() => {
+    if (spellCooldown > 0 && !isPaused && waveActive) {
+       const t = setTimeout(() => setSpellCooldown(s => s - 1), 1000);
+       return () => clearTimeout(t);
+    }
+  }, [spellCooldown, isPaused, waveActive]);
+
+  const handleCastNuke = () => {
+      if (spellCooldown > 0 || money < 500) return;
+      setMoney((m) => m - 500);
+      setSpellCooldown(60); // 60 sek cooldown logiczny (lub wave ticks)
+      castNuke();
+  };
+
   return (
     <div className={`app ${theme === "dark" ? "dark-theme" : "light-theme"}`}>
       <aside className="left-panel panel">
         <div className="panel-section">
-          <GameInfo health={health} wave={wave} money={money} />
+          <GameInfo health={health} wave={wave} money={money} onCastNuke={handleCastNuke} spellCooldown={spellCooldown} />
         </div>
         <div className="panel-section">
           <WaveManager
@@ -131,6 +151,10 @@ const App = () => {
             enemies={enemies}
             currentWaveData={currentWaveData} // Przekaż aktualne dane fali
             difficulty={difficulty} // Przekaż difficulty do WaveManager
+            gameSpeed={gameSpeed}
+            onGameSpeedChange={setGameSpeed}
+            isPaused={isPaused}
+            onPauseToggle={() => setIsPaused((p) => !p)}
           />
         </div>
         <div className="sidebar-footer">

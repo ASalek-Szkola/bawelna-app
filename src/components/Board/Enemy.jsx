@@ -30,7 +30,7 @@ const Enemy = ({ type, position, health, path, onEscape, spawned }) => {
         pointerEvents: 'none'
       }}
     >
-      {healthPercent < 100 && (
+      {healthPercent > 0 && (
         <div className="enemy-bar-bg">
           <div className="enemy-bar-fill" style={{ width: `${healthPercent}%`, backgroundColor: healthPercent > 50 ? 'var(--enemy-health-high)' : healthPercent > 20 ? 'var(--enemy-health-mid)' : 'var(--enemy-health-low)' }} />
         </div>

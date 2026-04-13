@@ -86,6 +86,7 @@ const GameBoard = ({
           x={tower.x} 
           y={tower.y} 
           type={tower.type} 
+          level={tower.level || 0}
           isShooting={tower.isShooting}
           onClick={() => onTowerClick && onTowerClick(tower.id)}
           onRightClick={() => onTowerRightClick && onTowerRightClick(tower.id)}

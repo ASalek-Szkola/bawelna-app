@@ -5,7 +5,7 @@ import enemyConfig from '../../config/enemyConfig.json';
 import '../../styles/WaveManager.css';
 import { generateSingleWaveData } from '../../utils/waveGenerator'; // Importuj tutaj
 
-const WaveManager = ({ wave, onStartWave, waveActive, enemies = [], currentWaveData, difficulty }) => {
+const WaveManager = ({ wave, onStartWave, waveActive, enemies = [], currentWaveData, difficulty, gameSpeed, onGameSpeedChange, isPaused, onPauseToggle }) => {
   const waveData = currentWaveData; // Używamy propa currentWaveData
 
   // Generuj dane dla następnej fali na potrzeby podglądu
@@ -47,6 +47,14 @@ const WaveManager = ({ wave, onStartWave, waveActive, enemies = [], currentWaveD
       </div>
 
       <div className="wave-actions">
+        {waveActive && (
+          <div className="speed-controls">
+            <button className={`speed-btn ${isPaused ? 'active' : ''}`} onClick={onPauseToggle} title="Pauza">⏸</button>
+            <button className={`speed-btn ${gameSpeed === 1 && !isPaused ? 'active' : ''}`} onClick={() => { onGameSpeedChange(1); if(isPaused) onPauseToggle(); }} title="x1">▶</button>
+            <button className={`speed-btn ${gameSpeed === 2 && !isPaused ? 'active' : ''}`} onClick={() => { onGameSpeedChange(2); if(isPaused) onPauseToggle(); }} title="x2">▶▶</button>
+            <button className={`speed-btn ${gameSpeed === 3 && !isPaused ? 'active' : ''}`} onClick={() => { onGameSpeedChange(3); if(isPaused) onPauseToggle(); }} title="x3">▶▶▶</button>
+          </div>
+        )}
         <button className="primary-btn" onClick={onStartWave} disabled={waveActive} aria-label={waveActive ? 'Fala trwa' : 'Rozpocznij falę'}>
           {waveActive ? 'Fala trwa' : 'Rozpocznij falę'}
         </button>
@@ -62,12 +70,18 @@ WaveManager.propTypes = {
   enemies: PropTypes.array,
   currentWaveData: PropTypes.object,
   difficulty: PropTypes.string.isRequired, // Dodano prop
+  gameSpeed: PropTypes.number,
+  onGameSpeedChange: PropTypes.func,
+  isPaused: PropTypes.bool,
+  onPauseToggle: PropTypes.func,
 };
 
 WaveManager.defaultProps = {
   enemies: [],
   waveActive: false,
   currentWaveData: { enemies: [], reward: 0 },
+  gameSpeed: 1,
+  isPaused: false,
 };
 
 export default React.memo(WaveManager);
