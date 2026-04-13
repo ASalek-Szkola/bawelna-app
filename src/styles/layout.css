@@ -55,7 +55,7 @@
   border-top: 1px solid var(--border-ui);
 }
 
-.theme-toggle {
+.settings-btn {
   width: 64px;
   height: 64px;
   display: flex;
@@ -70,88 +70,25 @@
   box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
-.theme-toggle:hover {
+.settings-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(0,0,0,0.12);
   border-color: var(--accent);
   color: var(--accent);
 }
 
-.theme-toggle:active {
+.settings-btn:active {
   transform: translateY(0);
 }
 
-.theme-toggle svg {
+.settings-btn svg {
   transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.theme-toggle:hover svg {
-  transform: rotate(15deg) scale(1.1);
+.settings-btn:hover svg {
+  transform: rotate(45deg) scale(1.1);
 }
 
-.difficulty-select-wrapper {
-  margin-bottom: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.difficulty-select-wrapper label {
-  font-size: 12px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--text-muted);
-}
-
-.custom-select-container {
-  position: relative;
-  width: 100%;
-}
-
-.custom-select-container select {
-  width: 100%;
-  padding: 10px 16px;
-  padding-right: 40px;
-  border-radius: 10px;
-  border: 1px solid var(--border-ui);
-  background: var(--bg-card);
-  color: var(--text);
-  font-size: 14px;
-  font-weight: 500;
-  appearance: none;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-}
-
-.custom-select-container select:hover {
-  border-color: var(--accent);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-}
-
-.custom-select-container select:focus {
-  outline: none;
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(var(--accent-rgb, 139, 69, 19), 0.1);
-}
-
-.select-arrow {
-  position: absolute;
-  right: 14px;
-  top: 50%;
-  transform: translateY(-50%);
-  pointer-events: none;
-  color: var(--text-muted);
-  display: flex;
-  align-items: center;
-  transition: transform 0.2s ease;
-}
-
-.custom-select-container select:focus + .select-arrow {
-  transform: translateY(-50%) rotate(180deg);
-  color: var(--accent);
-}
 
 @media (max-width: 1024px) {
   .app { flex-direction: column; overflow-y: auto; height: auto; min-height: 100vh; }
