@@ -71,6 +71,7 @@
   --bg-app: #f4f1ea;
   --bg-panel: #ffffff;
   --accent: #8b4513;
+  --accent-rgb: 139, 69, 19;
   --text: #2c2c2c;
   --bg-main: var(--bg-app);
   --bg-sidebar: var(--bg-panel);
@@ -84,6 +85,7 @@
   --bg-app: #121212;
   --bg-panel: #1e1e1e;
   --accent: #ffd700;
+  --accent-rgb: 255, 215, 0;
   --text: #e0e0e0;
   --bg-main: var(--bg-app);
   --bg-sidebar: var(--bg-panel);
