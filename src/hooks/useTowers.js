@@ -1,8 +1,7 @@
 import { useState, useMemo } from 'react';
 import towerConfig from '../config/towerConfig.json';
 import { isPointOnPath, isOverlappingTower } from '../utils/pathUtils'; // dodaj import
-
-const MAX_FARM_TOWERS = 3;
+import { ECONOMY_BALANCE } from '../utils/economyUtils';
 
 function createTowerId() {
   if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
@@ -11,7 +10,7 @@ function createTowerId() {
   return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
 }
 
-export default function useTowers({ money = 0, setMoney = () => {}, mapData } = {}) {
+export default function useTowers({ money = 0, applyMoneyDelta = () => {}, mapData } = {}) {
   const [towers, setTowers] = useState([]);
   const [selectedTowerId, setSelectedTowerId] = useState(null);
   const [shopSelectedType, setShopSelectedType] = useState(null);
@@ -59,8 +58,8 @@ export default function useTowers({ money = 0, setMoney = () => {}, mapData } = 
 
     if (shopSelectedType === 'farm-tower') {
       const currentFarmCount = towers.filter((tower) => tower.type === 'farm-tower').length;
-      if (currentFarmCount >= MAX_FARM_TOWERS) {
-        alert(`Limit farm osiągnięty (${MAX_FARM_TOWERS}).`);
+      if (currentFarmCount >= ECONOMY_BALANCE.maxFarmTowers) {
+        alert(`Limit farm osiągnięty (${ECONOMY_BALANCE.maxFarmTowers}).`);
         setShopSelectedType(null);
         return;
       }
@@ -82,7 +81,7 @@ export default function useTowers({ money = 0, setMoney = () => {}, mapData } = 
       targetingMode: 'first'
     };
 
-    setMoney((prev) => prev - levelData.cost);
+    applyMoneyDelta(-levelData.cost, 'tower_purchase', { towerType: shopSelectedType, level: 0 });
     setTowers((prev) => [...prev, newTower]);
     setShopSelectedType(null);
     setSelectedTowerId(null);
@@ -94,7 +93,7 @@ export default function useTowers({ money = 0, setMoney = () => {}, mapData } = 
     const levels = towerConfig[tower.type].levels;
     const paidSum = levels.slice(0, tower.level + 1).reduce((s, lvl) => s + (lvl.cost || 0), 0);
     setTowers((prev) => prev.filter((t) => t.id !== towerId));
-    setMoney((prev) => prev + Math.floor(paidSum / 2));
+    applyMoneyDelta(Math.floor(paidSum / 2), 'tower_sell', { towerType: tower.type, level: tower.level });
     setSelectedTowerId((prev) => (prev === towerId ? null : prev));
   };
 
@@ -105,7 +104,7 @@ export default function useTowers({ money = 0, setMoney = () => {}, mapData } = 
     const upgradeData = towerConfig[tower.type].levels[nextLevel];
     if (!upgradeData || money < upgradeData.cost) return;
 
-    setMoney((prevMoney) => prevMoney - upgradeData.cost);
+    applyMoneyDelta(-upgradeData.cost, 'tower_upgrade', { towerType: tower.type, level: nextLevel });
     setTowers((prevTowers) => prevTowers.map((t) => t.id === towerId ? { ...t, level: nextLevel } : t));
   };
 

@@ -1,3 +1,4 @@
+// \components\Board\GameBoard.jsx
 import React, { useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import Tower from './Tower';
@@ -13,7 +14,6 @@ const GameBoard = ({
   onBoardClick, 
   shopSelectedType,
   enemies =[],               
-  onEnemyEscape,              
   selectedTower,              
   onBoardRightClick,         
   onTowerRightClick,
@@ -27,22 +27,19 @@ const GameBoard = ({
 
   const [previewPos, setPreviewPos] = useState(null);
 
-  // Dynamiczne sprawdzanie poprawności miejsca dla podglądu
   const isPlacementValid = useMemo(() => {
     if (!previewPos || !shopSelectedType) return false;
     
-    const TOWER_SIZE = 40; // Rozmiar wieży, zgodny z Tower.jsx i useTowers.js
+    const TOWER_SIZE = 40; 
     
     const onPath = isPointOnPath(previewPos.x, previewPos.y, path, pathWidth);
     const overlapping = towers.some(t => isOverlappingTower(previewPos.x, previewPos.y, t.x, t.y, TOWER_SIZE));
     
     return !onPath && !overlapping;
-  }, [previewPos, shopSelectedType, towers, path, pathWidth]);
+  },[previewPos, shopSelectedType, towers, path, pathWidth]);
 
 
   const handleBoardClick = (e) => {
-    // Jeśli shopSelectedType jest aktywne, to klikamy w celu postawienia
-    // jeśli nie jest aktywne, to klikamy w celu odznaczenia wybranej wieży
     if (!onBoardClick) return;
     const rect = e.currentTarget.getBoundingClientRect();
     const x = Math.round((e.clientX - rect.left) / scale);
@@ -72,7 +69,7 @@ const GameBoard = ({
       className="game-board-inner"
       onClick={handleBoardClick}
       onContextMenu={(e) => {
-        if (shopSelectedType) e.preventDefault(); // Zapobiegnij menu kontekstowemu, gdy próbujemy stawiać
+        if (shopSelectedType) e.preventDefault(); 
         if (onBoardRightClick) onBoardRightClick();
       }}
       onMouseMove={handleMouseMove}
@@ -98,7 +95,7 @@ const GameBoard = ({
       ))}
 
       {enemies.filter(enemy => enemy.health > 0).map((enemy) => (
-        <Enemy key={enemy.id} type={enemy.type} position={enemy.position} health={enemy.health} path={path} spawned={enemy.spawned} />
+        <Enemy key={enemy.id} type={enemy.type} position={enemy.position} health={enemy.health} spawned={enemy.spawned} />
       ))}
 
       {shopSelectedType && previewPos && (
@@ -116,7 +113,6 @@ const GameBoard = ({
                 position: 'absolute', 
                 left: `${previewPos.x}px`, 
                 top: `${previewPos.y}px`, 
-                // Ważne: pointerEvents: 'none' jest nadal potrzebne, aby kliknięcie przeszło do GameBoard
                 pointerEvents: 'none', 
                 transform: 'translate(-50%, -50%)', 
                 zIndex: 18,
@@ -152,7 +148,6 @@ const GameBoard = ({
 
       {selectedTower && selectedTower.x != null && selectedTower.y != null && (
         <>
-          {/* Ciemne tło dla wybranej wieży - upewnij się, że ma odpowiedni zIndex */}
           <div style={{ position: 'absolute', left: 0, top: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.45)', zIndex: 30, pointerEvents: 'none', transition: 'opacity 0.3s ease' }} />
           {(() => {
             const SIZE = 40;
@@ -182,17 +177,18 @@ GameBoard.propTypes = {
   onBoardClick: PropTypes.func,
   shopSelectedType: PropTypes.string,
   enemies: PropTypes.array,
-  onEnemyEscape: PropTypes.func,
   selectedTower: PropTypes.object,
   onBoardRightClick: PropTypes.func,
   onTowerRightClick: PropTypes.func,
   scale: PropTypes.number,
   mapData: PropTypes.object,
+  altGraphics: PropTypes.bool,
 };
 
 GameBoard.defaultProps = {
-  enemies: [],
+  enemies:[],
   scale: 1,
+  altGraphics: false,
 };
 
 export default GameBoard;

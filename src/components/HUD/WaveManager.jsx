@@ -5,16 +5,17 @@ import enemyConfig from '../../config/enemyConfig.json';
 import { resolveConfiguredAssetPath } from '../../utils/assetUtils';
 import '../../styles/WaveManager.css';
 
-const WaveManager = ({ wave, onStartWave, waveActive, enemies = [], currentWaveData, nextWaveData, gameSpeed, onGameSpeedChange, isPaused, onPauseToggle, autoStartNextWave, onAutoStartChange, gameOver = false }) => {
-  const waveData = currentWaveData; // Używamy propa currentWaveData
+const WaveManager = ({ wave, onStartWave, waveActive, enemies =[], currentWaveData, nextWaveData, gameSpeed, onGameSpeedChange, isPaused, onPauseToggle, autoStartNextWave, onAutoStartChange, gameOver = false, farmIncome = 0 }) => {
+  const waveData = currentWaveData;
 
   if (!waveData) return <div className="wave-manager panel">Brak danych fali</div>;
 
   const computedTotal = waveData.enemies.reduce((s, e) => s + (e.count || 0), 0);
   const totalInWave = enemies && enemies.length ? (enemies[0]?.totalInWave || computedTotal) : computedTotal;
 
-  const aliveCount = enemies.filter(e => e.health > 0 && !e.escaped).length;
+  const aliveCount = enemies.filter(e => e.health > 0).length;
   const percentComplete = totalInWave ? Math.round(((totalInWave - aliveCount) / totalInWave) * 100) : 0;
+  const totalReward = waveData.reward + farmIncome;
 
   return (
     <>
@@ -40,8 +41,8 @@ const WaveManager = ({ wave, onStartWave, waveActive, enemies = [], currentWaveD
         </div>
 
         <div className="wave-reward">
-          <div className="reward-label">Nagroda</div>
-          <div className="reward-value"><strong>{waveData.reward}</strong></div>
+          <div className="reward-label">Nagroda (Baza + Farmy)</div>
+          <div className="reward-value"><strong>{totalReward}</strong></div>
         </div>
       </div>
 
@@ -100,18 +101,20 @@ WaveManager.propTypes = {
   autoStartNextWave: PropTypes.bool,
   onAutoStartChange: PropTypes.func,
   gameOver: PropTypes.bool,
+  farmIncome: PropTypes.number,
 };
 
 WaveManager.defaultProps = {
   enemies: [],
   waveActive: false,
-  currentWaveData: { enemies: [], reward: 0 },
-  nextWaveData: { enemies: [], reward: 0 },
+  currentWaveData: { enemies:[], reward: 0 },
+  nextWaveData: { enemies:[], reward: 0 },
   gameSpeed: 1,
   isPaused: false,
   autoStartNextWave: false,
   onAutoStartChange: () => {},
   gameOver: false,
+  farmIncome: 0,
 };
 
 export default React.memo(WaveManager);

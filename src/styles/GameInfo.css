@@ -1,7 +1,46 @@
-.game-info-title { margin: 0 0 8px 0; font-size: 1.05em; }
-.panel-sm { background: rgba(255,255,255,0.04); padding: 10px; border-radius: 10px; }
+/* \styles\GameInfo.css */
+.game-info-title { margin: 0 0 12px 0; font-size: 1.1em; font-weight: 700; }
+
+.panel-sm { background: rgba(128, 128, 128, 0.05); padding: 12px; border-radius: 10px; }
+
 .player-stats .stat-line { display: flex; align-items: center; justify-content: space-between; padding: 8px 6px; border-bottom: 1px solid var(--border-ui); gap: 8px; }
 .player-stats .stat-line:last-child { border-bottom: none; }
 .stat-label { font-size: 13px; color: var(--text-muted); font-weight: 600; }
 .stat-value { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 16px; color: var(--text); }
 .stat-value .stat-number { margin-left: 4px; }
+
+.section-subtitle { margin: 0 0 10px 0; font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+
+.nuke-btn { 
+  width: 100%; 
+  padding: 10px; 
+  font-size: 13px; 
+  font-weight: 700;
+  border-radius: 8px;
+  background: var(--btn-bg); 
+  color: var(--btn-text);
+  border: 2px solid var(--accent);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.nuke-btn:not(:disabled):hover {
+  background: var(--accent);
+  color: #fff;
+}
+.nuke-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  border-color: var(--border-ui);
+}
+
+.ledger-title { margin: 0 0 10px 0; font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; display: flex; justify-content: space-between; align-items: center; }
+.ledger-expand-btn { background: none; border: none; color: var(--accent); font-size: 11px; cursor: pointer; padding: 0 4px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; transition: opacity 0.2s; }
+.ledger-expand-btn:hover { opacity: 0.8; }
+
+.ledger-row { display: flex; justify-content: space-between; align-items: center; font-size: 13px; padding: 6px 4px; border-bottom: 1px solid var(--border-ui); }
+.ledger-row:last-child { border-bottom: none; padding-bottom: 2px; }
+.ledger-label { color: var(--text); font-weight: 500; }
+.ledger-amount { font-weight: 700; font-variant-numeric: tabular-nums; }
+.ledger-amount--gain { color: var(--success-green); }
+.ledger-amount--cost { color: var(--enemy-health-low); }
+.ledger-empty { font-size: 13px; color: var(--text-muted); padding: 4px; font-style: italic; }

@@ -1,4 +1,5 @@
-import React from 'react';
+// \components\HUD\GameInfo.jsx
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import '../../styles/GameInfo.css';
 
@@ -21,39 +22,73 @@ const IconWave = () => (
   </svg>
 );
 
-const StatLine = ({ label, value, Icon }) => (
+const StatLine = ({ label, value, icon: IconComponent }) => (
   <div className="stat-line">
     <div className="stat-label">{label}</div>
-    <div className="stat-value"><Icon /> <div className="stat-number">{value}</div></div>
+    <div className="stat-value"><IconComponent /> <div className="stat-number">{value}</div></div>
   </div>
 );
 
 StatLine.propTypes = {
   label: PropTypes.string.isRequired,
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-  Icon: PropTypes.func.isRequired,
+  icon: PropTypes.func.isRequired,
 };
 
-const GameInfo = ({ health, wave, money, onCastNuke, spellCooldown = 0 }) => {
+const GameInfo = ({ health, wave, money, onCastNuke, spellCooldown = 0, nukeCost = 650, moneyLedger = [] }) => {
+  const[ledgerExpanded, setLedgerExpanded] = useState(false);
+
+  // Zawsze odwracamy, by najnowsze były na górze
+  const reversedLedger = [...moneyLedger].reverse();
+  // Jeśli zwinięte = max 2, w przeciwnym razie max 10
+  const visibleCount = ledgerExpanded ? Math.min(10, reversedLedger.length) : 2;
+  const displayedLedger = reversedLedger.slice(0, visibleCount);
+
   return (
     <div className="game-info">
       <h3 className="game-info-title">Informacje o grze</h3>
 
       <div className="player-stats panel-sm">
-        <StatLine label="Życie" value={health} Icon={IconHeart} />
-        <StatLine label="Fala" value={wave} Icon={IconWave} />
-        <StatLine label="Monety" value={money} Icon={IconCoin} />
+        <StatLine label="Życie" value={health} icon={IconHeart} />
+        <StatLine label="Fala" value={wave} icon={IconWave} />
+        <StatLine label="Monety" value={money} icon={IconCoin} />
       </div>
-      <div className="skills-section panel-sm" style={{ marginTop: '10px', paddingTop: '10px', borderTop: '1px solid rgba(255, 255, 255, 0.1)' }}>
-         <h4 style={{ margin: '0 0 10px 0', fontSize: '12px', color: 'var(--text-muted)' }}>Umiejętności</h4>
+      
+      <div className="skills-section panel-sm" style={{ marginTop: '12px' }}>
+         <h4 className="section-subtitle">Umiejętności</h4>
          <button 
-            className="primary-btn" 
-            style={{ width: '100%', fontSize: '13px', backgroundColor: spellCooldown > 0 || money < 500 ? 'var(--bg-mid)' : 'var(--primary-color)' }}
+            className="nuke-btn" 
             onClick={onCastNuke}
-            disabled={spellCooldown > 0 || money < 500}
+            disabled={spellCooldown > 0 || money < nukeCost}
          >
-            Nuke (500) {spellCooldown > 0 ? `[${spellCooldown}s]` : ''}
+            Nuke ({nukeCost}) {spellCooldown > 0 ? `[${spellCooldown}s]` : ''}
          </button>
+      </div>
+
+      <div className="ledger-section panel-sm" style={{ marginTop: '12px' }}>
+        <h4 className="ledger-title">
+          Źródła monet
+          {reversedLedger.length > 2 && (
+            <button 
+              className="ledger-expand-btn" 
+              onClick={() => setLedgerExpanded(!ledgerExpanded)}
+            >
+              {ledgerExpanded ? 'Zwiń' : 'Rozwiń'}
+            </button>
+          )}
+        </h4>
+        {displayedLedger.length === 0 ? (
+          <div className="ledger-empty">Brak transakcji</div>
+        ) : (
+          displayedLedger.map((entry) => (
+            <div key={entry.id} className="ledger-row">
+              <span className="ledger-label">{entry.label}</span>
+              <span className={`ledger-amount ${entry.amount >= 0 ? 'ledger-amount--gain' : 'ledger-amount--cost'}`}>
+                {entry.amount >= 0 ? '+' : ''}{entry.amount}
+              </span>
+            </div>
+          ))
+        )}
       </div>
     </div>
   );
@@ -65,6 +100,12 @@ GameInfo.propTypes = {
   money: PropTypes.number.isRequired,
   onCastNuke: PropTypes.func,
   spellCooldown: PropTypes.number,
+  nukeCost: PropTypes.number,
+  moneyLedger: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.string,
+    label: PropTypes.string,
+    amount: PropTypes.number,
+  })),
 };
 
 export default React.memo(GameInfo);

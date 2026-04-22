@@ -10,8 +10,8 @@ function createRuntimeId(prefix, index = 0) {
   return `${prefix}-${Date.now()}-${index}-${Math.random().toString(16).slice(2)}`;
 }
 
-export default function useGameLoop({ towers = [], setTowers = () => {}, onEnemyEscape = () => {}, onEnemyKilled = () => {}, mapData, gameSpeed = 1, isPaused = false } = {}) {
-  const [enemies, setEnemies] = useState([]);
+export default function useGameLoop({ towers =[], setTowers = () => {}, onEnemyEscape = () => {}, onEnemyKilled = () => {}, mapData, gameSpeed = 1, isPaused = false } = {}) {
+  const[enemies, setEnemies] = useState([]);
   const enemiesRef = useRef(enemies);
   const towersRef = useRef(towers);
 
@@ -20,8 +20,7 @@ export default function useGameLoop({ towers = [], setTowers = () => {}, onEnemy
 
   const [waveActive, setWaveActive] = useState(false);
 
-  // startWave teraz przyjmuje bezpośrednio waveData dla tej konkretnej fali
-  const startWave = useCallback((waveData) => { // Zmieniono argument
+  const startWave = useCallback((waveData) => { 
     if (!waveData || !waveData.enemies) {
       console.warn(`Brak danych dla fali. Nie można rozpocząć.`);
       setWaveActive(false);
@@ -31,7 +30,7 @@ export default function useGameLoop({ towers = [], setTowers = () => {}, onEnemy
     let totalCount = 0;
     waveData.enemies.forEach(({ count }) => (totalCount += count));
 
-    const newEnemies = [];
+    const newEnemies =[];
     let orderIndex = 0;
     waveData.enemies.forEach(({ type, count }) => {
       for (let i = 0; i < count; i++) {
@@ -42,7 +41,6 @@ export default function useGameLoop({ towers = [], setTowers = () => {}, onEnemy
           speed: enemyConfig[type].speed,
           pathIndex: null,
           position: null,
-          escaped: false,
           spawned: false,
           order: orderIndex,
           totalInWave: totalCount,
@@ -53,9 +51,8 @@ export default function useGameLoop({ towers = [], setTowers = () => {}, onEnemy
 
     setEnemies(newEnemies);
     setWaveActive(true);
-  }, []); // startWave nie zależy od waveConfig, bo dostaje konkretne waveData
+  },[]);
 
-  // Game loop: movement, spawning, tower shooting
   useEffect(() => {
     if (!waveActive) return undefined;
     const tickMs = 33;
@@ -64,7 +61,7 @@ export default function useGameLoop({ towers = [], setTowers = () => {}, onEnemy
       if (isPaused) return;
 
       const prevEnemies = enemiesRef.current || [];
-      const prevTowers = towersRef.current || [];
+      const prevTowers = towersRef.current ||[];
 
       if (!mapData || !mapData.path) return;
       const path = mapData.path;
@@ -101,7 +98,7 @@ export default function useGameLoop({ towers = [], setTowers = () => {}, onEnemy
           return enemy;
         }
 
-        if (enemy.health <= 0 || enemy.escaped) return enemy;
+        if (enemy.health <= 0) return enemy;
 
         const currentIndex = enemy.pathIndex ?? 0;
         const nextIndex = Math.min(currentIndex + 1, path.length - 1);
@@ -118,7 +115,7 @@ export default function useGameLoop({ towers = [], setTowers = () => {}, onEnemy
           const newPathIndex = nextIndex;
           if (newPathIndex >= path.length - 1) {
             escapeDamageTotal += enemyConfig[enemy.type]?.damageOnEscape || 0;
-            return null;
+            return null; // Znika po ucieczce z mapy
           }
           return { ...enemy, position: { ...next }, pathIndex: newPathIndex };
         }
@@ -133,10 +130,9 @@ export default function useGameLoop({ towers = [], setTowers = () => {}, onEnemy
 
         if (newPathIndex >= path.length - 1) {
           escapeDamageTotal += enemyConfig[enemy.type]?.damageOnEscape || 0;
-          return null;
+          return null; // Znika po ucieczce z mapy
         }
 
-        if (enemy.health <= 0) return null;
         return { ...enemy, position: newPosition, pathIndex: newPathIndex, slowTimer: Math.max(0, currentSlowTimer) };
       }).filter(Boolean);
 
@@ -255,13 +251,13 @@ export default function useGameLoop({ towers = [], setTowers = () => {}, onEnemy
     }, tickMs);
 
     return () => clearInterval(interval);
-  }, [waveActive, setTowers, onEnemyEscape, onEnemyKilled, mapData, gameSpeed, isPaused]);
+  },[waveActive, setTowers, onEnemyEscape, onEnemyKilled, mapData, gameSpeed, isPaused]);
 
-  const clearEnemies = useCallback(() => setEnemies([]), []);
+  const clearEnemies = useCallback(() => setEnemies([]),[]);
 
   const castNuke = useCallback(() => {
     setEnemies(prev => prev.map(e => ({ ...e, health: e.type === 'boss' ? Math.max(0, e.health - 50) : 0 })));
-  }, []);
+  },[]);
 
   return { enemies, setEnemies, waveActive, setWaveActive, startWave, clearEnemies, castNuke };
 }

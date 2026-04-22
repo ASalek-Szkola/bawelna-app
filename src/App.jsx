@@ -1,4 +1,4 @@
-// App.jsx
+// \App.jsx
 import React, { useEffect, useState, useMemo, useCallback } from "react";
 import GameInfo from "./components/HUD/GameInfo";
 import GameBoard from "./components/Board/GameBoard";
@@ -10,11 +10,13 @@ import Quiz from "./components/Quiz/Quiz";
 import QuizFacts from "./components/Quiz/QuizFacts";
 import SettingsMenu from "./components/Settings/SettingsMenu";
 import mapsConfig from "./config/mapsConfig.json";
+import towerConfig from "./config/towerConfig.json";
 
 import useBoardScaling from "./hooks/useBoardScaling";
 import useTowers from "./hooks/useTowers";
 import useGameLoop from "./hooks/useGameLoop";
 import useGameState from "./hooks/useGameState";
+import { ECONOMY_BALANCE, calculateFarmIncome } from "./utils/economyUtils";
 
 const App = () => {
   const [selectedMapId, setSelectedMapId] = useState(mapsConfig[0].id);
@@ -25,20 +27,22 @@ const App = () => {
 
   const boardScale = useBoardScaling(currentMapData.board);
 
-  const [difficulty, setDifficulty] = useState("Easy");
+  const[difficulty, setDifficulty] = useState("Easy");
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [gameSpeed, setGameSpeed] = useState(1);
   const [isPaused, setIsPaused] = useState(false);
   const [altGraphics, setAltGraphics] = useState(false);
-  const [disableQuiz, setDisableQuiz] = useState(false);
-  const [autoStartNextWave, setAutoStartNextWave] = useState(false);
+  const[disableQuiz, setDisableQuiz] = useState(false);
+  const[autoStartNextWave, setAutoStartNextWave] = useState(false);
 
-  // Headless game state/hooks
   const {
     health,
     setHealth,
     money,
     setMoney,
+    applyMoneyDelta,
+    moneyLedger,
+    clearMoneyLedger,
     wave,
     setWave,
     setFactsHistory,
@@ -47,9 +51,9 @@ const App = () => {
     pendingWaveResult,
     handleQuizClose,
     syncLoopState,
-    currentWaveData, // Pobieramy currentWaveData z useGameState
+    currentWaveData, 
     nextWaveData,
-  } = useGameState(difficulty, disableQuiz, selectedMapId); // Przekazujemy difficulty i disableQuiz do useGameState
+  } = useGameState(difficulty, disableQuiz, selectedMapId); 
 
   const handleEnemyEscape = useCallback((damage) => {
     const parsedDamage = Number(damage) || 0;
@@ -58,8 +62,8 @@ const App = () => {
 
   const handleEnemyKilled = useCallback((reward = 0) => {
     if (reward <= 0) return;
-    setMoney((prev) => prev + reward);
-  }, [setMoney]);
+    applyMoneyDelta(reward, 'enemy_kill');
+  }, [applyMoneyDelta]);
 
   const {
     towers,
@@ -73,7 +77,7 @@ const App = () => {
     handleSellTower,
     handleUpgrade,
     handleTargetingChange,
-  } = useTowers({ money, setMoney, mapData: currentMapData });
+  } = useTowers({ money, applyMoneyDelta, mapData: currentMapData });
 
   const { enemies, waveActive, startWave, setWaveActive, clearEnemies, castNuke } =
     useGameLoop({
@@ -107,14 +111,12 @@ const App = () => {
       if (mq.removeEventListener) mq.removeEventListener("change", handler);
       else mq.removeListener(handler);
     };
-  }, []);
+  },[]);
 
-  // Sync game loop state into game state (quiz trigger, rewards)
   useEffect(() => {
     syncLoopState(enemies, waveActive, setWaveActive, clearEnemies, towers);
-  }, [enemies, waveActive, syncLoopState, setWaveActive, clearEnemies, towers]);
+  },[enemies, waveActive, syncLoopState, setWaveActive, clearEnemies, towers]);
 
-  // Auto-start next wave when option enabled and conditions met
   useEffect(() => {
     if (!autoStartNextWave) return;
     if (waveActive) return;
@@ -124,13 +126,12 @@ const App = () => {
     if (!currentWaveData || !currentWaveData.enemies) return;
     if (enemies && enemies.length > 0) return;
 
-    // Start the next wave using currentWaveData (which is regenerated when `wave` increments)
     try {
       startWave(currentWaveData);
     } catch {
       /* swallow */
     }
-  }, [autoStartNextWave, waveActive, enemies, quizOpen, pendingWaveResult, currentWaveData, startWave, isGameOver]);
+  },[autoStartNextWave, waveActive, enemies, quizOpen, pendingWaveResult, currentWaveData, startWave, isGameOver]);
 
   useEffect(() => {
     if (!isGameOver || !waveActive) return;
@@ -142,6 +143,7 @@ const App = () => {
     setWave(1);
     setHealth(100);
     setMoney(500);
+    clearMoneyLedger();
     setSpellCooldown(0);
     setIsPaused(false);
     setTowers([]);
@@ -159,7 +161,7 @@ const App = () => {
     handleResetGame();
   };
 
-  const [spellCooldown, setSpellCooldown] = useState(0);
+  const[spellCooldown, setSpellCooldown] = useState(0);
 
   useEffect(() => {
     if (spellCooldown > 0 && !isPaused && waveActive) {
@@ -170,17 +172,27 @@ const App = () => {
 
   const handleCastNuke = () => {
       if (isGameOver) return;
-      if (spellCooldown > 0 || money < 500) return;
-      setMoney((m) => m - 500);
-      setSpellCooldown(60); // 60 sek cooldown logiczny (lub wave ticks)
+        if (spellCooldown > 0 || money < ECONOMY_BALANCE.nukeCost) return;
+        applyMoneyDelta(-ECONOMY_BALANCE.nukeCost, 'nuke_cast', { waveNumber: wave });
+        setSpellCooldown(ECONOMY_BALANCE.nukeCooldownSeconds);
       castNuke();
   };
+
+  const currentFarmIncome = useMemo(() => calculateFarmIncome(towers, towerConfig, ECONOMY_BALANCE).total, [towers]);
 
   return (
     <div className={`app ${theme === "dark" ? "dark-theme" : "light-theme"}`}>
       <aside className="left-panel panel">
         <div className="panel-section">
-          <GameInfo health={health} wave={wave} money={money} onCastNuke={handleCastNuke} spellCooldown={spellCooldown} />
+          <GameInfo
+            health={health}
+            wave={wave}
+            money={money}
+            onCastNuke={handleCastNuke}
+            spellCooldown={spellCooldown}
+            nukeCost={ECONOMY_BALANCE.nukeCost}
+            moneyLedger={moneyLedger}
+          />
         </div>
         <div className="panel-section">
           <WaveManager
@@ -188,10 +200,10 @@ const App = () => {
             onStartWave={() => {
               if (isGameOver) return;
               startWave(currentWaveData);
-            }} // Przekaż currentWaveData do startWave
+            }} 
             waveActive={waveActive}
             enemies={enemies}
-            currentWaveData={currentWaveData} // Przekaż aktualne dane fali
+            currentWaveData={currentWaveData} 
             nextWaveData={nextWaveData}
             gameSpeed={gameSpeed}
             onGameSpeedChange={setGameSpeed}
@@ -200,6 +212,7 @@ const App = () => {
             autoStartNextWave={autoStartNextWave}
             onAutoStartChange={setAutoStartNextWave}
             gameOver={isGameOver}
+            farmIncome={currentFarmIncome}
           />
         </div>
         <div className="sidebar-footer">
@@ -208,17 +221,7 @@ const App = () => {
             onClick={() => setIsSettingsOpen(true)}
             title="Ustawienia"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="12" cy="12" r="3"></circle>
               <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
             </svg>
@@ -296,7 +299,7 @@ const App = () => {
       <Quiz
         open={quizOpen}
         questionData={quizQuestion}
-        baseReward={pendingWaveResult?.reward}
+        baseReward={pendingWaveResult?.baseWaveReward}
         onClose={handleQuizClose}
       />
 

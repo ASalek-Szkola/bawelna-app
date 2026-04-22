@@ -1,13 +1,14 @@
-import { useCallback, useRef, useEffect } from 'react';
+// \hooks\useAudio.js
+import { useCallback, useRef } from 'react';
 
-// Słownik pustych placeholderów (ścieżek do podmienienia na w przyszłości)
+// Słownik pustych placeholderów (ścieżek do podmienienia w przyszłości)
 const audioFiles = {
   shootBasic: 'src/assets/audio/shoot_basic.mp3',
   shootSniper: 'src/assets/audio/shoot_sniper.mp3',
   shootRapid: 'src/assets/audio/shoot_rapid.mp3',
   shootHeavy: 'src/assets/audio/shoot_heavy.mp3',
-  shootFrost: 'src/assets/audio/shoot_frost.mp3', // Nowa wieża
-  farmIncome: 'src/assets/audio/farm_income.mp3', // Nowa wieża
+  shootFrost: 'src/assets/audio/shoot_frost.mp3',
+  farmIncome: 'src/assets/audio/farm_income.mp3',
   enemyHit: 'src/assets/audio/enemy_hit.mp3',
   enemyDeath: 'src/assets/audio/enemy_death.mp3',
   playerHurt: 'src/assets/audio/player_hurt.mp3',
@@ -24,16 +25,6 @@ const audioFiles = {
 export default function useAudio() {
   const audioRefs = useRef({});
 
-  // Gdy dodasz pliki mp3, odkomentuj poniższy blok, aby przeglądarka zaczęła cachować audio
-  /*
-  useEffect(() => {
-    Object.keys(audioFiles).forEach(key => {
-      audioRefs.current[key] = new Audio(audioFiles[key]);
-      audioRefs.current[key].volume = 0.5; // Domyślna głośność
-    });
-  }, []);
-  */
-
   const playSound = useCallback((soundName) => {
     // Kiedy będziesz gotowy(a), odkomentuj poniższy blok:
     /*
@@ -43,7 +34,7 @@ export default function useAudio() {
       sound.play().catch(e => console.warn('Brak pliku audio dla:', soundName, e));
     }
     */
-  }, []);
+  },[]);
 
   return { playSound };
 }

@@ -1,10 +1,11 @@
+// \components\Board\Enemy.jsx
 import React from 'react';
 import PropTypes from 'prop-types';
 import enemyConfig from '../../config/enemyConfig.json';
 import { resolveConfiguredAssetPath } from '../../utils/assetUtils';
 import '../../styles/Enemy.css';
 
-const Enemy = ({ type, position, health, path, onEscape, spawned }) => {
+const Enemy = ({ type, position, health, spawned }) => {
   const enemyData = enemyConfig[type];
   if (!enemyData) return null;
 
@@ -46,8 +47,6 @@ Enemy.propTypes = {
   type: PropTypes.string.isRequired,
   position: PropTypes.shape({ x: PropTypes.number, y: PropTypes.number }),
   health: PropTypes.number,
-  path: PropTypes.array,
-  onEscape: PropTypes.func,
   spawned: PropTypes.bool,
 };
 

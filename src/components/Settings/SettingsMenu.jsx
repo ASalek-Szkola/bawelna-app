@@ -1,7 +1,8 @@
+// \components\Settings\SettingsMenu.jsx
 import React, { useState } from 'react';
 import './SettingsMenu.css';
 
-const SettingsMenu = ({ isOpen, onClose, difficulty, onDifficultyChange, theme, onThemeToggle, waveActive, maps = [], selectedMapId, onMapChange, altGraphics, onAltGraphicsToggle, disableQuiz, onDisableQuizToggle }) => {
+const SettingsMenu = ({ isOpen, onClose, difficulty, onDifficultyChange, theme, onThemeToggle, waveActive, maps =[], selectedMapId, onMapChange, altGraphics, onAltGraphicsToggle, disableQuiz, onDisableQuizToggle }) => {
   const [showConfirm, setShowConfirm] = useState(false);
   const [pendingChange, setPendingChange] = useState(null);
 
@@ -63,7 +64,7 @@ const SettingsMenu = ({ isOpen, onClose, difficulty, onDifficultyChange, theme, 
               >
                 {maps.map((map) => (
                   <option key={map.id} value={map.id}>
-                    {map.name} ({map.difficulty})
+                    {map.name}
                   </option>
                 ))}
               </select>

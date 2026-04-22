@@ -4,28 +4,28 @@
       "health": 3,
       "speed": 3,
       "damageOnEscape": 10,
-      "killReward": 3
+      "killReward": 2
     },
     "fast": {
       "image": "src/assets/fast-enemy.png",
       "health": 2,
       "speed": 6,
       "damageOnEscape": 15,
-      "killReward": 4
+      "killReward": 3
     },
     "tank": {
       "image": "src/assets/zdjecia_bawelnadefense/bawelna2.png",
       "health": 15,
       "speed": 1.5,
       "damageOnEscape": 25,
-      "killReward": 12
+      "killReward": 9
     },
     "boss": {
       "image": "src/assets/zdjecia_bawelnadefense/bawelna3.png",
       "health": 50,
       "speed": 1,
       "damageOnEscape": 50,
-      "killReward": 40
+      "killReward": 28
     },
     "swarm": {
       "image": "src/assets/fast-enemy.png",

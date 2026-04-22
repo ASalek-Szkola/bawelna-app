@@ -1,0 +1,34 @@
+# \.github\workflows\ci.yml
+name: Bawełna Defense CI
+
+on:
+  push:
+    branches:[ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Pobranie repozytorium
+      uses: actions/checkout@v3
+
+    - name: Konfiguracja Node.js 18
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
+        cache: 'npm'
+
+    - name: Instalacja zależności
+      run: npm ci
+
+    - name: Sprawdzenie kodu (Lint)
+      run: npm run lint
+
+    - name: Uruchomienie testów izolowanych (Vitest)
+      run: npm run test
+
+    - name: Budowanie produkcyjne
+      run: npm run build
