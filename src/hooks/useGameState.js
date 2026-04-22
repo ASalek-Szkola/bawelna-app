@@ -1,10 +1,10 @@
 // \hooks\useGameState.js
-import { useState, useRef, useCallback, useEffect } from 'react';
+import { useState, useRef, useCallback, useEffect, useMemo } from 'react';
 import quizConfig from '../config/quizConfig.json';
 import { generateSingleWaveData } from '../utils/waveGenerator';
 import towerConfig from '../config/towerConfig.json';
 
-export default function useGameState(difficulty, disableQuiz = false) { // Teraz przyjmuje 'difficulty' i 'disableQuiz'
+export default function useGameState(difficulty, disableQuiz = false, seedScope = '') { // Teraz przyjmuje 'difficulty' i 'disableQuiz'
   const [health, setHealth] = useState(100);
   const [wave, setWave] = useState(1);
   const [money, setMoney] = useState(500);
@@ -18,13 +18,18 @@ export default function useGameState(difficulty, disableQuiz = false) { // Teraz
 
   // Stan do przechowywania konfiguracji obecnej fali
   const [currentWaveData, setCurrentWaveData] = useState(() =>
-    generateSingleWaveData(difficulty, 1) // Generuj dane dla pierwszej fali
+    generateSingleWaveData(difficulty, 1, seedScope) // Generuj dane dla pierwszej fali
   );
 
   // Użyj useEffect do generowania danych nowej fali, gdy wave lub difficulty się zmieni
   useEffect(() => {
-    setCurrentWaveData(generateSingleWaveData(difficulty, wave));
-  }, [difficulty, wave]); // Zależności: difficulty i wave
+    setCurrentWaveData(generateSingleWaveData(difficulty, wave, seedScope));
+  }, [difficulty, wave, seedScope]); // Zależności: difficulty i wave
+
+  const nextWaveData = useMemo(
+    () => generateSingleWaveData(difficulty, wave + 1, seedScope),
+    [difficulty, wave, seedScope]
+  );
 
   const loopControls = useRef({ setWaveActive: null, clearEnemies: null });
 
@@ -46,13 +51,16 @@ export default function useGameState(difficulty, disableQuiz = false) { // Teraz
 
     // --- reward i farmIncome dostępne dla obu ścieżek ---
     let reward = currentWaveData.reward || 0;
-    const farmIncome = towers.reduce((sum, t) => {
+    const farmTowers = towers.filter((t) => t.type === 'farm-tower');
+    const farmIncome = farmTowers.reduce((sum, t, index) => {
       const tData = towerConfig[t.type];
-      if (t.type === 'farm-tower' && tData) {
-        const level = Math.min(t.level || 0, tData.levels.length - 1);
-        return sum + (tData.levels[level].incomePerWave || 0);
-      }
-      return sum;
+      if (!tData) return sum;
+
+      const level = Math.min(t.level || 0, tData.levels.length - 1);
+      const baseIncome = tData.levels[level].incomePerWave || 0;
+      const efficiency = index < 2 ? 1 : Math.max(0.25, 1 - (index - 1) * 0.25);
+
+      return sum + Math.floor(baseIncome * efficiency);
     }, 0);
     reward += farmIncome;
 
@@ -130,7 +138,7 @@ export default function useGameState(difficulty, disableQuiz = false) { // Teraz
     try {
       if (loopControls.current.clearEnemies) loopControls.current.clearEnemies();
       if (typeof loopControls.current.setWaveActive === 'function') loopControls.current.setWaveActive(false);
-    } catch (err) { /* swallow */ }
+    } catch { /* swallow */ }
   }, [pendingWaveResult]);
 
   return {
@@ -147,6 +155,7 @@ export default function useGameState(difficulty, disableQuiz = false) { // Teraz
     pendingWaveResult,
     handleQuizClose,
     syncLoopState,
-    currentWaveData // Zwracamy currentWaveData
+    currentWaveData, // Zwracamy currentWaveData
+    nextWaveData
   };
 }

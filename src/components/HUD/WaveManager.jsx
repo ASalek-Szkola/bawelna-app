@@ -2,14 +2,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import enemyConfig from '../../config/enemyConfig.json';
+import { resolveConfiguredAssetPath } from '../../utils/assetUtils';
 import '../../styles/WaveManager.css';
-import { generateSingleWaveData } from '../../utils/waveGenerator'; // Importuj tutaj
 
-const WaveManager = ({ wave, onStartWave, waveActive, enemies = [], currentWaveData, difficulty, gameSpeed, onGameSpeedChange, isPaused, onPauseToggle, autoStartNextWave, onAutoStartChange }) => {
+const WaveManager = ({ wave, onStartWave, waveActive, enemies = [], currentWaveData, nextWaveData, gameSpeed, onGameSpeedChange, isPaused, onPauseToggle, autoStartNextWave, onAutoStartChange, gameOver = false }) => {
   const waveData = currentWaveData; // Używamy propa currentWaveData
-
-  // Generuj dane dla następnej fali na potrzeby podglądu
-  const nextWaveData = generateSingleWaveData(difficulty, wave + 1);
 
   if (!waveData) return <div className="wave-manager panel">Brak danych fali</div>;
 
@@ -36,7 +33,7 @@ const WaveManager = ({ wave, onStartWave, waveActive, enemies = [], currentWaveD
           <div className="upcoming-list">
             {nextWaveData && nextWaveData.enemies && nextWaveData.enemies.length > 0 ? nextWaveData.enemies.flatMap(e => Array.from({ length: Math.min(e.count, 6) }).map((_, i) => (
               <div key={`${e.type}-${i}`} className="enemy-tile">
-                <img src={enemyConfig[e.type]?.image} alt={e.type} className="enemy-img" onError={(ev) => { ev.target.style.display = 'none'; }} />
+                <img src={resolveConfiguredAssetPath(enemyConfig[e.type]?.image)} alt={e.type} className="enemy-img" onError={(ev) => { ev.target.style.display = 'none'; }} />
               </div>
             ))) : <div className="muted">Brak podglądu / Koniec fal</div>}
           </div>
@@ -71,8 +68,8 @@ const WaveManager = ({ wave, onStartWave, waveActive, enemies = [], currentWaveD
 
       <div className="panel wave-section actions-section">
         <div className="wave-actions">
-          <button className="primary-btn" onClick={onStartWave} disabled={waveActive} aria-label={waveActive ? 'Fala trwa' : 'Rozpocznij falę'}>
-            {waveActive ? 'Fala trwa' : 'Rozpocznij falę'}
+          <button className="primary-btn" onClick={onStartWave} disabled={waveActive || gameOver} aria-label={waveActive ? 'Fala trwa' : (gameOver ? 'Przegrana' : 'Rozpocznij falę')}>
+            {waveActive ? 'Fala trwa' : (gameOver ? 'Przegrana' : 'Rozpocznij falę')}
           </button>
 
           {waveActive && (
@@ -95,23 +92,26 @@ WaveManager.propTypes = {
   waveActive: PropTypes.bool,
   enemies: PropTypes.array,
   currentWaveData: PropTypes.object,
-  difficulty: PropTypes.string.isRequired, // Dodano prop
+  nextWaveData: PropTypes.object,
   gameSpeed: PropTypes.number,
   onGameSpeedChange: PropTypes.func,
   isPaused: PropTypes.bool,
   onPauseToggle: PropTypes.func,
   autoStartNextWave: PropTypes.bool,
   onAutoStartChange: PropTypes.func,
+  gameOver: PropTypes.bool,
 };
 
 WaveManager.defaultProps = {
   enemies: [],
   waveActive: false,
   currentWaveData: { enemies: [], reward: 0 },
+  nextWaveData: { enemies: [], reward: 0 },
   gameSpeed: 1,
   isPaused: false,
   autoStartNextWave: false,
   onAutoStartChange: () => {},
+  gameOver: false,
 };
 
 export default React.memo(WaveManager);

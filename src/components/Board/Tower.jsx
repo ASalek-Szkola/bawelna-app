@@ -2,20 +2,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import towerConfig from '../../config/towerConfig.json';
+import { resolveConfiguredAssetPath, resolveConfiguredAssetPathWithAlt } from '../../utils/assetUtils';
 import '../../styles/Tower.css';
 
 const Tower = ({ x, y, type, level, onClick, isShooting, onRightClick, isPlacingNewTower, altGraphics }) => { 
   const towerData = towerConfig[type];
   if (!towerData) return null;
 
-  const getImageSrc = (baseSrc, useAlt) => {
-    if (!useAlt) return baseSrc;
-    // Replace e.g. "zbieracz1.png" with "zbieracz1-alt.png"
-    const altSrc = baseSrc.replace(/\.png$/, '-alt.png');
-    return altSrc;
-  };
-
-  const imageSrc = getImageSrc(towerData.image, altGraphics);
+  const imageSrc = resolveConfiguredAssetPathWithAlt(towerData.image, altGraphics);
 
   const SIZE = 40;
   return (
@@ -58,6 +52,14 @@ const Tower = ({ x, y, type, level, onClick, isShooting, onRightClick, isPlacing
       <img
         src={imageSrc}
         alt={`${type} tower`}
+        onError={(e) => {
+          const fallback = resolveConfiguredAssetPath(towerData.image);
+          if (e.currentTarget.src !== fallback) {
+            e.currentTarget.src = fallback;
+            return;
+          }
+          e.currentTarget.style.display = 'none';
+        }}
         style={{ width: `${SIZE}px`, height: `${SIZE}px`, display: 'block' }}
       />
     </div>

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import towerConfig from '../../config/towerConfig.json';
+import { resolveConfiguredAssetPath } from '../../utils/assetUtils';
 import '../../styles/TowerInfo.css';
 
 const TowerInfo = ({ type, level, onUpgrade, onSell, cooldown, onTargetingChange, targetingMode }) => {
@@ -54,7 +55,7 @@ const TowerInfo = ({ type, level, onUpgrade, onSell, cooldown, onTargetingChange
     <div className="tower-info panel">
       <h3 className="tower-title">{type.replace('-', ' ').toUpperCase()}</h3>
       <div className="tower-top">
-        <img src={towerData.image} alt={`${type} tower`} className="tower-image" />
+        <img src={resolveConfiguredAssetPath(towerData.image)} alt={`${type} tower`} className="tower-image" />
         <div className="tower-stats">
           {statRow('Damage', current.damage, next?.damage)}
           {statRow('Range', current.range, next?.range)}

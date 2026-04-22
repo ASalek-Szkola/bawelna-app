@@ -1,5 +1,5 @@
 // App.jsx
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 import GameInfo from "./components/HUD/GameInfo";
 import GameBoard from "./components/Board/GameBoard";
 import TowerInfo from "./components/TowerPanel/TowerInfo";
@@ -15,8 +15,6 @@ import useBoardScaling from "./hooks/useBoardScaling";
 import useTowers from "./hooks/useTowers";
 import useGameLoop from "./hooks/useGameLoop";
 import useGameState from "./hooks/useGameState";
-
-import { generateSingleWaveData } from "./utils/waveGenerator"; // Importuj funkcję do generowania pojedynczych fal
 
 const App = () => {
   const [selectedMapId, setSelectedMapId] = useState(mapsConfig[0].id);
@@ -43,7 +41,6 @@ const App = () => {
     setMoney,
     wave,
     setWave,
-    factsHistory,
     setFactsHistory,
     quizOpen,
     quizQuestion,
@@ -51,13 +48,23 @@ const App = () => {
     handleQuizClose,
     syncLoopState,
     currentWaveData, // Pobieramy currentWaveData z useGameState
-  } = useGameState(difficulty, disableQuiz); // Przekazujemy difficulty i disableQuiz do useGameState
+    nextWaveData,
+  } = useGameState(difficulty, disableQuiz, selectedMapId); // Przekazujemy difficulty i disableQuiz do useGameState
+
+  const handleEnemyEscape = useCallback((damage) => {
+    const parsedDamage = Number(damage) || 0;
+    setHealth((prev) => Math.max(0, prev - parsedDamage));
+  }, [setHealth]);
+
+  const handleEnemyKilled = useCallback((reward = 0) => {
+    if (reward <= 0) return;
+    setMoney((prev) => prev + reward);
+  }, [setMoney]);
 
   const {
     towers,
     setTowers,
     selectedTower,
-    selectedTowerId,
     setSelectedTowerId,
     shopSelectedType,
     handleSelectShopTower,
@@ -72,12 +79,14 @@ const App = () => {
     useGameLoop({
       towers,
       setTowers,
-      onEnemyEscape: (damage) =>
-        setHealth((prev) => Math.max(0, prev + Number(damage) || 0)),
+      onEnemyEscape: handleEnemyEscape,
+      onEnemyKilled: handleEnemyKilled,
       mapData: currentMapData,
       gameSpeed,
       isPaused,
     });
+
+  const isGameOver = health <= 0;
 
   const [theme, setTheme] = React.useState(() => {
     if (typeof window !== "undefined" && window.matchMedia) {
@@ -109,6 +118,7 @@ const App = () => {
   useEffect(() => {
     if (!autoStartNextWave) return;
     if (waveActive) return;
+    if (isGameOver) return;
     if (quizOpen) return;
     if (pendingWaveResult) return;
     if (!currentWaveData || !currentWaveData.enemies) return;
@@ -117,15 +127,23 @@ const App = () => {
     // Start the next wave using currentWaveData (which is regenerated when `wave` increments)
     try {
       startWave(currentWaveData);
-    } catch (err) {
+    } catch {
       /* swallow */
     }
-  }, [autoStartNextWave, waveActive, enemies, quizOpen, pendingWaveResult, currentWaveData, startWave]);
+  }, [autoStartNextWave, waveActive, enemies, quizOpen, pendingWaveResult, currentWaveData, startWave, isGameOver]);
+
+  useEffect(() => {
+    if (!isGameOver || !waveActive) return;
+    clearEnemies();
+    setWaveActive(false);
+  }, [isGameOver, waveActive, clearEnemies, setWaveActive]);
 
   const handleResetGame = () => {
     setWave(1);
     setHealth(100);
     setMoney(500);
+    setSpellCooldown(0);
+    setIsPaused(false);
     setTowers([]);
     clearEnemies();
     setWaveActive(false);
@@ -151,6 +169,7 @@ const App = () => {
   }, [spellCooldown, isPaused, waveActive]);
 
   const handleCastNuke = () => {
+      if (isGameOver) return;
       if (spellCooldown > 0 || money < 500) return;
       setMoney((m) => m - 500);
       setSpellCooldown(60); // 60 sek cooldown logiczny (lub wave ticks)
@@ -166,17 +185,21 @@ const App = () => {
         <div className="panel-section">
           <WaveManager
             wave={wave}
-            onStartWave={() => startWave(currentWaveData)} // Przekaż currentWaveData do startWave
+            onStartWave={() => {
+              if (isGameOver) return;
+              startWave(currentWaveData);
+            }} // Przekaż currentWaveData do startWave
             waveActive={waveActive}
             enemies={enemies}
             currentWaveData={currentWaveData} // Przekaż aktualne dane fali
-            difficulty={difficulty} // Przekaż difficulty do WaveManager
+            nextWaveData={nextWaveData}
             gameSpeed={gameSpeed}
             onGameSpeedChange={setGameSpeed}
             isPaused={isPaused}
             onPauseToggle={() => setIsPaused((p) => !p)}
             autoStartNextWave={autoStartNextWave}
             onAutoStartChange={setAutoStartNextWave}
+            gameOver={isGameOver}
           />
         </div>
         <div className="sidebar-footer">

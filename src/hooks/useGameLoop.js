@@ -3,7 +3,14 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import enemyConfig from '../config/enemyConfig.json';
 import towerConfig from '../config/towerConfig.json';
 
-export default function useGameLoop({ towers = [], setTowers = () => {}, onEnemyEscape = () => {}, mapData, gameSpeed = 1, isPaused = false } = {}) {
+function createRuntimeId(prefix, index = 0) {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return `${prefix}-${crypto.randomUUID()}`;
+  }
+  return `${prefix}-${Date.now()}-${index}-${Math.random().toString(16).slice(2)}`;
+}
+
+export default function useGameLoop({ towers = [], setTowers = () => {}, onEnemyEscape = () => {}, onEnemyKilled = () => {}, mapData, gameSpeed = 1, isPaused = false } = {}) {
   const [enemies, setEnemies] = useState([]);
   const enemiesRef = useRef(enemies);
   const towersRef = useRef(towers);
@@ -29,7 +36,7 @@ export default function useGameLoop({ towers = [], setTowers = () => {}, onEnemy
     waveData.enemies.forEach(({ type, count }) => {
       for (let i = 0; i < count; i++) {
         newEnemies.push({
-          id: `${type}-${Date.now()}-${orderIndex}`,
+          id: createRuntimeId(type, orderIndex),
           type,
           health: enemyConfig[type].health,
           speed: enemyConfig[type].speed,
@@ -134,6 +141,7 @@ export default function useGameLoop({ towers = [], setTowers = () => {}, onEnemy
       }).filter(Boolean);
 
       let updatedEnemies = movedEnemies.slice();
+      let towersChanged = false;
 
       const updatedTowers = prevTowers.map((tower) => {
         const towerData = towerConfig[tower.type];
@@ -197,21 +205,57 @@ export default function useGameLoop({ towers = [], setTowers = () => {}, onEnemy
             isShooting = true;
           }
         }
-        return { ...tower, cooldown: Math.max(0, newCooldown), shootingTimer: Math.max(0, newShootingTimer), isShooting };
+
+        const normalizedCooldown = Math.max(0, newCooldown);
+        const normalizedShootingTimer = Math.max(0, newShootingTimer);
+
+        if (
+          (tower.cooldown ?? 0) === normalizedCooldown &&
+          (tower.shootingTimer ?? 0) === normalizedShootingTimer &&
+          !!tower.isShooting === isShooting
+        ) {
+          return tower;
+        }
+
+        towersChanged = true;
+        return {
+          ...tower,
+          cooldown: normalizedCooldown,
+          shootingTimer: normalizedShootingTimer,
+          isShooting
+        };
       });
+
+      const defeatedEnemies = updatedEnemies.filter((e) => e.health <= 0);
+      if (defeatedEnemies.length > 0) {
+        let rewardTotal = 0;
+        const killsByType = {};
+
+        for (const enemy of defeatedEnemies) {
+          const killReward = enemyConfig[enemy.type]?.killReward || 0;
+          rewardTotal += killReward;
+          killsByType[enemy.type] = (killsByType[enemy.type] || 0) + 1;
+        }
+
+        if (rewardTotal > 0) {
+          try { onEnemyKilled(rewardTotal, killsByType); } catch { /* swallow callback errors */ }
+        }
+      }
 
       updatedEnemies = updatedEnemies.filter(e => e.health > 0);
 
       if (escapeDamageTotal !== 0) {
-        try { onEnemyEscape(escapeDamageTotal); } catch (err) { /* swallow callback errors */ }
+        try { onEnemyEscape(escapeDamageTotal); } catch { /* swallow callback errors */ }
       }
 
       setEnemies(updatedEnemies);
-      try { setTowers(updatedTowers); } catch (err) { /* swallow */ }
+      if (towersChanged) {
+        try { setTowers(updatedTowers); } catch { /* swallow */ }
+      }
     }, tickMs);
 
     return () => clearInterval(interval);
-  }, [waveActive, setTowers, onEnemyEscape, mapData, gameSpeed, isPaused]);
+  }, [waveActive, setTowers, onEnemyEscape, onEnemyKilled, mapData, gameSpeed, isPaused]);
 
   const clearEnemies = useCallback(() => setEnemies([]), []);
 

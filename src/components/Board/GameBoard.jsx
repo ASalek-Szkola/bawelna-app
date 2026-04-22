@@ -4,6 +4,7 @@ import Tower from './Tower';
 import Enemy from './Enemy';
 import towerConfig from '../../config/towerConfig.json';
 import { isPointOnPath, isOverlappingTower } from '../../utils/pathUtils';
+import { resolveConfiguredAssetPath, resolveConfiguredAssetPathWithAlt } from '../../utils/assetUtils';
 import '../../styles/GameBoard.css';
 
 const GameBoard = ({ 
@@ -125,8 +126,16 @@ const GameBoard = ({
               <div style={{ position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)', width: `${diameter}px`, height: `${diameter}px`, borderRadius: '50%', background: ringColor, border: `2px solid ${ringBorder}`, boxSizing: 'border-box', zIndex: 0, pointerEvents: 'none' }} />
               <div style={{ width: `${SIZE}px`, height: `${SIZE}px`, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 20 }}>
                 <img 
-                  src={altGraphics ? towerData?.image?.replace(/\.png$/, '-alt.png') : towerData?.image} 
+                  src={resolveConfiguredAssetPathWithAlt(towerData?.image, altGraphics)} 
                   alt="preview" 
+                  onError={(e) => {
+                    const fallback = resolveConfiguredAssetPath(towerData?.image);
+                    if (e.currentTarget.src !== fallback) {
+                      e.currentTarget.src = fallback;
+                      return;
+                    }
+                    e.currentTarget.style.display = 'none';
+                  }}
                   style={{ 
                     width: SIZE, 
                     height: SIZE, 

@@ -2,6 +2,15 @@ import { useState, useMemo } from 'react';
 import towerConfig from '../config/towerConfig.json';
 import { isPointOnPath, isOverlappingTower } from '../utils/pathUtils'; // dodaj import
 
+const MAX_FARM_TOWERS = 3;
+
+function createTowerId() {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return crypto.randomUUID();
+  }
+  return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+}
+
 export default function useTowers({ money = 0, setMoney = () => {}, mapData } = {}) {
   const [towers, setTowers] = useState([]);
   const [selectedTowerId, setSelectedTowerId] = useState(null);
@@ -47,6 +56,16 @@ export default function useTowers({ money = 0, setMoney = () => {}, mapData } = 
     // 3. Sprawdź fundusze
     const levelData = towerConfig[shopSelectedType].levels[0];
     if (!levelData) return;
+
+    if (shopSelectedType === 'farm-tower') {
+      const currentFarmCount = towers.filter((tower) => tower.type === 'farm-tower').length;
+      if (currentFarmCount >= MAX_FARM_TOWERS) {
+        alert(`Limit farm osiągnięty (${MAX_FARM_TOWERS}).`);
+        setShopSelectedType(null);
+        return;
+      }
+    }
+
     if (money < levelData.cost) {
       alert('Brak monet!');
       setShopSelectedType(null);
@@ -54,7 +73,7 @@ export default function useTowers({ money = 0, setMoney = () => {}, mapData } = 
     }
 
     const newTower = {
-      id: Date.now(),
+      id: createTowerId(),
       x: Math.round(x - TOWER_SIZE / 2),
       y: Math.round(y - TOWER_SIZE / 2),
       type: shopSelectedType,

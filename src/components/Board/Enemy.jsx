@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import enemyConfig from '../../config/enemyConfig.json';
+import { resolveConfiguredAssetPath } from '../../utils/assetUtils';
 import '../../styles/Enemy.css';
 
 const Enemy = ({ type, position, health, path, onEscape, spawned }) => {
@@ -36,7 +37,7 @@ const Enemy = ({ type, position, health, path, onEscape, spawned }) => {
         </div>
       )}
 
-      <img src={image} alt={`${type} enemy`} style={{ width: '100%', height: '100%', display: 'block', opacity: health > 0 ? 1 : 0, transition: 'opacity 0.2s' }} />
+      <img src={resolveConfiguredAssetPath(image)} alt={`${type} enemy`} style={{ width: '100%', height: '100%', display: 'block', opacity: health > 0 ? 1 : 0, transition: 'opacity 0.2s' }} />
     </div>
   );
 };
