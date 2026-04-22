@@ -32,7 +32,7 @@ const DIFFICULTY_SETTINGS = {
     enemyDistribution: {
       early: ["basic", "fast", "swarm"],
       mid: ["basic", "fast", "swarm", "tank"],
-      late: ["basic", "fast", "swarm", "tank", "boss"]
+      late:["basic", "fast", "swarm", "tank", "boss"]
     },
     tankBossThreshold: 3,
     bossWaveFrequency: 4
@@ -45,7 +45,7 @@ const DIFFICULTY_SETTINGS = {
     rewardMultiplier: 0.8,
     enemyDistribution: {
       early: ["fast", "swarm", "tank"],
-      mid: ["fast", "swarm", "tank", "boss"],
+      mid:["fast", "swarm", "tank", "boss"],
       late: ["fast", "swarm", "tank", "boss"]
     },
     tankBossThreshold: 2,
@@ -83,14 +83,6 @@ function shuffleArray(array, random) {
   return newArray;
 }
 
-/**
- * Generuje dynamiczną konfigurację DLA POJEDYNCZEJ fali wrogów na podstawie wybranego poziomu trudności.
- *
- * @param {string} difficulty - Poziom trudności ("Easy", "Normal", "Hard").
- * @param {number} waveNumber - Numer fali do wygenerowania (zaczynając od 1).
- * @param {string} seedScope - Dodatkowy składnik seeda (np. id mapy).
- * @returns {object} Obiekt z konfiguracją pojedynczej fali (enemies: [], reward: number).
- */
 export function generateSingleWaveData(difficulty, waveNumber, seedScope = '') {
   let actualDifficulty = difficulty;
   let settings = DIFFICULTY_SETTINGS[actualDifficulty];
@@ -102,9 +94,8 @@ export function generateSingleWaveData(difficulty, waveNumber, seedScope = '') {
 
   const random = createSeededRandom(hashSeed(`${actualDifficulty}|${waveNumber}|${seedScope}`));
 
-  // Wzrost mocy fali odnosi się do (waveNumber - 1), ponieważ fala 1 ma moc bazową.
   let currentWavePower = settings.baseWavePower * Math.pow(settings.wavePowerGrowth, waveNumber - 1);
-  let waveEnemies = [];
+  let waveEnemies =[];
   let currentPowerSpent = 0;
 
   let availableEnemyTypes;
@@ -130,9 +121,9 @@ export function generateSingleWaveData(difficulty, waveNumber, seedScope = '') {
     const possibleEnemyTypesForFilling = shuffleArray(availableEnemyTypes.filter(type => type !== "boss"), random);
 
     let addedEnemyInThisIteration = false;
-    const sortedByPowerDesc = [...possibleEnemyTypesForFilling].sort((a,b) => ENEMY_POWER_VALUES[b] - ENEMY_POWER_VALUES[a]);
 
-    for (const enemyType of sortedByPowerDesc) {
+    // POPRAWA: Używamy bezpośrednio przetasowanej tablicy (losowej), a nie sortowanej wg siły
+    for (const enemyType of possibleEnemyTypesForFilling) {
       const enemyPower = ENEMY_POWER_VALUES[enemyType];
       if (enemyPower <= remainingPower) {
         let countToAdd = 1;

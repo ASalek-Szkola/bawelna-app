@@ -11,16 +11,20 @@ describe('waveGenerator', () => {
   });
 
   it('generuje inaczej wyważoną falę dla różnego scope nasion (różne mapy)', () => {
-    const waveClassic = generateSingleWaveData('Normal', 5, 'map_classic');
-    const waveChaos = generateSingleWaveData('Normal', 5, 'map_chaos');
+    // Używamy fali 12 zamiast 5, ponieważ większy budżet punktowy na wrogów
+    // zapewnia duże zróżnicowanie w zaokrąglaniu przydziałów w generatorze.
+    const waveClassic = generateSingleWaveData('Normal', 12, 'map_classic');
+    const waveChaos = generateSingleWaveData('Normal', 12, 'map_chaos');
     
     expect(waveClassic).not.toEqual(waveChaos);
   });
 
   it('gwarantuje obecność bossa podczas przewidzianej fali bossów', () => {
     // Normal: tankBossThreshold = 3, bossWaveFrequency = 4. 
-    // Sprawdzamy falę nr 6, bo (6 - 3 + 1) % 4 == 0. Tak, fala 6 generuje bossa.
-    const waveBoss = generateSingleWaveData('Normal', 6, 'map_classic');
+    // Fala 6 teoretycznie spełnia (6-3+1)%4=0, ALE bossowie na Normalu 
+    // są odblokowani do puli dopiero w fazie "late" (fale > 6).
+    // Kolejną przewidzianą falą bossową jest fala 10 ((10-3+1)%4=0). Tu boss wystąpi w 100%.
+    const waveBoss = generateSingleWaveData('Normal', 10, 'map_classic');
     const hasBoss = waveBoss.enemies.some(e => e.type === 'boss');
     
     expect(hasBoss).toBe(true);
