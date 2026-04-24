@@ -1,14 +1,9 @@
 import { useState, useMemo } from 'react';
 import towerConfig from '../config/towerConfig.json';
-import { isPointOnPath, isOverlappingTower } from '../utils/pathUtils'; // dodaj import
+import { isPointOnPath, isOverlappingTower } from '../utils/pathUtils';
 import { ECONOMY_BALANCE } from '../utils/economyUtils';
-
-function createTowerId() {
-  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
-    return crypto.randomUUID();
-  }
-  return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
-}
+import { createTowerId } from '../utils/idUtils';
+import { TOWER_SIZE } from '../config/gameConstants';
 
 export default function useTowers({ money = 0, applyMoneyDelta = () => {}, mapData } = {}) {
   const [towers, setTowers] = useState([]);
@@ -36,8 +31,6 @@ export default function useTowers({ money = 0, applyMoneyDelta = () => {}, mapDa
       setSelectedTowerId(null);
       return;
     }
-
-    const TOWER_SIZE = 40;
 
     // 1. Sprawdź kolizję ze ścieżką
     if (mapData && isPointOnPath(x, y, mapData.path, mapData.pathWidth)) {

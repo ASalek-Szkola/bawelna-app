@@ -1,5 +1,5 @@
 // \App.jsx
-import React, { useEffect, useState, useMemo, useCallback } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import GameInfo from "./components/HUD/GameInfo";
 import GameBoard from "./components/Board/GameBoard";
 import TowerInfo from "./components/TowerPanel/TowerInfo";
@@ -9,6 +9,8 @@ import "./styles/layout.css";
 import Quiz from "./components/Quiz/Quiz";
 import QuizFacts from "./components/Quiz/QuizFacts";
 import SettingsMenu from "./components/Settings/SettingsMenu";
+import ErrorBoundary from "./components/ErrorBoundary";
+import { GameProvider } from "./context/GameContext";
 import mapsConfig from "./config/mapsConfig.json";
 import towerConfig from "./config/towerConfig.json";
 
@@ -27,13 +29,13 @@ const App = () => {
 
   const boardScale = useBoardScaling(currentMapData.board);
 
-  const[difficulty, setDifficulty] = useState("Easy");
+  const [difficulty, setDifficulty] = useState("Easy");
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [gameSpeed, setGameSpeed] = useState(1);
   const [isPaused, setIsPaused] = useState(false);
   const [altGraphics, setAltGraphics] = useState(false);
-  const[disableQuiz, setDisableQuiz] = useState(false);
-  const[autoStartNextWave, setAutoStartNextWave] = useState(false);
+  const [disableQuiz, setDisableQuiz] = useState(false);
+  const [autoStartNextWave, setAutoStartNextWave] = useState(false);
 
   const {
     health,
@@ -92,7 +94,7 @@ const App = () => {
 
   const isGameOver = health <= 0;
 
-  const [theme, setTheme] = React.useState(() => {
+  const [theme, setTheme] = useState(() => {
     if (typeof window !== "undefined" && window.matchMedia) {
       return window.matchMedia("(prefers-color-scheme: dark)").matches
         ? "dark"
@@ -111,11 +113,11 @@ const App = () => {
       if (mq.removeEventListener) mq.removeEventListener("change", handler);
       else mq.removeListener(handler);
     };
-  },[]);
+  }, []);
 
   useEffect(() => {
     syncLoopState(enemies, waveActive, setWaveActive, clearEnemies, towers);
-  },[enemies, waveActive, syncLoopState, setWaveActive, clearEnemies, towers]);
+  }, [enemies, waveActive, syncLoopState, setWaveActive, clearEnemies, towers]);
 
   useEffect(() => {
     if (!autoStartNextWave) return;
@@ -131,7 +133,7 @@ const App = () => {
     } catch {
       /* swallow */
     }
-  },[autoStartNextWave, waveActive, enemies, quizOpen, pendingWaveResult, currentWaveData, startWave, isGameOver]);
+  }, [autoStartNextWave, waveActive, enemies, quizOpen, pendingWaveResult, currentWaveData, startWave, isGameOver]);
 
   useEffect(() => {
     if (!isGameOver || !waveActive) return;
@@ -139,7 +141,9 @@ const App = () => {
     setWaveActive(false);
   }, [isGameOver, waveActive, clearEnemies, setWaveActive]);
 
-  const handleResetGame = () => {
+  const [spellCooldown, setSpellCooldown] = useState(0);
+
+  const handleResetGame = useCallback(() => {
     setWave(1);
     setHealth(100);
     setMoney(500);
@@ -149,7 +153,7 @@ const App = () => {
     setTowers([]);
     clearEnemies();
     setWaveActive(false);
-  };
+  }, [setWave, setHealth, setMoney, clearMoneyLedger, setTowers, clearEnemies, setWaveActive]);
 
   const handleDifficultyChange = (newDifficulty) => {
     setDifficulty(newDifficulty);
@@ -160,8 +164,6 @@ const App = () => {
     setSelectedMapId(newMapId);
     handleResetGame();
   };
-
-  const[spellCooldown, setSpellCooldown] = useState(0);
 
   useEffect(() => {
     if (spellCooldown > 0 && !isPaused && waveActive) {
@@ -180,146 +182,157 @@ const App = () => {
 
   const currentFarmIncome = useMemo(() => calculateFarmIncome(towers, towerConfig, ECONOMY_BALANCE).total, [towers]);
 
-  return (
-    <div className={`app ${theme === "dark" ? "dark-theme" : "light-theme"}`}>
-      <aside className="left-panel panel">
-        <div className="panel-section">
-          <GameInfo
-            health={health}
-            wave={wave}
-            money={money}
-            onCastNuke={handleCastNuke}
-            spellCooldown={spellCooldown}
-            nukeCost={ECONOMY_BALANCE.nukeCost}
-            moneyLedger={moneyLedger}
-          />
-        </div>
-        <div className="panel-section">
-          <WaveManager
-            wave={wave}
-            onStartWave={() => {
-              if (isGameOver) return;
-              startWave(currentWaveData);
-            }} 
-            waveActive={waveActive}
-            enemies={enemies}
-            currentWaveData={currentWaveData} 
-            nextWaveData={nextWaveData}
-            gameSpeed={gameSpeed}
-            onGameSpeedChange={setGameSpeed}
-            isPaused={isPaused}
-            onPauseToggle={() => setIsPaused((p) => !p)}
-            autoStartNextWave={autoStartNextWave}
-            onAutoStartChange={setAutoStartNextWave}
-            gameOver={isGameOver}
-            farmIncome={currentFarmIncome}
-          />
-        </div>
-        <div className="sidebar-footer">
-          <button
-            className="settings-btn"
-            onClick={() => setIsSettingsOpen(true)}
-            title="Ustawienia"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="12" r="3"></circle>
-              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-            </svg>
-          </button>
-        </div>
-      </aside>
+  // GameContext value — only slow-changing state
+  const gameContextValue = useMemo(() => ({
+    money,
+    health,
+    wave,
+    moneyLedger,
+    applyMoneyDelta,
+    gameSpeed,
+    isPaused,
+    isGameOver,
+  }), [money, health, wave, moneyLedger, applyMoneyDelta, gameSpeed, isPaused, isGameOver]);
 
-      <main className="center-panel">
-        <div className="center-inner">
-          <div className="center-board-area">
-            <div
-              className="game-board-wrapper"
-              style={{
-                width: currentMapData.board.width * boardScale,
-                height: currentMapData.board.height * boardScale,
-              }}
-            >
-              <div
-                style={{
-                  width: currentMapData.board.width,
-                  height: currentMapData.board.height,
-                  transform: `scale(${boardScale})`,
-                  transformOrigin: "top left",
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                }}
+  return (
+    <ErrorBoundary onReset={handleResetGame}>
+      <GameProvider value={gameContextValue}>
+        <div className={`app ${theme === "dark" ? "dark-theme" : "light-theme"}`}>
+          <aside className="left-panel panel">
+            <div className="panel-section">
+              <GameInfo
+                onCastNuke={handleCastNuke}
+                spellCooldown={spellCooldown}
+                nukeCost={ECONOMY_BALANCE.nukeCost}
+              />
+            </div>
+            <div className="panel-section">
+              <WaveManager
+                wave={wave}
+                onStartWave={() => {
+                  if (isGameOver) return;
+                  startWave(currentWaveData);
+                }} 
+                waveActive={waveActive}
+                enemies={enemies}
+                currentWaveData={currentWaveData} 
+                nextWaveData={nextWaveData}
+                gameSpeed={gameSpeed}
+                onGameSpeedChange={setGameSpeed}
+                isPaused={isPaused}
+                onPauseToggle={() => setIsPaused((p) => !p)}
+                autoStartNextWave={autoStartNextWave}
+                onAutoStartChange={setAutoStartNextWave}
+                gameOver={isGameOver}
+                farmIncome={currentFarmIncome}
+              />
+            </div>
+            <div className="sidebar-footer">
+              <button
+                className="settings-btn"
+                onClick={() => setIsSettingsOpen(true)}
+                title="Ustawienia"
               >
-                <GameBoard
-                  mapData={currentMapData}
-                  towers={towers}
-                  onTowerClick={setSelectedTowerId}
-                  onBoardClick={handlePlaceTower}
-                  onBoardRightClick={handleBoardRightClick}
-                  onTowerRightClick={handleSellTower}
-                  shopSelectedType={shopSelectedType}
-                  enemies={enemies}
-                  selectedTower={selectedTower}
-                  scale={boardScale}
-                  altGraphics={altGraphics}
-                />
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="3"></circle>
+                  <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                </svg>
+              </button>
+            </div>
+          </aside>
+
+          <main className="center-panel">
+            <div className="center-inner">
+              <div className="center-board-area">
+                <div
+                  className="game-board-wrapper"
+                  style={{
+                    width: currentMapData.board.width * boardScale,
+                    height: currentMapData.board.height * boardScale,
+                  }}
+                >
+                  <div
+                    style={{
+                      width: currentMapData.board.width,
+                      height: currentMapData.board.height,
+                      transform: `scale(${boardScale})`,
+                      transformOrigin: "top left",
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                    }}
+                  >
+                    <GameBoard
+                      mapData={currentMapData}
+                      towers={towers}
+                      onTowerClick={setSelectedTowerId}
+                      onBoardClick={handlePlaceTower}
+                      onBoardRightClick={handleBoardRightClick}
+                      onTowerRightClick={handleSellTower}
+                      shopSelectedType={shopSelectedType}
+                      enemies={enemies}
+                      selectedTower={selectedTower}
+                      scale={boardScale}
+                      altGraphics={altGraphics}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="bottom-ticker">
+                {!disableQuiz && <QuizFacts onHistoryUpdate={(h) => setFactsHistory(h)} />}
               </div>
             </div>
-          </div>
+          </main>
 
-          <div className="bottom-ticker">
-            {!disableQuiz && <QuizFacts onHistoryUpdate={(h) => setFactsHistory(h)} />}
-          </div>
-        </div>
-      </main>
+          <aside className="right-panel panel">
+            {selectedTower ? (
+              <TowerInfo
+                type={selectedTower.type}
+                level={selectedTower.level}
+                cooldown={selectedTower.cooldown || 0}
+                targetingMode={selectedTower.targetingMode || "first"}
+                onTargetingChange={(mode) =>
+                  handleTargetingChange(selectedTower.id, mode)
+                }
+                onUpgrade={() => handleUpgrade(selectedTower.id)}
+                onSell={() => handleSellTower(selectedTower.id)}
+              />
+            ) : (
+              <TowerShop
+                selectedType={shopSelectedType}
+                onSelectType={handleSelectShopTower}
+                altGraphics={altGraphics}
+              />
+            )}
+          </aside>
 
-      <aside className="right-panel panel">
-        {selectedTower ? (
-          <TowerInfo
-            type={selectedTower.type}
-            level={selectedTower.level}
-            cooldown={selectedTower.cooldown || 0}
-            targetingMode={selectedTower.targetingMode || "first"}
-            onTargetingChange={(mode) =>
-              handleTargetingChange(selectedTower.id, mode)
-            }
-            onUpgrade={() => handleUpgrade(selectedTower.id)}
-            onSell={() => handleSellTower(selectedTower.id)}
+          <Quiz
+            open={quizOpen}
+            questionData={quizQuestion}
+            baseReward={pendingWaveResult?.baseWaveReward}
+            onClose={handleQuizClose}
           />
-        ) : (
-          <TowerShop
-            money={money}
-            selectedType={shopSelectedType}
-            onSelectType={handleSelectShopTower}
+
+          <SettingsMenu
+            isOpen={isSettingsOpen}
+            onClose={() => setIsSettingsOpen(false)}
+            difficulty={difficulty}
+            onDifficultyChange={handleDifficultyChange}
+            theme={theme}
+            onThemeToggle={() => setTheme((t) => (t === "dark" ? "light" : "dark"))}
+            waveActive={waveActive}
+            maps={mapsConfig}
+            selectedMapId={selectedMapId}
+            onMapChange={handleMapChange}
             altGraphics={altGraphics}
+            onAltGraphicsToggle={() => setAltGraphics((v) => !v)}
+            disableQuiz={disableQuiz}
+            onDisableQuizToggle={() => setDisableQuiz((v) => !v)}
           />
-        )}
-      </aside>
-
-      <Quiz
-        open={quizOpen}
-        questionData={quizQuestion}
-        baseReward={pendingWaveResult?.baseWaveReward}
-        onClose={handleQuizClose}
-      />
-
-      <SettingsMenu
-        isOpen={isSettingsOpen}
-        onClose={() => setIsSettingsOpen(false)}
-        difficulty={difficulty}
-        onDifficultyChange={handleDifficultyChange}
-        theme={theme}
-        onThemeToggle={() => setTheme((t) => (t === "dark" ? "light" : "dark"))}
-        waveActive={waveActive}
-        maps={mapsConfig}
-        selectedMapId={selectedMapId}
-        onMapChange={handleMapChange}
-        altGraphics={altGraphics}
-        onAltGraphicsToggle={() => setAltGraphics((v) => !v)}
-        disableQuiz={disableQuiz}
-        onDisableQuizToggle={() => setDisableQuiz((v) => !v)}
-      />
-    </div>
+        </div>
+      </GameProvider>
+    </ErrorBoundary>
   );
 };
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import towerConfig from '../../config/towerConfig.json';
 import { resolveConfiguredAssetPath } from '../../utils/assetUtils';
@@ -6,15 +6,36 @@ import '../../styles/TowerInfo.css';
 
 const TowerInfo = ({ type, level, onUpgrade, onSell, cooldown, onTargetingChange, targetingMode }) => {
   const [cooldownTime, setCooldownTime] = useState(cooldown);
+  const intervalRef = useRef(null);
 
   useEffect(() => {
     setCooldownTime(cooldown);
-    if (cooldown > 0) {
-      const interval = setInterval(() => {
-        setCooldownTime((prev) => Math.max(0, prev - 100));
-      }, 100);
-      return () => clearInterval(interval);
+
+    // Clear any existing interval
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
     }
+
+    if (cooldown > 0) {
+      intervalRef.current = setInterval(() => {
+        setCooldownTime((prev) => {
+          const next = Math.max(0, prev - 100);
+          if (next <= 0 && intervalRef.current) {
+            clearInterval(intervalRef.current);
+            intervalRef.current = null;
+          }
+          return next;
+        });
+      }, 100);
+    }
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    };
   }, [cooldown]);
 
   const towerData = towerConfig[type];

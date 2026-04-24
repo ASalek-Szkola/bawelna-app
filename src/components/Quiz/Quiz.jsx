@@ -15,12 +15,13 @@ const Quiz = ({ open, questionData, baseReward, onClose }) => {
   const correct_answer = options[correctIndex] ?? null;
   const fact = questionData?.fact ?? null;
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const choices = useMemo(() => {
     if (!questionData) return [];
     const opts = Array.isArray(options) ? options : [];
     const uniqueChoices = Array.from(new Set(opts));
     return shuffle(uniqueChoices);
-  }, [questionData]);
+  }, [questionData?.question]);
 
   const hasChoices = choices.length > 0;
   const bonus = baseReward ? Math.floor(baseReward * 0.25) : 0;

@@ -1,6 +1,7 @@
 // \components\HUD\GameInfo.jsx
-import React, { useState } from 'react';
+import { useState, memo } from 'react';
 import PropTypes from 'prop-types';
+import { useGameContext } from '../../context/GameContext';
 import '../../styles/GameInfo.css';
 
 const IconHeart = () => (
@@ -35,8 +36,10 @@ StatLine.propTypes = {
   icon: PropTypes.func.isRequired,
 };
 
-const GameInfo = ({ health, wave, money, onCastNuke, spellCooldown = 0, nukeCost = 650, moneyLedger = [] }) => {
-  const[ledgerExpanded, setLedgerExpanded] = useState(false);
+const GameInfo = ({ onCastNuke, spellCooldown = 0, nukeCost = 650 }) => {
+  // Consume slow-changing state from GameContext
+  const { health, wave, money, moneyLedger } = useGameContext();
+  const [ledgerExpanded, setLedgerExpanded] = useState(false);
 
   // Zawsze odwracamy, by najnowsze były na górze
   const reversedLedger = [...moneyLedger].reverse();
@@ -95,17 +98,9 @@ const GameInfo = ({ health, wave, money, onCastNuke, spellCooldown = 0, nukeCost
 };
 
 GameInfo.propTypes = {
-  health: PropTypes.number.isRequired,
-  wave: PropTypes.number.isRequired,
-  money: PropTypes.number.isRequired,
   onCastNuke: PropTypes.func,
   spellCooldown: PropTypes.number,
   nukeCost: PropTypes.number,
-  moneyLedger: PropTypes.arrayOf(PropTypes.shape({
-    id: PropTypes.string,
-    label: PropTypes.string,
-    amount: PropTypes.number,
-  })),
 };
 
-export default React.memo(GameInfo);
+export default memo(GameInfo);

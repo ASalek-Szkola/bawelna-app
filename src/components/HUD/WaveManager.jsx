@@ -1,5 +1,5 @@
 // \components\HUD\WaveManager.jsx
-import React from 'react';
+import { memo } from 'react';
 import PropTypes from 'prop-types';
 import enemyConfig from '../../config/enemyConfig.json';
 import { resolveConfiguredAssetPath } from '../../utils/assetUtils';
@@ -117,4 +117,4 @@ WaveManager.defaultProps = {
   farmIncome: 0,
 };
 
-export default React.memo(WaveManager);
+export default memo(WaveManager);

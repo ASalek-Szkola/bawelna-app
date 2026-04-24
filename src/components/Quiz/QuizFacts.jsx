@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import quizConfig from '../../config/quizConfig.json';
 import '../../styles/QuizFacts.css';
@@ -17,21 +17,28 @@ const QuizFacts = ({ onHistoryUpdate, intervalMs = 8000, maxHistory = 50 }) => {
     }
   });
 
+  // Use ref to avoid stale closure in the interval
+  const historyRef = useRef(history);
+  useEffect(() => { historyRef.current = history; }, [history]);
+
   const lastFact = history.length ? history[history.length - 1] : null;
 
   useEffect(() => {
     const tick = () => {
       if (!facts.length) return;
       
+      const currentHistory = historyRef.current;
+      const currentLast = currentHistory.length ? currentHistory[currentHistory.length - 1] : null;
+      
       let pick = facts[Math.floor(Math.random() * facts.length)];
       
       // Unikaj powtórzenia tego samego faktu pod rząd, jeśli mamy ich więcej niż 1
-      if (facts.length > 1 && lastFact && pick.id === lastFact.id) {
-        const otherFacts = facts.filter(f => f.id !== lastFact.id);
+      if (facts.length > 1 && currentLast && pick.id === currentLast.id) {
+        const otherFacts = facts.filter(f => f.id !== currentLast.id);
         pick = otherFacts[Math.floor(Math.random() * otherFacts.length)];
       }
 
-      const next = [...history, { ...pick, shownAt: Date.now() }].slice(-maxHistory);
+      const next = [...currentHistory, { ...pick, shownAt: Date.now() }].slice(-maxHistory);
       setHistory(next);
       try {
         localStorage.setItem('quizFactsHistory', JSON.stringify(next));
@@ -39,11 +46,12 @@ const QuizFacts = ({ onHistoryUpdate, intervalMs = 8000, maxHistory = 50 }) => {
       if (onHistoryUpdate) onHistoryUpdate(next);
     };
 
-    if (!history.length) tick();
+    if (!historyRef.current.length) tick();
 
     const id = setInterval(tick, intervalMs);
     return () => clearInterval(id);
-  }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [intervalMs, maxHistory]);
 
   return (
     <div className="quiz-facts" style={{ display: 'flex', alignItems: 'flex-start', gap: 16, width: '100%', justifyContent: 'space-between' }}>
@@ -64,4 +72,4 @@ QuizFacts.propTypes = {
   maxHistory: PropTypes.number,
 };
 
-export default React.memo(QuizFacts);
+export default QuizFacts;

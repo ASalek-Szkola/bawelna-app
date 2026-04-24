@@ -1,8 +1,9 @@
 // \components\Board\Enemy.jsx
-import React from 'react';
+import { memo } from 'react';
 import PropTypes from 'prop-types';
 import enemyConfig from '../../config/enemyConfig.json';
 import { resolveConfiguredAssetPath } from '../../utils/assetUtils';
+import { ENEMY_SIZE } from '../../config/gameConstants';
 import '../../styles/Enemy.css';
 
 const Enemy = ({ type, position, health, spawned }) => {
@@ -13,7 +14,7 @@ const Enemy = ({ type, position, health, spawned }) => {
 
   if (!spawned || !position || health <= 0) return null;
 
-  const SIZE = 32;
+  const SIZE = ENEMY_SIZE;
 
   const maxHealth = enemyData.health;
   const healthPercent = Math.max(0, Math.min(100, (health / maxHealth) * 100));
@@ -33,7 +34,7 @@ const Enemy = ({ type, position, health, spawned }) => {
       }}
     >
       {healthPercent > 0 && (
-        <div className="enemy-bar-bg">
+        <div className="enemy-bar-bg" role="progressbar" aria-valuenow={health} aria-valuemin={0} aria-valuemax={maxHealth} aria-label={`Zdrowie ${type}: ${Math.round(healthPercent)}%`}>
           <div className="enemy-bar-fill" style={{ width: `${healthPercent}%`, backgroundColor: healthPercent > 50 ? 'var(--enemy-health-high)' : healthPercent > 20 ? 'var(--enemy-health-mid)' : 'var(--enemy-health-low)' }} />
         </div>
       )}
@@ -63,4 +64,4 @@ function areEqual(prev, next) {
     prev.spawned === next.spawned;
 }
 
-export default React.memo(Enemy, areEqual);
+export default memo(Enemy, areEqual);

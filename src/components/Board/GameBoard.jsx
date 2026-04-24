@@ -1,11 +1,12 @@
 // \components\Board\GameBoard.jsx
-import React, { useState, useMemo } from 'react';
+import { useRef, useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import Tower from './Tower';
 import Enemy from './Enemy';
 import towerConfig from '../../config/towerConfig.json';
 import { isPointOnPath, isOverlappingTower } from '../../utils/pathUtils';
-import { resolveConfiguredAssetPath, resolveConfiguredAssetPathWithAlt } from '../../utils/assetUtils';
+import GameImage from '../common/GameImage';
+import { TOWER_SIZE } from '../../config/gameConstants';
 import '../../styles/GameBoard.css';
 
 const GameBoard = ({ 
@@ -13,7 +14,7 @@ const GameBoard = ({
   onTowerClick, 
   onBoardClick, 
   shopSelectedType,
-  enemies =[],               
+  enemies = [],               
   selectedTower,              
   onBoardRightClick,         
   onTowerRightClick,
@@ -25,19 +26,17 @@ const GameBoard = ({
   const { width, height } = mapData.board;
   const { path, pathWidth } = mapData;
 
-  const [previewPos, setPreviewPos] = useState(null);
+  // Use ref + CSS vars for preview position to avoid re-renders on mouse move
+  const previewRef = useRef(null);
+  const previewPosRef = useRef(null);
+  const validityRef = useRef(false);
 
-  const isPlacementValid = useMemo(() => {
-    if (!previewPos || !shopSelectedType) return false;
-    
-    const TOWER_SIZE = 40; 
-    
-    const onPath = isPointOnPath(previewPos.x, previewPos.y, path, pathWidth);
-    const overlapping = towers.some(t => isOverlappingTower(previewPos.x, previewPos.y, t.x, t.y, TOWER_SIZE));
-    
+  const updatePreviewValidity = useCallback((x, y) => {
+    if (!shopSelectedType) return false;
+    const onPath = isPointOnPath(x, y, path, pathWidth);
+    const overlapping = towers.some(t => isOverlappingTower(x, y, t.x, t.y, TOWER_SIZE));
     return !onPath && !overlapping;
-  },[previewPos, shopSelectedType, towers, path, pathWidth]);
-
+  }, [shopSelectedType, towers, path, pathWidth]);
 
   const handleBoardClick = (e) => {
     if (!onBoardClick) return;
@@ -49,20 +48,55 @@ const GameBoard = ({
 
   const handleMouseMove = (e) => {
     if (!shopSelectedType) {
-      if (previewPos) setPreviewPos(null);
+      if (previewRef.current) previewRef.current.style.display = 'none';
+      previewPosRef.current = null;
       return;
     }
     const rect = e.currentTarget.getBoundingClientRect();
     const x = Math.round((e.clientX - rect.left) / scale);
     const y = Math.round((e.clientY - rect.top) / scale);
-    setPreviewPos({ x, y });
+    previewPosRef.current = { x, y };
+
+    const isValid = updatePreviewValidity(x, y);
+    validityRef.current = isValid;
+
+    if (previewRef.current) {
+      previewRef.current.style.display = 'block';
+      previewRef.current.style.left = `${x}px`;
+      previewRef.current.style.top = `${y}px`;
+      previewRef.current.style.opacity = isValid ? '1' : '0.6';
+
+      const ring = previewRef.current.querySelector('.preview-range-ring');
+      if (ring) {
+        ring.style.background = isValid ? 'var(--preview-valid-fill)' : 'var(--preview-invalid-fill)';
+        ring.style.borderColor = isValid ? 'var(--preview-valid-border)' : 'var(--preview-invalid-border)';
+      }
+      const icon = previewRef.current.querySelector('.preview-validity-icon');
+      if (icon) {
+        icon.textContent = isValid ? '✓' : '✗';
+        icon.style.color = isValid ? 'var(--preview-valid-border, #4caf50)' : 'var(--preview-invalid-border, #f44336)';
+      }
+      const img = previewRef.current.querySelector('img');
+      if (img) {
+        img.style.filter = isValid ? 'none' : 'grayscale(100%) brightness(0.5)';
+      }
+    }
   };
 
   const handleMouseLeave = () => {
-    setPreviewPos(null);
+    if (previewRef.current) previewRef.current.style.display = 'none';
+    previewPosRef.current = null;
   };
 
   const pathD = path.map((p, i) => (i === 0 ? `M ${p.x} ${p.y}` : `L ${p.x} ${p.y}`)).join(' ');
+
+  // Pre-compute preview data (only when shopSelectedType changes)
+  const previewData = useMemo(() => {
+    if (!shopSelectedType) return null;
+    const towerData = towerConfig[shopSelectedType];
+    const range = towerData?.levels?.[0]?.range ?? 100;
+    return { towerData, range, diameter: range * 2 };
+  }, [shopSelectedType]);
 
   return (
     <div
@@ -98,66 +132,67 @@ const GameBoard = ({
         <Enemy key={enemy.id} type={enemy.type} position={enemy.position} health={enemy.health} spawned={enemy.spawned} />
       ))}
 
-      {shopSelectedType && previewPos && (
-        (() => {
-          const SIZE = 40;
-          const towerData = towerConfig[shopSelectedType];
-          const range = towerData?.levels?.[0]?.range ?? 100;
-          const diameter = range * 2; 
-          const ringColor = isPlacementValid ? 'var(--preview-valid-fill)' : 'var(--preview-invalid-fill)';
-          const ringBorder = isPlacementValid ? 'var(--preview-valid-border)' : 'var(--preview-invalid-border)';
-
-          return (
-            <div 
+      {/* Tower placement preview — positioned via direct DOM manipulation, not state */}
+      {previewData && (
+        <div 
+          ref={previewRef}
+          style={{ 
+            position: 'absolute', 
+            left: 0, 
+            top: 0, 
+            pointerEvents: 'none', 
+            transform: 'translate(-50%, -50%)', 
+            zIndex: 18,
+            display: 'none',
+          }}
+        >
+          <div 
+            className="preview-range-ring"
+            style={{ 
+              position: 'absolute', left: '50%', top: '50%', 
+              transform: 'translate(-50%, -50%)', 
+              width: `${previewData.diameter}px`, height: `${previewData.diameter}px`, 
+              borderRadius: '50%', 
+              background: 'var(--preview-valid-fill)', 
+              border: '2px solid var(--preview-valid-border)', 
+              boxSizing: 'border-box', zIndex: 0, pointerEvents: 'none' 
+            }} 
+          />
+          <div style={{ width: `${TOWER_SIZE}px`, height: `${TOWER_SIZE}px`, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 20, position: 'relative' }}>
+            <GameImage 
+              src={previewData.towerData?.image}
+              alt="preview"
+              altGraphics={altGraphics}
+              size={TOWER_SIZE}
+              style={{ opacity: 0.98 }}
+            />
+            <span 
+              className="preview-validity-icon"
               style={{ 
-                position: 'absolute', 
-                left: `${previewPos.x}px`, 
-                top: `${previewPos.y}px`, 
-                pointerEvents: 'none', 
-                transform: 'translate(-50%, -50%)', 
-                zIndex: 18,
-                opacity: isPlacementValid ? 1 : 0.6 
+                position: 'absolute', top: -8, right: -8, 
+                fontSize: 16, fontWeight: 'bold', 
+                textShadow: '0 1px 3px rgba(0,0,0,0.5)',
+                zIndex: 21,
               }}
+              aria-hidden="true"
             >
-              <div style={{ position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)', width: `${diameter}px`, height: `${diameter}px`, borderRadius: '50%', background: ringColor, border: `2px solid ${ringBorder}`, boxSizing: 'border-box', zIndex: 0, pointerEvents: 'none' }} />
-              <div style={{ width: `${SIZE}px`, height: `${SIZE}px`, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 20 }}>
-                <img 
-                  src={resolveConfiguredAssetPathWithAlt(towerData?.image, altGraphics)} 
-                  alt="preview" 
-                  onError={(e) => {
-                    const fallback = resolveConfiguredAssetPath(towerData?.image);
-                    if (e.currentTarget.src !== fallback) {
-                      e.currentTarget.src = fallback;
-                      return;
-                    }
-                    e.currentTarget.style.display = 'none';
-                  }}
-                  style={{ 
-                    width: SIZE, 
-                    height: SIZE, 
-                    display: 'block', 
-                    opacity: 0.98,
-                    filter: isPlacementValid ? 'none' : 'grayscale(100%) brightness(0.5)' 
-                  }} 
-                />
-              </div>
-            </div>
-          );
-        })()
+              ✓
+            </span>
+          </div>
+        </div>
       )}
 
       {selectedTower && selectedTower.x != null && selectedTower.y != null && (
         <>
           <div style={{ position: 'absolute', left: 0, top: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.45)', zIndex: 30, pointerEvents: 'none', transition: 'opacity 0.3s ease' }} />
           {(() => {
-            const SIZE = 40;
             const towerData = towerConfig[selectedTower.type];
             if (!towerData) return null;
             const lvl = Math.min(selectedTower.level, towerData.levels.length - 1);
             const range = towerData.levels[lvl].range ?? 100;
             const diameter = range * 2;
-            const centerX = selectedTower.x + SIZE / 2;
-            const centerY = selectedTower.y + SIZE / 2;
+            const centerX = selectedTower.x + TOWER_SIZE / 2;
+            const centerY = selectedTower.y + TOWER_SIZE / 2;
 
             return (
               <div key={`sel-${selectedTower.id}`} style={{ position: 'absolute', left: `${centerX}px`, top: `${centerY}px`, pointerEvents: 'none', transform: 'translate(-50%, -50%)', zIndex: 40 }}>
@@ -183,12 +218,6 @@ GameBoard.propTypes = {
   scale: PropTypes.number,
   mapData: PropTypes.object,
   altGraphics: PropTypes.bool,
-};
-
-GameBoard.defaultProps = {
-  enemies:[],
-  scale: 1,
-  altGraphics: false,
 };
 
 export default GameBoard;

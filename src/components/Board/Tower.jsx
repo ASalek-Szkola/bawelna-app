@@ -1,17 +1,15 @@
 // \components\Board\Tower.jsx
-import React from 'react';
+import { memo } from 'react';
 import PropTypes from 'prop-types';
 import towerConfig from '../../config/towerConfig.json';
-import { resolveConfiguredAssetPath, resolveConfiguredAssetPathWithAlt } from '../../utils/assetUtils';
+import GameImage from '../common/GameImage';
+import { TOWER_SIZE } from '../../config/gameConstants';
 import '../../styles/Tower.css';
 
 const Tower = ({ x, y, type, level, onClick, isShooting, onRightClick, isPlacingNewTower, altGraphics }) => { 
   const towerData = towerConfig[type];
   if (!towerData) return null;
 
-  const imageSrc = resolveConfiguredAssetPathWithAlt(towerData.image, altGraphics);
-
-  const SIZE = 40;
   return (
     <div
       className={`tower tower-lvl-${level} ${isShooting ? 'tower-shooting' : ''}`}
@@ -19,48 +17,28 @@ const Tower = ({ x, y, type, level, onClick, isShooting, onRightClick, isPlacing
         left: `${x}px`,
         top: `${y}px`,
         position: 'absolute',
-        width: `${SIZE}px`,
-        height: `${SIZE}px`,
+        width: `${TOWER_SIZE}px`,
+        height: `${TOWER_SIZE}px`,
         cursor: isPlacingNewTower ? 'default' : 'pointer', 
       }}
       onClick={(e) => {
-        // Ważne: Zawsze zatrzymaj propagację, aby kliknięcie nie przebiło się do GameBoard
         e.stopPropagation(); 
-        if (isPlacingNewTower) { 
-          // Jeśli jesteśmy w trybie stawiania nowej wieży, 
-          // całkowicie ignoruj to kliknięcie. Nie zaznaczaj starej wieży.
-          return; 
-        }
-        // Jeśli nie jesteśmy w trybie stawiania, wtedy normalnie wywołaj onClick (zaznaczenie wieży).
+        if (isPlacingNewTower) return; 
         onClick && onClick();
       }}
       onContextMenu={(e) => {
-        // Ważne: Zawsze zapobiegnij domyślnemu menu kontekstowemu przeglądarki
         e.preventDefault(); 
-        // Ważne: Zawsze zatrzymaj propagację
         e.stopPropagation(); 
-        if (isPlacingNewTower) { 
-          // Jeśli jesteśmy w trybie stawiania nowej wieży, 
-          // całkowicie ignoruj prawy klik.
-          return;
-        }
-        // Jeśli nie jesteśmy w trybie stawiania, wtedy normalnie wywołaj onRightClick (sprzedaż/ulepszanie).
+        if (isPlacingNewTower) return;
         onRightClick && onRightClick();
       }}
-      aria-label={`WieĹĽyczka ${type}`}
+      aria-label={`Wieżyczka ${type}`}
     >
-      <img
-        src={imageSrc}
+      <GameImage
+        src={towerData.image}
         alt={`${type} tower`}
-        onError={(e) => {
-          const fallback = resolveConfiguredAssetPath(towerData.image);
-          if (e.currentTarget.src !== fallback) {
-            e.currentTarget.src = fallback;
-            return;
-          }
-          e.currentTarget.style.display = 'none';
-        }}
-        style={{ width: `${SIZE}px`, height: `${SIZE}px`, display: 'block' }}
+        altGraphics={altGraphics}
+        size={`${TOWER_SIZE}px`}
       />
     </div>
   );
@@ -95,4 +73,4 @@ function areEqual(prev, next) {
          prev.altGraphics === next.altGraphics; 
 }
 
-export default React.memo(Tower, areEqual);
+export default memo(Tower, areEqual);
