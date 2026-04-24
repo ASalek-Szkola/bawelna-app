@@ -1,0 +1,64 @@
+/* \styles\Settings.css */
+.settings-panel {
+  padding: 16px;
+  border-radius: var(--panel-radius);
+  background: var(--bg-panel);
+  border: 1px solid var(--border-ui);
+  margin-bottom: 20px;
+}
+
+.panel-sm {
+  max-width: 320px;
+}
+
+.settings-title {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+}
+
+.difficulty-options {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.diff-btn {
+  flex: 1;
+  padding: 10px 4px;
+  border-radius: 8px;
+  border: 1px solid var(--border-ui);
+  background: var(--bg-card);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.diff-btn:hover:not(:disabled) {
+  border-color: var(--accent);
+  background: var(--bg-hover);
+}
+
+.diff-btn.active {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+  box-shadow: 0 4px 12px rgba(var(--accent-rgb, 139, 69, 19), 0.25);
+}
+
+.diff-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.settings-hint {
+  margin: 0;
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
